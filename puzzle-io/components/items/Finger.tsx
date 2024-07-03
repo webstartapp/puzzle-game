@@ -1,15 +1,25 @@
+import { IEntity } from "@/system/gameEngine/DefaultRenderer";
 import React, { FC } from "react";
-import { StyleSheet, View } from "react-native";
+import { Image, StyleSheet, View } from "react-native";
 
 const RADIUS = 20;
 
 type Props = {
-  position?: [number, number];
+  custom: any;
 };
 
-const Finger: FC<Props> = () => {
+const Finger: FC<Partial<IEntity>> = ({image}) => {
+  console.log(5, image);
   return (
-    <View style={[styles.finger]} />
+    <View style={[styles.finger]}>
+        <Image
+          source={image}
+          style={{
+            width: RADIUS * 2,
+            height: RADIUS * 2,
+          }}
+        />
+      </View>
   );
 };
 

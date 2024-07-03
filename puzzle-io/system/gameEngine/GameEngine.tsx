@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useCallback, FC, useMemo } from "react";
 import { View, StyleSheet, Dimensions, Pressable, GestureResponderEvent, ViewStyle } from "react-native";
 import DefaultTimer from "./DefaultTimer";
-import DefaultRenderer, { EntityItem, EventItem, IEntity } from "./DefaultRenderer";
+import DefaultRenderer, { EventItem, IEntity } from "./DefaultRenderer";
 import DefaultTouchProcessor from "./DefaultTouchProcessor";
 
 export type TouchEventType = 'start' | 'end' | 'move' | 'press' | 'long-press';
@@ -11,7 +11,7 @@ type GameEngineProps = {
   renderer?: any;
   touchProcessor?: any;
   children?: any;
-  system?: (entities: EntityItem[], events: EventItem) => EntityItem[];
+  system?: (entities: IEntity[], events: EventItem) => IEntity[];
   entities: Record<string, IEntity>;
   running?: boolean;
   timer?: any;

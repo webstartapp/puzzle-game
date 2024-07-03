@@ -1,9 +1,9 @@
-import { FC, ReactNode, useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { cloneElement, FC, ReactElement, useCallback, useEffect, useMemo, useRef, useState } from "react";
 import { Dimensions, GestureResponderEvent, NativeTouchEvent, Pressable, StyleSheet, View, ViewStyle } from "react-native";
 import { TouchEventType } from "./GameEngine";
 
 export interface IEntity {
-	  component: ReactNode;
+	  component: ReactElement;
 	  position: {
 		      x: number;
 		      y: number;
@@ -11,13 +11,14 @@ export interface IEntity {
 		      height: number;
 		      z: number;
 		    };
+		key?: string;
+
 	styles: ViewStyle;
 };
-export type EntityItem = IEntity & { key: string };
 
 export type EventItem = {
 	type: TouchEventType;
-	id: string;
+	entity: IEntity;
 	touch: {
 		x: number;
 		y: number;
@@ -31,12 +32,12 @@ type EntityRendererProps = {
 	height: number;
 }
 style: ViewStyle;
-system?: (entities: EntityItem[], event: EventItem) => EntityItem[];
+system?: (entities: IEntity[], event: EventItem) => IEntity[];
 }
 
 const EntityRenderer: FC<EntityRendererProps> = ({entities, contentSize, style, system}) => {
 	const screen = useRef(Dimensions.get("window"));
-	const [entityList, setEntityList] = useState<EntityItem[]>([]);
+	const [entityList, setEntityList] = useState<IEntity[]>([]);
 	const [registeredEntityId, setRegisteredEntityId] = useState<string>();
 	
 	const ratio = useMemo(() => {
@@ -72,7 +73,7 @@ const EntityRenderer: FC<EntityRendererProps> = ({entities, contentSize, style, 
 				pageY: (e as PointerEvent).clientY,
 			},
 		];
-		let localRegisteredEntity: EntityItem = undefined as never;
+		let localRegisteredEntity: IEntity = undefined as never;
 		if(!touches.length) {
 			setRegisteredEntityId(undefined);
 			return;
@@ -85,10 +86,10 @@ const EntityRenderer: FC<EntityRendererProps> = ({entities, contentSize, style, 
 			};
 			entityList.forEach(entity => {
 				const size = {
-					width: entity.position.width,
-					height: entity.position.height,
-					left: entity.position.x,
-					top: entity.position.y,
+					width: entity.position?.width || 0,
+					height: entity.position?.height || 0,
+					left: entity.position?.x || 0,
+					top: entity.position?.y || 0,
 				};
 				if (
 					pivot.x > size.left &&
@@ -101,7 +102,7 @@ const EntityRenderer: FC<EntityRendererProps> = ({entities, contentSize, style, 
 				}
 			});
 			if(type === 'start') {
-				const newEntries = system?.(entityList, { type, id: localRegisteredEntity?.key, touch: pivot });
+				const newEntries = system?.(entityList, { type, entity: localRegisteredEntity, touch: pivot });
 				if(newEntries) {
 					setEntityList(newEntries);
 				}
@@ -111,7 +112,7 @@ const EntityRenderer: FC<EntityRendererProps> = ({entities, contentSize, style, 
 				return;
 			}
 			if(type === 'end') {
-				const newEntries = system?.(entityList, { type, id: localRegisteredEntity?.key, touch: pivot});
+				const newEntries = system?.(entityList, { type, entity: localRegisteredEntity, touch: pivot});
 				if(newEntries) {
 					setEntityList(newEntries);
 				}
@@ -121,7 +122,7 @@ const EntityRenderer: FC<EntityRendererProps> = ({entities, contentSize, style, 
 			if(type === 'move' && registeredEntityId) {
 				const entity = entityList.find(entity => entity.key === registeredEntityId);
 				if(entity) {
-					const newEntries = system?.(entityList, { type, id: entity.key, touch: pivot });
+					const newEntries = system?.(entityList, { type, entity, touch: pivot });
 					if(newEntries) {
 						setEntityList(newEntries);
 					}
@@ -167,7 +168,7 @@ const EntityRenderer: FC<EntityRendererProps> = ({entities, contentSize, style, 
 							size,
 						]}
 					>
-						{entity.component}
+						{cloneElement(entity.component, entity)}
 					</View>
 					);
 					})}

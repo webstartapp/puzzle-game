@@ -1,10 +1,28 @@
 import { Finger } from "@/components/items/Finger";
+import { IEntity } from "@/system/gameEngine/DefaultRenderer";
 import GameEngine from "@/system/gameEngine/GameEngine";
+import { loadImage } from "@/system/imageLoader";
 import { MoveFinger } from "@/system/touch/touches";
 import { StatusBar } from "expo-status-bar";
-import { StyleSheet, Text, View } from "react-native";
+import { useEffect, useState } from "react";
+import { ImageResolvedAssetSource, StyleSheet, Text, View } from "react-native";
+
+declare module "@/system/gameEngine/DefaultRenderer" {
+  export interface IEntity {
+    image: ImageResolvedAssetSource;
+  }
+}
+
 
 export default function Index() {
+  const [image, setImage] = useState<ImageResolvedAssetSource>();
+  useEffect(() => {
+    loadImage('https://pspdfkit.com/assets/images/hero/guides/react-native-dac46f62.png')
+      .then(setImage);
+  }, []);
+  if(!image) {
+    return <Text>Loading...</Text>;
+  }
   return (
     <GameEngine
       system={MoveFinger}
@@ -17,9 +35,9 @@ export default function Index() {
           y: 20,
           width: 20,
           height: 20,
-          z: 1
-        
+          z: 1,
         },
+        image: image,
         component: <Finger />,
         styles: {
           backgroundColor: "blue"
@@ -32,6 +50,7 @@ export default function Index() {
           height: 20,
           z: 2
         },
+        image: image,
         component: <Finger />,
         styles: {
           backgroundColor: "red"
