@@ -1,8 +1,6 @@
-import React, { useState, useEffect, useRef, useCallback, FC, useMemo } from "react";
-import { View, StyleSheet, Dimensions, Pressable, GestureResponderEvent, ViewStyle } from "react-native";
-import DefaultTimer from "./DefaultTimer";
+import React, { FC } from "react";
+import { View, StyleSheet, ViewStyle } from "react-native";
 import DefaultRenderer, { EventItem, IEntity } from "./DefaultRenderer";
-import DefaultTouchProcessor from "./DefaultTouchProcessor";
 
 export type TouchEventType = 'start' | 'end' | 'move' | 'press' | 'long-press';
 

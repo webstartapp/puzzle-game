@@ -8,7 +8,12 @@ type Props = {
   custom: any;
 };
 
-const Finger: FC<IEntity> = ({ indexes, position, world }) => {
+const Finger: FC<{entity: IEntity, world: {
+  width: number;
+  height: number;
+  x: number;
+  y: number;
+}}> = ({entity: { indexes, position }, world}) => {
 
   const styles = StyleSheet.create({
     finger: {

@@ -39,7 +39,7 @@ for (let i = 0; i < 5; i++) {
         x: i,
         y: j,
       },
-      component: <Finger />,
+      component: Finger,
       styles: {
         backgroundColor: "blue"
       }
@@ -75,11 +75,6 @@ delete entities["0-0"];
 
 
 export default function Index() {
-  const [image, setImage] = useState<ImageResolvedAssetSource>();
-  useEffect(() => {
-    loadImage('https://pspdfkit.com/assets/images/hero/guides/react-native-dac46f62.png')
-      .then(setImage);
-  }, []);
 
   return (
     <GameEngine

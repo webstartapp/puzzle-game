@@ -4,7 +4,7 @@ import { TouchEventType } from "./GameEngine";
 import DraggableView from "./draggableView";
 
 export interface IEntity {
-	  component: ReactElement;
+	  component: FC<any>;
 	  position: {
 		      x: number;
 		      y: number;
@@ -12,12 +12,6 @@ export interface IEntity {
 		      height: number;
 		      z: number;
 		    };
-		world: {
-			x: number;
-			y: number;
-			width: number;
-			height: number;
-		}
 		key?: string;
 
 	styles: ViewStyle;
@@ -29,6 +23,8 @@ export type EventItem = {
 	touch: {
 		x: number;
 		y: number;
+		moveX: number;
+		moveY: number;
 	}
 };
 
@@ -40,6 +36,10 @@ type EntityRendererProps = {
 }
 style: ViewStyle;
 system?: (entities: IEntity[], event: EventItem) => IEntity[];
+}
+
+declare global {
+	var entyties: IEntity[];
 }
 
 const EntityRenderer: FC<EntityRendererProps> = ({entities, contentSize, style, system}) => {
@@ -80,72 +80,6 @@ const EntityRenderer: FC<EntityRendererProps> = ({entities, contentSize, style, 
 		y: (screen.current.height - contentSize.height * ratio) / 2,
 	};
 
-	const registerTouch = useCallback((type: TouchEventType, e: PointerEvent | GestureResponderEvent) => {
-		e.stopPropagation();
-		const touches: NativeTouchEvent[] = (e as GestureResponderEvent)?.nativeEvent?.touches || (e as any).touches || [
-			{
-				pageX: (e as PointerEvent).clientX,
-				pageY: (e as PointerEvent).clientY,
-			},
-		];
-		let localRegisteredEntity: IEntity = undefined as never;
-		if(!touches.length) {
-			setRegisteredEntityId(undefined);
-			return;
-		}
-		for (let index = 0; index < touches.length; index++) {
-			const touch = touches[index];
-			const pivot = {
-				x: (touch.pageX - shift.x) / ratio,
-				y: (touch.pageY - shift.y) / ratio,
-			};
-			entityList.forEach(entity => {
-				const size = {
-					width: entity.position?.width || 0,
-					height: entity.position?.height || 0,
-					left: entity.position?.x || 0,
-					top: entity.position?.y || 0,
-				};
-				if (
-					pivot.x > size.left &&
-					pivot.x < size.left + size.width &&
-					pivot.y > size.top &&
-					pivot.y < size.top + size.height &&
-					((localRegisteredEntity?.position?.z || -1) < entity.position.z)
-				) {
-					localRegisteredEntity = entity;
-				}
-			});
-			if(type === 'start') {
-				const newEntries = system?.(entityList, { type, entity: localRegisteredEntity, touch: pivot });
-				if(newEntries) {
-					setEntityList(newEntries);
-				}
-				if(localRegisteredEntity!==undefined) {
-					setRegisteredEntityId(localRegisteredEntity?.key);
-				}
-				return;
-			}
-			if(type === 'end') {
-				const newEntries = system?.(entityList, { type, entity: localRegisteredEntity, touch: pivot});
-				if(newEntries) {
-					setEntityList(newEntries);
-				}
-				setRegisteredEntityId(undefined);
-				return;
-			}
-			if(type === 'move' && registeredEntityId) {
-				const entity = entityList.find(entity => entity.key === registeredEntityId);
-				if(entity) {
-					const newEntries = system?.(entityList, { type, entity, touch: pivot });
-					if(newEntries) {
-						setEntityList(newEntries);
-					}
-				}
-			}
-		}
-	}, [entityList, ratio, shift, registeredEntityId]);
-
 	const setEntities = useCallback<(entity: IEntity, e: GestureResponderEvent, gestureState: PanResponderGestureState, pan: Animated.ValueXY) => void>((entity, e, gestureState, pan) => {
 		if(!system) return;
 		const gestureDX = {
@@ -180,7 +114,7 @@ const EntityRenderer: FC<EntityRendererProps> = ({entities, contentSize, style, 
 	}, [JSON.stringify(entityList.map(({position})=>{position})), system, ratio]);
 
 	return (
-		<View id="gameenf" style={{width: screen.current.width, height: screen.current.height, userSelect: 'none'}}>
+		<View id="gameenf" style={{width: screen.current.width, height: screen.current.height, userSelect: 'none'} as any}>
 			<View
 				style={{ ...(style || {}), width: (contentSize.width * ratio), height: (contentSize.height * ratio), left: shift.x, top: shift.y }}
 			>
@@ -200,7 +134,7 @@ const EntityRenderer: FC<EntityRendererProps> = ({entities, contentSize, style, 
 				});
 
 				return (
-					<DraggableView entity={entity} setEntities={setEntities} styles={styles[`item_${entity.key}`]} entities={entityList}/>
+					<DraggableView entity={entity} setEntities={setEntities} styles={styles[`item_${entity.key}`]} />
 				);
 				})}
 		</View>

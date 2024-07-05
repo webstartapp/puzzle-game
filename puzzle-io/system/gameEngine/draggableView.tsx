@@ -4,17 +4,17 @@ import {Animated, View, StyleSheet, PanResponder, Text, GestureResponderEvent, P
 
 const App: FC<{
   entity: IEntity;
-  setEntities:  (entity: IEntity, e: GestureResponderEvent, gestureState: PanResponderGestureState, pan: Animated.ValueXY, entyties: IEntity[]) => void;
+  setEntities:  (entity: IEntity, e: GestureResponderEvent, gestureState: PanResponderGestureState, pan: Animated.ValueXY) => void;
   styles: ViewStyle;
-  entities: IEntity[];
-}> = ({entity, setEntities,styles, entities}) => {
+}> = ({entity, setEntities,styles}) => {
   const pan = useRef(new Animated.ValueXY()).current;
+  const { world } = entity as any; 
 
   const panResponder = useRef(
     PanResponder.create({
       onMoveShouldSetPanResponder: () => true,
       onPanResponderMove: (e, gestureState) => {
-        setEntities(entity, e, gestureState, pan, entities);
+        setEntities(entity, e, gestureState, pan);
       return;
       },
       onPanResponderRelease: () => {
@@ -29,7 +29,7 @@ const App: FC<{
           ...styles,
         }}
         {...panResponder.panHandlers}>
-            {cloneElement(entity.component, entity)}
+            <entity.component  entity={entity} world={world} />
       </Animated.View>
   );
 };
