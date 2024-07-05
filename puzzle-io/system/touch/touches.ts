@@ -1,10 +1,11 @@
-import { EntityItem, EventItem } from "../gameEngine/DefaultRenderer";
+import { IEntity, EventItem } from "../gameEngine/DefaultRenderer";
 
-const MoveFinger = (entities: EntityItem[], event: EventItem) => {
-  console.log(4, event);
+const MoveFinger = (entities: IEntity[], event: EventItem) => {
+  console.log(4, event.entity?.key, entities);
     return (
       entities.map(entity => {
-      if(entity.key === event.id) {
+      if(entity.key === event.entity?.key) {
+        console.log(8, entity.key, event.entity?.key)
         return {
           ...entity,
           position: {

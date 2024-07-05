@@ -6,14 +6,12 @@ import DefaultTouchProcessor from "./DefaultTouchProcessor";
 
 export type TouchEventType = 'start' | 'end' | 'move' | 'press' | 'long-press';
 
-export type GameEngineSystem = (entities: IEntity[], events: EventItem) => IEntity[];
-
 type GameEngineProps = {
   style: ViewStyle;
   renderer?: any;
   touchProcessor?: any;
   children?: any;
-  system?: GameEngineSystem;
+  system?: (entities: IEntity[], events: EventItem) => IEntity[];
   entities: Record<string, IEntity>;
   running?: boolean;
   timer?: any;
@@ -21,7 +19,6 @@ type GameEngineProps = {
 
 const GameEngine: FC<GameEngineProps> = ({style, children, entities, system}) => {
   // const [forceRenderId, setForceRenderId] = useState(math.random());
-
 
   return (
     <View

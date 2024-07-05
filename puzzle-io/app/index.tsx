@@ -9,9 +9,69 @@ import { ImageResolvedAssetSource, StyleSheet, Text, View } from "react-native";
 
 declare module "@/system/gameEngine/DefaultRenderer" {
   export interface IEntity {
-    image: ImageResolvedAssetSource;
+    indexes: {
+      x: number;
+      y: number;
+    };
+    map: {
+      x: number;
+      y: number;
+    };
   }
 }
+
+const entities: Record<string, IEntity> = {};
+for (let i = 0; i < 5; i++) {
+  for (let j = 0; j < 5; j++) {
+    entities[`${i}-${j}`] = {
+      position: {
+        x: i * 20,
+        y: j * 20,
+        width: 20,
+        height: 20,
+        z: 1,
+      },
+      indexes: {
+        x: i,
+        y: j,
+      },
+      map: {
+        x: i,
+        y: j,
+      },
+      component: <Finger />,
+      styles: {
+        backgroundColor: "blue"
+      }
+    };
+  }
+}
+
+const randomizedMaps = Object.keys(entities).map((key) => entities[key].map);
+// shuffle randomizedMaps
+const shufledMap = randomizedMaps.sort(() => Math.random() - 0.5);
+
+
+// shufle entities to random positions with only one occured on cell
+Object.keys(entities).forEach((key, index) => {
+  entities[key] = {
+    ...entities[key],
+    map: {
+      x: shufledMap[index].x,
+      y: shufledMap[index].y,
+    },
+    position: {
+      ...entities[key].position,
+      x: shufledMap[index].x * 20,
+      y: shufledMap[index].y * 20,
+    }
+  };
+});
+
+delete entities["0-0"];
+
+
+
 
 
 export default function Index() {
@@ -20,43 +80,14 @@ export default function Index() {
     loadImage('https://pspdfkit.com/assets/images/hero/guides/react-native-dac46f62.png')
       .then(setImage);
   }, []);
-  if(!image) {
-    return <Text>Loading...</Text>;
-  }
+
   return (
     <GameEngine
       system={MoveFinger}
       style={{
         backgroundColor: "orange"
       }}
-      entities={{
-        1: { position: {
-          x: 20,
-          y: 20,
-          width: 20,
-          height: 20,
-          z: 1,
-        },
-        image: image,
-        component: <Finger />,
-        styles: {
-          backgroundColor: "blue"
-        }
-      }, //-- Notice that each entity has a unique id (required)
-        2: { position: {
-          x: 40,
-          y: 40,
-          width: 20,
-          height: 20,
-          z: 2
-        },
-        image: image,
-        component: <Finger />,
-        styles: {
-          backgroundColor: "red"
-        }
-      },
-      }}
+      entities={entities}
     >
 
       <StatusBar hidden={true} />
