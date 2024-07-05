@@ -14,10 +14,18 @@ type GameEngineProps = {
   system?: GameEngineSystem;
   entities: Record<string, IEntity>;
   running?: boolean;
+  contentSize: {
+    width: number;
+    height: number;
+  };
+  gridSnaps?: {
+    x: number;
+    y: number;
+  };
   timer?: any;
 };
 
-const GameEngine: FC<GameEngineProps> = ({style, children, entities, system}) => {
+const GameEngine: FC<GameEngineProps> = ({style, children, entities, system, contentSize, gridSnaps }) => {
   // const [forceRenderId, setForceRenderId] = useState(math.random());
 
 
@@ -27,9 +35,10 @@ const GameEngine: FC<GameEngineProps> = ({style, children, entities, system}) =>
     >
       <DefaultRenderer
         entities={entities}
-        contentSize={{width: 100, height: 100}}
+        contentSize={contentSize || {width: 100, height: 100}}
         style={style}
         system={system}
+        gridSnaps={gridSnaps || {x: contentSize.width, y: contentSize.height } || {x: 100, y: 100}}
       />
 
       <View

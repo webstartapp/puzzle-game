@@ -83,6 +83,14 @@ export default function Index() {
         backgroundColor: "orange"
       }}
       entities={entities}
+      gridSnaps= {{
+        x: 5,
+        y: 5
+      }}
+      contentSize={{
+        width: 100,
+        height: 100
+      }}
     >
 
       <StatusBar hidden={true} />

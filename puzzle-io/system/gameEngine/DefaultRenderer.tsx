@@ -25,6 +25,8 @@ export type EventItem = {
 		y: number;
 		moveX: number;
 		moveY: number;
+		snapX: number;
+		snapY: number;
 	}
 };
 
@@ -36,13 +38,17 @@ type EntityRendererProps = {
 }
 style: ViewStyle;
 system?: (entities: IEntity[], event: EventItem) => IEntity[];
+gridSnaps: {
+	x: number;
+	y: number;
+}
 }
 
 declare global {
 	var entyties: IEntity[];
 }
 
-const EntityRenderer: FC<EntityRendererProps> = ({entities, contentSize, style, system}) => {
+const EntityRenderer: FC<EntityRendererProps> = ({entities, contentSize, style, system, gridSnaps}) => {
 	const screen = useRef(Dimensions.get("window"));
 	const [entityList, setEntityList] = useState<IEntity[]>([]);
 	const [registeredEntityId, setRegisteredEntityId] = useState<string>();
@@ -80,21 +86,25 @@ const EntityRenderer: FC<EntityRendererProps> = ({entities, contentSize, style, 
 		y: (screen.current.height - contentSize.height * ratio) / 2,
 	};
 
-	const setEntities = useCallback<(entity: IEntity, e: GestureResponderEvent, gestureState: PanResponderGestureState, pan: Animated.ValueXY) => void>((entity, e, gestureState, pan) => {
+	const setEntities = useCallback<(type: TouchEventType, entity: IEntity, gestureState: PanResponderGestureState) => void>((type, entity, gestureState) => {
 		if(!system) return;
 		const gestureDX = {
 			x: gestureState.dx / ratio,
 			y: gestureState.dy / ratio,
 		};
 		const newEntities = system(global.entyties, {
-			type: "move",
+			type: type,
 			entity: entity,
 			touch: {
 				x : entity.position.x + gestureDX.x,
 				y: entity.position.y + gestureDX.y,
 				moveX: (gestureState.moveX - shift.x) / ratio,
 				moveY: (gestureState.moveY - shift.y) / ratio,
-			}
+				snapX: gridSnaps?.x ? Math.floor((gestureState.moveX - shift.x) / ratio / (contentSize.width / gridSnaps.x)) * (contentSize.width / gridSnaps.x): 0,
+				snapY: gridSnaps?.y ? Math.floor((gestureState.moveY - shift.y) / ratio / (contentSize.height / gridSnaps.y)) * (contentSize.height / gridSnaps.y) : 0,
+				gridSnaps,
+				snappedx: (gestureState.moveY - shift.y) / ratio / gridSnaps.y, 
+			},
 		});
 		global.entyties = newEntities.map(entityData => {
 			if(entity.key !== entityData.key) {
@@ -134,7 +144,7 @@ const EntityRenderer: FC<EntityRendererProps> = ({entities, contentSize, style, 
 				});
 
 				return (
-					<DraggableView entity={entity} setEntities={setEntities} styles={styles[`item_${entity.key}`]} />
+					<DraggableView key={entity.key} entity={entity} setEntities={setEntities} styles={styles[`item_${entity.key}`]} />
 				);
 				})}
 		</View>
