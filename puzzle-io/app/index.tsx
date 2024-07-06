@@ -94,7 +94,6 @@ export default function Index() {
     >
 
       <StatusBar hidden={true} />
-
     </GameEngine>
   );
 }
