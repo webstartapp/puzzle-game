@@ -1,13 +1,10 @@
-import { Finger } from "@/components/items/Finger";
-import { IEntity } from "@/system/gameEngine/DefaultRenderer";
-import GameEngine from "@/system/gameEngine/GameEngine";
-import { loadImage } from "@/system/imageLoader";
-import { MoveFinger } from "@/system/touch/touches";
-import { StatusBar } from "expo-status-bar";
-import { useEffect, useState } from "react";
-import { ImageResolvedAssetSource, StyleSheet, Text, View } from "react-native";
+import { Finger } from '@/components/items/Finger';
+import { IEntity } from '@/system/gameEngine/DefaultRenderer';
+import GameEngine from '@/system/gameEngine/GameEngine';
+import { MoveFinger } from '@/system/touch/touches';
+import { StatusBar } from 'expo-status-bar';
 
-declare module "@/system/gameEngine/DefaultRenderer" {
+declare module '@/system/gameEngine/DefaultRenderer' {
   export interface IEntity {
     indexes: {
       x: number;
@@ -40,9 +37,6 @@ for (let i = 0; i < 5; i++) {
         y: j,
       },
       component: Finger,
-      styles: {
-        backgroundColor: "blue"
-      }
     };
   }
 }
@@ -50,7 +44,6 @@ for (let i = 0; i < 5; i++) {
 const randomizedMaps = Object.keys(entities).map((key) => entities[key].map);
 // shuffle randomizedMaps
 const shufledMap = randomizedMaps.sort(() => Math.random() - 0.5);
-
 
 // shufle entities to random positions with only one occured on cell
 Object.keys(entities).forEach((key, index) => {
@@ -64,43 +57,30 @@ Object.keys(entities).forEach((key, index) => {
       ...entities[key].position,
       x: shufledMap[index].x * 20,
       y: shufledMap[index].y * 20,
-    }
+    },
   };
 });
 
-delete entities["0-0"];
-
-
-
-
+delete entities['0-0'];
 
 export default function Index() {
-
   return (
     <GameEngine
       system={MoveFinger}
       style={{
-        backgroundColor: "orange"
+        backgroundColor: 'orange',
       }}
       entities={entities}
-      gridSnaps= {{
+      gridSnaps={{
         x: 5,
-        y: 5
+        y: 5,
       }}
       contentSize={{
         width: 100,
-        height: 100
+        height: 100,
       }}
     >
-
       <StatusBar hidden={true} />
     </GameEngine>
   );
 }
-
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: "#FFFEEE"
-  }
-});

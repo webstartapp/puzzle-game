@@ -20,9 +20,9 @@ export default class DefaultTimer {
     this.loopId = null;
   }
 
-  loop = time => {
+  loop = (time) => {
     if (this.loopId) {
-      this.subscribers.forEach(callback => {
+      this.subscribers.forEach((callback) => {
         callback(time);
       });
     }
@@ -49,6 +49,6 @@ export default class DefaultTimer {
   }
 
   unsubscribe(callback) {
-    this.subscribers = this.subscribers.filter(s => s !== callback)
+    this.subscribers = this.subscribers.filter((s) => s !== callback);
   }
 }
