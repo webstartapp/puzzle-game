@@ -1,8 +1,51 @@
 import { IEntity } from '@/system/gameEngine/DefaultRenderer';
-import React, { FC } from 'react';
-import { StyleSheet, View, Text } from 'react-native';
+import React, { FC, useEffect, useState } from 'react';
+import {
+  StyleSheet,
+  View,
+  Text,
+  ImageSourcePropType,
+  ImageURISource,
+} from 'react-native';
+import { Asset, useAssets } from 'expo-asset';
+import {
+  manipulateAsync,
+  FlipType,
+  SaveFormat,
+  ImageResult,
+} from 'expo-image-manipulator';
+import dogImage from '@/assets/puzzle_set/animals/Dog cat and mouse.jpeg';
+
+import { Image } from 'expo-image';
 
 const RADIUS = 20;
+
+// const cropImage = async (
+//   image: ImageSourcePropType,
+//   grid: {
+//     x: number;
+//     y: number;
+//     width: number;
+//     height: number;
+//   },
+// ) => {
+//   c;
+//   const manipulated = await manipulateAsync(image, [{ crop: grid }], {
+//     compress: 1,
+//     format: SaveFormat.JPEG,
+//   });
+//   console.log(await image);
+//   const image = await useAssets(
+//     '/assets/puzzle_set/animals/Dog cat and mouse.jpeg',
+//   );
+//   const { x, y, width, height } = grid;
+//   const { uri } = image as ImageURISource;
+//   const cropData = {
+//     offset: { x, y },
+//     size: { width, height },
+//   };
+//   return { uri };
+// };
 
 const Finger: FC<{
   entity: IEntity;
@@ -15,13 +58,10 @@ const Finger: FC<{
 }> = ({ entity: { indexes, position }, world }) => {
   const styles = StyleSheet.create({
     finger: {
-      borderColor: '#CCC',
-      borderWidth: 4,
-      borderRadius: RADIUS * 2,
       width: world.width,
       height: world.height,
-      backgroundColor: 'pink',
       position: 'absolute',
+      userSelect: 'none',
     },
     text: {
       fontSize: world.width / 2,
@@ -29,10 +69,48 @@ const Finger: FC<{
       color: 'black',
     },
   });
+  const [imageAsset, setImageAsset] = useState<ImageResult>();
+
+  const [image] = useAssets(dogImage);
+
+  useEffect(() => {
+    const T = async () => {
+      if (!image?.[0]?.uri) return;
+      const manipualted = await manipulateAsync(image?.[0]?.uri, [
+        {
+          resize: {
+            width: world.width * 5,
+            height: world.height * 5,
+          },
+        },
+        {
+          crop: {
+            originX: indexes?.x * world.width,
+            originY: indexes?.y * world.height,
+            width: world.width,
+            height: world.height,
+          },
+        },
+      ]);
+      setImageAsset(manipualted);
+    };
+    T();
+  }, [image]);
+  console.log(73, image);
+
+  // const ImageBody = cropImage(image, {
+  //   x: indexes?.x * world.width,
+  //   y: indexes?.y * world.height,
+  //   width: world.width,
+  //   height: world.height,
+  // });
 
   return (
     <View style={[styles.finger]}>
-      <Text style={[styles.text]}>{`${indexes?.x}x${indexes?.y}`}</Text>
+      <Image
+        source={imageAsset}
+        style={{ width: world.width, height: world.height }}
+      />
     </View>
   );
 };
