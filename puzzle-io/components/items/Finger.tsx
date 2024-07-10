@@ -1,8 +1,5 @@
-import React, { FC, useEffect, useState } from 'react';
+import React, { FC } from 'react';
 import { StyleSheet, View } from 'react-native';
-import { Asset, useAssets } from 'expo-asset';
-import { manipulateAsync, ImageResult } from 'expo-image-manipulator';
-import dogImage from '@/assets/puzzle_set/animals/Dog cat and mouse.jpeg';
 
 import { Image } from 'expo-image';
 import { IEntityState, Position } from '@/system/gameEngine/GameEngine';
@@ -37,7 +34,7 @@ import { IEntityState, Position } from '@/system/gameEngine/GameEngine';
 const Finger: FC<{
   entity: IEntityState;
   world: Position;
-}> = ({ entity: { indexes, position }, world }) => {
+}> = ({ entity: { indexes, position, image }, world }) => {
   const styles = StyleSheet.create({
     finger: {
       width: world.width,
@@ -51,33 +48,6 @@ const Finger: FC<{
       color: 'black',
     },
   });
-  const [imageAsset, setImageAsset] = useState<ImageResult>();
-
-  const [image] = useAssets(dogImage);
-
-  useEffect(() => {
-    const T = async () => {
-      if (!image?.[0]?.uri) return;
-      const manipualted = await manipulateAsync(image?.[0]?.uri, [
-        {
-          resize: {
-            width: world.width * 5,
-            height: world.height * 5,
-          },
-        },
-        {
-          crop: {
-            originX: indexes?.x * world.width,
-            originY: indexes?.y * world.height,
-            width: world.width,
-            height: world.height,
-          },
-        },
-      ]);
-      setImageAsset(manipualted);
-    };
-    T();
-  }, [image, indexes, world]);
 
   // const ImageBody = cropImage(image, {
   //   x: indexes?.x * world.width,
@@ -89,7 +59,7 @@ const Finger: FC<{
   return (
     <View style={[styles.finger]}>
       <Image
-        source={imageAsset}
+        source={image}
         style={{ width: world.width, height: world.height }}
       />
     </View>

@@ -15,8 +15,6 @@ const MoveFinger = (entities: IEntityState[], event: EventItem) => {
           ...entity,
           eventStartPosition: {
             ...entity.position,
-            x: Math.floor(event.touch.x),
-            y: Math.floor(event.touch.y),
           },
           position: {
             ...entity.position,
@@ -25,12 +23,11 @@ const MoveFinger = (entities: IEntityState[], event: EventItem) => {
         };
       }
       if (event.type === 'end') {
-        console.log(27, event);
         const isOccupied =
-          event.touch.moveX < 0 ||
-          event.touch.moveY < 0 ||
-          event.touch.moveX > 4 ||
-          event.touch.moveY > 4 ||
+          event.touch.moveX <= 0 ||
+          event.touch.moveY <= 0 ||
+          event.touch.moveX > 5 ||
+          event.touch.moveY > 5 ||
           ocupiedCells.filter((cell) => cell === mapToString(newMap)).length >
             0;
         return {
