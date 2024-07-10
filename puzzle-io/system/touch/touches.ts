@@ -1,4 +1,5 @@
-import { EventItem, IEntityState } from '../gameEngine/DefaultRenderer';
+import { IEntityState } from '@/system/gameEngine/GameEngine';
+import { EventItem } from '../gameEngine/DefaultRenderer';
 
 const MoveFinger = (entities: IEntityState[], event: EventItem) => {
   const mapToString = (map: { x: number; y: number }) => `${map.x}-${map.y}`;
@@ -6,16 +7,16 @@ const MoveFinger = (entities: IEntityState[], event: EventItem) => {
   return entities.map((entity) => {
     if (entity.key === event.entity?.key) {
       const newMap = {
-        x: event.grid.x,
-        y: event.grid.y,
+        x: Math.floor(event.touch.moveX),
+        y: Math.floor(event.touch.moveY),
       };
       if (event.type === 'start') {
         return {
           ...entity,
           eventStartPosition: {
             ...entity.position,
-            x: event.grid.moveX,
-            y: event.grid.moveY,
+            x: Math.floor(event.touch.x),
+            y: Math.floor(event.touch.y),
           },
           position: {
             ...entity.position,
@@ -24,16 +25,25 @@ const MoveFinger = (entities: IEntityState[], event: EventItem) => {
         };
       }
       if (event.type === 'end') {
+        console.log(27, event);
         const isOccupied =
+          event.touch.moveX < 0 ||
+          event.touch.moveY < 0 ||
+          event.touch.moveX > 4 ||
+          event.touch.moveY > 4 ||
           ocupiedCells.filter((cell) => cell === mapToString(newMap)).length >
-          0;
+            0;
         return {
           ...entity,
           position: {
             ...entity.position,
             z: 1,
-            x: isOccupied ? entity.eventStartPosition.x : event.grid.moveX,
-            y: isOccupied ? entity.eventStartPosition.y : event.grid.moveY,
+            x: isOccupied
+              ? entity.eventStartPosition.x
+              : Math.floor(event.touch.moveX),
+            y: isOccupied
+              ? entity.eventStartPosition.y
+              : Math.floor(event.touch.moveY),
           },
           map: isOccupied ? entity.map : newMap,
           key: Math.random().toString(36).substring(7),

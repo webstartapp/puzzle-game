@@ -1,10 +1,10 @@
 import { Finger } from '@/components/items/Finger';
-import { IEntity } from '@/system/gameEngine/DefaultRenderer';
+import { IEntity } from '@/system/gameEngine/GameEngine';
 import GameEngine from '@/system/gameEngine/GameEngine';
 import { MoveFinger } from '@/system/touch/touches';
 import { StatusBar } from 'expo-status-bar';
 
-declare module '@/system/gameEngine/DefaultRenderer' {
+declare module '@/system/gameEngine/GameEngine' {
   export interface IEntity {
     indexes: {
       x: number;
@@ -22,10 +22,10 @@ for (let i = 0; i < 5; i++) {
   for (let j = 0; j < 5; j++) {
     entities[`${i}-${j}`] = {
       position: {
-        x: i * 20,
-        y: j * 20,
-        width: 20,
-        height: 20,
+        x: i,
+        y: j,
+        width: 1,
+        height: 1,
         z: 1,
       },
       indexes: {
@@ -55,8 +55,8 @@ Object.keys(entities).forEach((key, index) => {
     },
     position: {
       ...entities[key].position,
-      x: shufledMap[index].x * 20,
-      y: shufledMap[index].y * 20,
+      x: shufledMap[index].x,
+      y: shufledMap[index].y,
     },
   };
 });
@@ -72,8 +72,14 @@ export default function Index() {
       }}
       entities={entities}
       gridSnaps={{
-        x: 5,
-        y: 5,
+        cell: {
+          width: 20,
+          height: 20,
+        },
+        padding: {
+          x: 0,
+          y: 0,
+        },
       }}
       contentSize={{
         width: 100,

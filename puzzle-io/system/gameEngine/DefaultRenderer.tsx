@@ -7,41 +7,19 @@ import {
   View,
   ViewStyle,
 } from 'react-native';
-import { GameEngineSystem, TouchEventType } from './GameEngine';
+import {
+  GameEngineSystem,
+  GridInit,
+  IEntity,
+  IEntityState,
+  TouchEventType,
+} from './GameEngine';
 import DraggableView from './draggableView';
-
-export interface IEntity {
-  component: FC<any>;
-  position: {
-    x: number;
-    y: number;
-    width: number;
-    height: number;
-    z: number;
-  };
-}
-
-export interface IEntityState extends IEntity {
-  eventStartPosition: {
-    x: number;
-    y: number;
-    z: number;
-    width: number;
-    height: number;
-  };
-  key?: string;
-}
 
 export type EventItem = {
   type: TouchEventType;
   entity: IEntityState;
   touch: {
-    x: number;
-    y: number;
-    moveX: number;
-    moveY: number;
-  };
-  grid: {
     x: number;
     y: number;
     moveX: number;
@@ -57,10 +35,7 @@ type EntityRendererProps = {
   };
   style: ViewStyle;
   system?: GameEngineSystem;
-  gridSnaps: {
-    x: number;
-    y: number;
-  };
+  gridSnaps: Required<GridInit<true>>;
 };
 
 declare global {
@@ -87,32 +62,39 @@ const EntityRenderer: FC<EntityRendererProps> = ({
     }
   }, [contentSize, screen]);
 
+  const convertedGridSnaps: Required<GridInit<true>> = {
+    cell: {
+      width: gridSnaps.cell.width * ratio,
+      height: gridSnaps.cell.height * ratio,
+    },
+    padding: {
+      x: gridSnaps.padding.x * ratio,
+      y: gridSnaps.padding.y * ratio,
+    },
+  };
+
   const shift = {
-    x: (screen.current.width - contentSize.width * ratio) / 2,
-    y: (screen.current.height - contentSize.height * ratio) / 2,
+    x:
+      (screen.current.width - contentSize.width * ratio) / 2 +
+      convertedGridSnaps.padding.x,
+    y:
+      (screen.current.height - contentSize.height * ratio) / 2 +
+      convertedGridSnaps.padding.y,
   };
 
   useEffect(() => {
     global.entyties = Object.keys(entities)
       .filter((key) => entities[key].component)
       .map((key) => {
-        return {
+        const previousEntity = global.entyties?.find(
+          (gEntity) => gEntity.key === key,
+        );
+        const newEntity = {
           ...entities[key],
+          ...(previousEntity || {}),
           key,
-          world: {
-            x: entities[key].position.x * ratio + shift.x,
-            y: entities[key].position.y * ratio + shift.y,
-            width: entities[key].position.width * ratio,
-            height: entities[key].position.height * ratio,
-          },
-          eventStartPosition: {
-            x: entities[key].position.x,
-            y: entities[key].position.y,
-            z: entities[key].position.z,
-            width: entities[key].position.width,
-            height: entities[key].position.height,
-          },
         };
+        return newEntity as IEntityState;
       });
 
     setEntityList(global.entyties);
@@ -128,20 +110,8 @@ const EntityRenderer: FC<EntityRendererProps> = ({
     (type, entity, gestureState) => {
       if (!system) return;
       const gestureDX = {
-        x: gestureState.dx / ratio,
-        y: gestureState.dy / ratio,
-      };
-      const gridIndex = {
-        x: Math.floor(
-          (gestureState.moveX - shift.x) /
-            ratio /
-            (contentSize.width / gridSnaps.x),
-        ),
-        y: Math.floor(
-          (gestureState.moveY - shift.y) /
-            ratio /
-            (contentSize.height / gridSnaps.y),
-        ),
+        x: gestureState.dx / ratio / gridSnaps.cell.width,
+        y: gestureState.dy / ratio / gridSnaps.cell.height,
       };
       const newEntities = system(global.entyties, {
         type: type,
@@ -149,28 +119,8 @@ const EntityRenderer: FC<EntityRendererProps> = ({
         touch: {
           x: entity.position.x + gestureDX.x,
           y: entity.position.y + gestureDX.y,
-          moveX: (gestureState.moveX - shift.x) / ratio,
-          moveY: (gestureState.moveY - shift.y) / ratio,
-        },
-        grid: {
-          x: gridIndex.x,
-          y: gridIndex.y,
-          moveX: gridSnaps?.x
-            ? Math.floor(
-                (gestureState.moveX - shift.x) /
-                  ratio /
-                  (contentSize.width / gridSnaps.x),
-              ) *
-              (contentSize.width / gridSnaps.x)
-            : 0,
-          moveY: gridSnaps?.y
-            ? Math.floor(
-                (gestureState.moveY - shift.y) /
-                  ratio /
-                  (contentSize.height / gridSnaps.y),
-              ) *
-              (contentSize.height / gridSnaps.y)
-            : 0,
+          moveX: (gestureState.moveX - shift.x) / ratio / gridSnaps.cell.width,
+          moveY: (gestureState.moveY - shift.y) / ratio / gridSnaps.cell.height,
         },
       });
       global.entyties = newEntities.map((entityData) => {
@@ -179,12 +129,6 @@ const EntityRenderer: FC<EntityRendererProps> = ({
         }
         return {
           ...entityData,
-          world: {
-            x: entityData.position.x * ratio + shift.x,
-            y: entityData.position.y * ratio + shift.y,
-            width: entityData.position.width * ratio,
-            height: entityData.position.height * ratio,
-          },
         };
       });
       setEntityList([...global.entyties]);
@@ -224,10 +168,10 @@ const EntityRenderer: FC<EntityRendererProps> = ({
           .sort((a, b) => (a.position.z || 0) - (b.position.z || 0))
           .map((entity) => {
             const size = {
-              width: entity.position.width * ratio,
-              height: entity.position.height * ratio,
-              left: entity.position.x * ratio,
-              top: entity.position.y * ratio,
+              width: entity.position.width * ratio * gridSnaps.cell.width,
+              height: entity.position.height * ratio * gridSnaps.cell.height,
+              left: entity.position.x * ratio * gridSnaps.cell.width,
+              top: entity.position.y * ratio * gridSnaps.cell.height,
             };
             const styles = StyleSheet.create({
               [`item_${entity.key}`]: {
@@ -242,6 +186,20 @@ const EntityRenderer: FC<EntityRendererProps> = ({
                 entity={entity}
                 setEntities={setEntities}
                 styles={styles[`item_${entity.key}`]}
+                world={{
+                  x:
+                    entity.position.x * ratio * gridSnaps.cell.width +
+                    shift.x +
+                    gridSnaps.padding.x,
+                  y:
+                    entity.position.y * ratio * gridSnaps.cell.height +
+                    shift.y +
+                    gridSnaps.padding.y,
+                  z: entity.position.z || 0,
+                  width: entity.position.width * ratio * gridSnaps.cell.width,
+                  height:
+                    entity.position.height * ratio * gridSnaps.cell.height,
+                }}
               />
             );
           })}

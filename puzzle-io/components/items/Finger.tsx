@@ -1,24 +1,11 @@
-import { IEntity } from '@/system/gameEngine/DefaultRenderer';
 import React, { FC, useEffect, useState } from 'react';
-import {
-  StyleSheet,
-  View,
-  Text,
-  ImageSourcePropType,
-  ImageURISource,
-} from 'react-native';
+import { StyleSheet, View } from 'react-native';
 import { Asset, useAssets } from 'expo-asset';
-import {
-  manipulateAsync,
-  FlipType,
-  SaveFormat,
-  ImageResult,
-} from 'expo-image-manipulator';
+import { manipulateAsync, ImageResult } from 'expo-image-manipulator';
 import dogImage from '@/assets/puzzle_set/animals/Dog cat and mouse.jpeg';
 
 import { Image } from 'expo-image';
-
-const RADIUS = 20;
+import { IEntityState, Position } from '@/system/gameEngine/GameEngine';
 
 // const cropImage = async (
 //   image: ImageSourcePropType,
@@ -48,13 +35,8 @@ const RADIUS = 20;
 // };
 
 const Finger: FC<{
-  entity: IEntity;
-  world: {
-    width: number;
-    height: number;
-    x: number;
-    y: number;
-  };
+  entity: IEntityState;
+  world: Position;
 }> = ({ entity: { indexes, position }, world }) => {
   const styles = StyleSheet.create({
     finger: {
@@ -95,8 +77,7 @@ const Finger: FC<{
       setImageAsset(manipualted);
     };
     T();
-  }, [image]);
-  console.log(73, image);
+  }, [image, indexes, world]);
 
   // const ImageBody = cropImage(image, {
   //   x: indexes?.x * world.width,
