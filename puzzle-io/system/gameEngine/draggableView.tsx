@@ -5,11 +5,11 @@ import {
   PanResponderGestureState,
   ViewStyle,
 } from 'react-native';
-import { IEntityState, Position, TouchEventType } from './GameEngine';
+import { IEntityState, PositionWorld, TouchEventType } from './GameEngine';
 
 const App: FC<{
   entity: IEntityState;
-  world: Position;
+  world: PositionWorld;
   setEntities: (
     type: TouchEventType,
     entity: IEntityState,

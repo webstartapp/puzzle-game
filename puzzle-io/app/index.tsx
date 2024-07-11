@@ -1,5 +1,5 @@
 import { Finger } from '@/components/items/Finger';
-import { IEntity, IEntityState } from '@/system/gameEngine/GameEngine';
+import { IEntity } from '@/system/gameEngine/GameEngine';
 import GameEngine from '@/system/gameEngine/GameEngine';
 import { MoveFinger } from '@/system/touch/touches';
 import { ImageResult, manipulateAsync } from 'expo-image-manipulator';
@@ -7,6 +7,7 @@ import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';
 import dogImage from '@/assets/puzzle_set/animals/Dog cat and mouse.jpeg';
 import { useAssets } from 'expo-asset';
+import { setStoreValue } from '@/hooks/store/useStore';
 
 declare module '@/system/gameEngine/GameEngine' {
   export interface IEntity {
@@ -24,7 +25,18 @@ declare module '@/system/gameEngine/GameEngine' {
 
 declare module '@/hooks/store/useStore' {
   export interface IStore {
-    moves: IEntityState[][];
+    moves: {
+      from: {
+        x: number;
+        y: number;
+      };
+      to: {
+        x: number;
+        y: number;
+      };
+      key: string;
+      newKey: string;
+    }[];
   }
 }
 
@@ -39,6 +51,7 @@ export default function Index() {
     console.log(30, image);
     const T = async () => {
       const entities: Record<string, IEntity> = {};
+      await setStoreValue('moves', []);
       const pixelSize = {
         width: (image[0].width || 0) / 5,
         height: (image[0].height || 0) / 5,
@@ -117,12 +130,12 @@ export default function Index() {
         },
         padding: {
           x: 0,
-          y: 0,
+          y: 1,
         },
       }}
       contentSize={{
         width: 100,
-        height: 100,
+        height: 120,
       }}
     >
       <StatusBar hidden={true} />

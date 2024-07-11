@@ -12,6 +12,7 @@ import {
   GridInit,
   IEntity,
   IEntityState,
+  PositionWorld,
   TouchEventType,
 } from './GameEngine';
 import DraggableView from './draggableView';
@@ -68,18 +69,14 @@ const EntityRenderer: FC<EntityRendererProps> = ({
       height: gridSnaps.cell.height * ratio,
     },
     padding: {
-      x: gridSnaps.padding.x * ratio,
-      y: gridSnaps.padding.y * ratio,
+      x: gridSnaps.padding.x * ratio * gridSnaps.cell.width,
+      y: gridSnaps.padding.y * ratio * gridSnaps.cell.height,
     },
   };
 
   const shift = {
-    x:
-      (screen.current.width - contentSize.width * ratio) / 2 +
-      convertedGridSnaps.padding.x,
-    y:
-      (screen.current.height - contentSize.height * ratio) / 2 +
-      convertedGridSnaps.padding.y,
+    x: (screen.current.width - contentSize.width * ratio) / 2,
+    y: (screen.current.height - contentSize.height * ratio) / 2,
   };
 
   useEffect(() => {
@@ -110,18 +107,21 @@ const EntityRenderer: FC<EntityRendererProps> = ({
     (type, entity, gestureState) => {
       if (!system) return;
       const gestureDX = {
-        x: gestureState.dx / ratio / gridSnaps.cell.width,
-        y: gestureState.dy / ratio / gridSnaps.cell.height,
+        x: gestureState.dx / convertedGridSnaps.cell.width,
+        y: gestureState.dy / convertedGridSnaps.cell.height,
       };
+      const touch = {
+        x: entity.position.x + gestureDX.x,
+        y: entity.position.y + gestureDX.y,
+        moveX: (gestureState.moveX - shift.x) / convertedGridSnaps.cell.width,
+        moveY: (gestureState.moveY - shift.y) / convertedGridSnaps.cell.height,
+      };
+      touch.moveX = touch.moveX - gridSnaps.padding.x;
+      touch.moveY = touch.moveY - gridSnaps.padding.y;
       const newEntities = system(global.entyties, {
         type: type,
         entity: entity,
-        touch: {
-          x: entity.position.x + gestureDX.x,
-          y: entity.position.y + gestureDX.y,
-          moveX: (gestureState.moveX - shift.x) / ratio / gridSnaps.cell.width,
-          moveY: (gestureState.moveY - shift.y) / ratio / gridSnaps.cell.height,
-        },
+        touch: touch,
       });
       global.entyties = newEntities.map((entityData) => {
         if (entity.key !== entityData.key) {
@@ -167,16 +167,20 @@ const EntityRenderer: FC<EntityRendererProps> = ({
         {entityList
           .sort((a, b) => (a.position.z || 0) - (b.position.z || 0))
           .map((entity) => {
-            const size = {
-              width: entity.position.width * ratio * gridSnaps.cell.width,
-              height: entity.position.height * ratio * gridSnaps.cell.height,
-              left: entity.position.x * ratio * gridSnaps.cell.width,
-              top: entity.position.y * ratio * gridSnaps.cell.height,
+            const world: PositionWorld = {
+              width: entity.position.width * convertedGridSnaps.cell.width,
+              height: entity.position.height * convertedGridSnaps.cell.height,
+              left:
+                entity.position.x * convertedGridSnaps.cell.width +
+                convertedGridSnaps.padding.x,
+              top:
+                entity.position.y * convertedGridSnaps.cell.height +
+                convertedGridSnaps.padding.y,
             };
             const styles = StyleSheet.create({
               [`item_${entity.key}`]: {
                 position: 'absolute',
-                ...size,
+                ...world,
               },
             });
 
@@ -186,20 +190,7 @@ const EntityRenderer: FC<EntityRendererProps> = ({
                 entity={entity}
                 setEntities={setEntities}
                 styles={styles[`item_${entity.key}`]}
-                world={{
-                  x:
-                    entity.position.x * ratio * gridSnaps.cell.width +
-                    shift.x +
-                    gridSnaps.padding.x,
-                  y:
-                    entity.position.y * ratio * gridSnaps.cell.height +
-                    shift.y +
-                    gridSnaps.padding.y,
-                  z: entity.position.z || 0,
-                  width: entity.position.width * ratio * gridSnaps.cell.width,
-                  height:
-                    entity.position.height * ratio * gridSnaps.cell.height,
-                }}
+                world={world}
               />
             );
           })}

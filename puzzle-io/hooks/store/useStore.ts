@@ -1,6 +1,6 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useCallback, useEffect, useState } from 'react';
-interface IStore {}
+export interface IStore {}
 
 type UseStore<
   T extends keyof IStore,
@@ -17,13 +17,13 @@ export const getStoreValue = async <
 >(
   key: T,
   fallbackValue?: U,
-): Promise<U> => {
+): Promise<U extends undefined ? IStore[T] | undefined : IStore[T]> => {
   const data = await AsyncStorage.getItem(key);
   if (data) {
     return JSON.parse(data);
   } else {
     await AsyncStorage.setItem(key, JSON.stringify(fallbackValue));
-    return fallbackValue as U;
+    return fallbackValue as IStore[T];
   }
 };
 
@@ -32,8 +32,8 @@ export const setStoreValue = async <
   U extends IStore[T] | undefined = undefined,
 >(
   key: T,
-  newValue: U,
-): Promise<void> => {
+  newValue?: U,
+): Promise<U | undefined> => {
   await AsyncStorage.setItem(key, JSON.stringify(newValue));
   return newValue;
 };

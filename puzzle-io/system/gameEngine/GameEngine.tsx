@@ -33,6 +33,13 @@ export type Position = {
   height: number;
 };
 
+export type PositionWorld = {
+  left: number;
+  top: number;
+  width: number;
+  height: number;
+};
+
 export type GridState = Required<GridInit<true>> & {
   x: number;
   y: number;
@@ -43,7 +50,7 @@ export type GridState = Required<GridInit<true>> & {
 export interface IEntity {
   component: FC<{
     entity: IEntityState;
-    world: Position;
+    world: PositionWorld;
   }>;
   position: Position;
 }

@@ -2,38 +2,11 @@ import React, { FC } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { Image } from 'expo-image';
-import { IEntityState, Position } from '@/system/gameEngine/GameEngine';
-
-// const cropImage = async (
-//   image: ImageSourcePropType,
-//   grid: {
-//     x: number;
-//     y: number;
-//     width: number;
-//     height: number;
-//   },
-// ) => {
-//   c;
-//   const manipulated = await manipulateAsync(image, [{ crop: grid }], {
-//     compress: 1,
-//     format: SaveFormat.JPEG,
-//   });
-//   console.log(await image);
-//   const image = await useAssets(
-//     '/assets/puzzle_set/animals/Dog cat and mouse.jpeg',
-//   );
-//   const { x, y, width, height } = grid;
-//   const { uri } = image as ImageURISource;
-//   const cropData = {
-//     offset: { x, y },
-//     size: { width, height },
-//   };
-//   return { uri };
-// };
+import { IEntityState, PositionWorld } from '@/system/gameEngine/GameEngine';
 
 const Finger: FC<{
   entity: IEntityState;
-  world: Position;
+  world: PositionWorld;
 }> = ({ entity: { indexes, position, image }, world }) => {
   const styles = StyleSheet.create({
     finger: {
