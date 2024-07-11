@@ -1,4 +1,4 @@
-import React, { FC, useMemo } from 'react';
+import React, { FC, ReactElement, useMemo } from 'react';
 import { View, StyleSheet, ViewStyle } from 'react-native';
 import DefaultRenderer, { EventItem } from './DefaultRenderer';
 
@@ -72,6 +72,7 @@ type GameEngineProps = {
   children?: any;
   system?: GameEngineSystem;
   entities: Record<string, IEntity>;
+  header: ReactElement;
   running?: boolean;
   contentSize: {
     width: number;
@@ -88,6 +89,7 @@ const GameEngine: FC<GameEngineProps> = ({
   system,
   contentSize,
   gridSnaps,
+  header,
 }) => {
   // const [forceRenderId, setForceRenderId] = useState(math.random());
 
@@ -106,6 +108,7 @@ const GameEngine: FC<GameEngineProps> = ({
 
   return (
     <View style={[css.container]}>
+      {header}
       <DefaultRenderer
         entities={entities}
         contentSize={contentSize || { width: 100, height: 100 }}

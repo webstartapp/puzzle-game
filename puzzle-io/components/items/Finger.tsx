@@ -34,6 +34,8 @@ const Finger: FC<{
       <Image
         source={image}
         style={{ width: world.width, height: world.height }}
+        // @ts-ignore - expo-image type error
+        draggable={false}
       />
     </View>
   );

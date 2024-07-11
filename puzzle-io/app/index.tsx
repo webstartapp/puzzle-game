@@ -8,6 +8,7 @@ import { useEffect, useState } from 'react';
 import dogImage from '@/assets/puzzle_set/animals/Dog cat and mouse.jpeg';
 import { useAssets } from 'expo-asset';
 import { setStoreValue } from '@/hooks/store/useStore';
+import GameStatusBar from '@/components/header/GameStatusBar';
 
 declare module '@/system/gameEngine/GameEngine' {
   export interface IEntity {
@@ -123,6 +124,7 @@ export default function Index() {
         backgroundColor: 'orange',
       }}
       entities={localEntyties}
+      header={<GameStatusBar />}
       gridSnaps={{
         cell: {
           width: 20,
