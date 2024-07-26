@@ -67,8 +67,6 @@ export type GameEngineSystem = (
 
 type GameEngineProps = {
   style: ViewStyle;
-  renderer?: any;
-  touchProcessor?: any;
   children?: any;
   system?: GameEngineSystem;
   entities: Record<string, IEntity>;
@@ -79,7 +77,6 @@ type GameEngineProps = {
     height: number;
   };
   gridSnaps?: GridInit;
-  timer?: any;
 };
 
 const GameEngine: FC<GameEngineProps> = ({
@@ -108,7 +105,6 @@ const GameEngine: FC<GameEngineProps> = ({
 
   return (
     <View style={[css.container]}>
-      {header}
       <DefaultRenderer
         entities={entities}
         contentSize={contentSize || { width: 100, height: 100 }}
