@@ -1,4 +1,4 @@
-import { IEntityState } from '@/system/gameEngine/GameEngine';
+import { IEntityState } from '@/src/system/gameEngine/GameEngine';
 import { EventItem } from '../gameEngine/DefaultRenderer';
 import { getStoreValue, IStore, setStoreValue } from '@/hooks/store/useStore';
 

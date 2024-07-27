@@ -1,7 +1,7 @@
 import { Finger } from '@/components/items/Finger';
-import { IEntity } from '@/system/gameEngine/GameEngine';
-import GameEngine from '@/system/gameEngine/GameEngine';
-import { MoveFinger } from '@/system/touch/touches';
+import { IEntity } from '@/src/system/gameEngine/GameEngine';
+import GameEngine from '@/src/system/gameEngine/GameEngine';
+import { MoveFinger } from '@/src/system/touch/touches';
 import { ImageResult, manipulateAsync } from 'expo-image-manipulator';
 import { StatusBar } from 'expo-status-bar';
 import { useEffect, useState } from 'react';

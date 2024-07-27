@@ -2,7 +2,10 @@ import React, { FC } from 'react';
 import { StyleSheet, View } from 'react-native';
 
 import { Image } from 'expo-image';
-import { IEntityState, PositionWorld } from '@/system/gameEngine/GameEngine';
+import {
+  IEntityState,
+  PositionWorld,
+} from '@/src/system/gameEngine/GameEngine';
 
 const Finger: FC<{
   entity: IEntityState;
