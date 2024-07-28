@@ -3,12 +3,12 @@ import { StyleSheet, View } from 'react-native';
 
 import { Image } from 'expo-image';
 import {
-  IEntityState,
+  IStateEntity,
   PositionWorld,
 } from '@/src/system/gameEngine/GameEngine';
 
 const Finger: FC<{
-  entity: IEntityState;
+  entity: IStateEntity;
   world: PositionWorld;
 }> = ({ entity: { indexes, position, image }, world }) => {
   const styles = StyleSheet.create({

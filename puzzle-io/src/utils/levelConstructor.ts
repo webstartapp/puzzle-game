@@ -26,7 +26,8 @@ export type Level<T extends string = string> = {
   title: string;
   subtitle: string;
   grid: Grid;
-  shifts: { x: number; y: number }[];
+  image: string;
+  shifts: Grid[];
 };
 
 type LevelConstructorProps<

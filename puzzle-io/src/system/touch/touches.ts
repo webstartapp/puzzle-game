@@ -1,21 +1,125 @@
-import { IEntityState } from '@/src/system/gameEngine/GameEngine';
-import { EventItem } from '../gameEngine/DefaultRenderer';
-import { getStoreValue, IStore, setStoreValue } from '@/hooks/store/useStore';
+import {
+  GameEngineSystem,
+  IStateEntity,
+} from '@/src/system/gameEngine/GameEngine';
+import {
+  getStoreData,
+  dispatchStoreData,
+} from '@/components/provider/StoreProvider';
+import { Digit, Grid } from '@/config/grid/indexedGrid';
+import { levels } from '@/config/levels';
+import { initiateGameLevel } from '@/utils/initiateGameLevel';
 
-const addToCache = async (entity: IStore['moves'][number]) => {
-  const previousEntities = await getStoreValue('moves', []);
-
-  previousEntities.push(entity);
-  console.log(previousEntities);
-  setStoreValue('moves', previousEntities);
+const addToCache = async (entity: Grid, matchingEntities: Grid[]) => {
+  const previousEntities = getStoreData() || {};
+  if (!previousEntities.gameView) {
+    return;
+  }
+  previousEntities.gameView.moves.push(entity);
+  previousEntities.gameView.matchingEntities = matchingEntities;
+  dispatchStoreData('gameView', previousEntities.gameView);
 };
 
-const MoveFinger = (entities: IEntityState[], event: EventItem) => {
-  const mapToString = (map: { x: number; y: number }) => `${map.x}-${map.y}`;
+const MoveFinger: GameEngineSystem = async (entities, event) => {
+  const mapToString = (map: Grid) => `${map.x}-${map.y}`;
   const ocupiedCells = entities.map((entity) => mapToString(entity.map));
-  const newMap = {
-    x: Math.floor(event.touch.moveX),
-    y: Math.floor(event.touch.moveY),
+  const { gameView } = getStoreData() || {};
+  if (!gameView) {
+    return;
+  }
+
+  const level = levels[gameView.levelId];
+
+  if (event.type === 'custom') {
+    console.log(22, event);
+    if (event?.customData?.type === 'reset') {
+      console.log(22);
+      const newEntites = await initiateGameLevel('level1');
+      if (!newEntites) return undefined;
+      const mapped: IStateEntity[] = Object.keys(newEntites).map((key) => {
+        const entity: IStateEntity = {
+          ...newEntites[key],
+          eventStartPosition: {
+            ...newEntites[key].position,
+          },
+          key,
+        };
+        dispatchStoreData('gameView', {
+          moves: [],
+          matchingEntities: [],
+          levelId: level.id,
+        });
+        return entity;
+      });
+      return mapped;
+    }
+    if (event?.customData?.type === 'oneBack') {
+      console.log(22);
+      const previousEntities = getStoreData() || {};
+      if (!previousEntities.gameView) {
+        return;
+      }
+      const moves = previousEntities.gameView.moves;
+      const matchingEntities = previousEntities.gameView.matchingEntities;
+      if (moves.length === 0) {
+        return;
+      }
+      const lastMove = moves[moves.length - 1];
+      const mappedEntities: string[] = entities.map((entity) =>
+        mapToString(entity.map),
+      );
+      const emptyCell: Partial<Grid> = {};
+
+      Array.from({ length: level.grid.x }).forEach((_, x) => {
+        Array.from({ length: level.grid.y }).forEach((_, y) => {
+          if (
+            !mappedEntities.includes(
+              mapToString({ x: x as Digit, y: y as Digit }),
+            )
+          ) {
+            emptyCell.x = x as Digit;
+            emptyCell.y = y as Digit;
+          }
+        });
+      });
+      moves.pop();
+      console.log(86, lastMove, emptyCell, [...moves]);
+      const newEntites = entities.map((entity) => {
+        if (entity.map.x === lastMove.x && entity.map.y === lastMove.y) {
+          const new_key = `${entity.key.split('x')[0]}x${Math.random()}`;
+          return {
+            ...entity,
+            map: emptyCell as Grid,
+            position: {
+              ...entity.position,
+              x: emptyCell.x as number,
+              y: emptyCell.y as number,
+            },
+            key: new_key,
+          };
+        }
+        return entity;
+      });
+      console.log(100, moves);
+      dispatchStoreData('gameView', {
+        moves,
+        matchingEntities,
+        levelId: levels.level1.id,
+      });
+      return newEntites;
+    }
+
+    return undefined;
+  }
+
+  if (!event.entity || !event.touch) {
+    console.log(23);
+    return entities;
+  }
+
+  const newMap: Grid = {
+    x: Math.floor(event.touch.moveX) as Digit,
+    y: Math.floor(event.touch.moveY) as Digit,
   };
   const isOccupied =
     event.touch.moveX <= 0 ||
@@ -47,10 +151,10 @@ const MoveFinger = (entities: IEntityState[], event: EventItem) => {
             z: 1,
             x: isOccupied
               ? entity.eventStartPosition.x
-              : Math.floor(event.touch.moveX),
+              : Math.floor(event.touch?.moveX || 0),
             y: isOccupied
               ? entity.eventStartPosition.y
-              : Math.floor(event.touch.moveY),
+              : Math.floor(event.touch?.moveY || 0),
           },
           map: isOccupied ? entity.map : newMap,
           key: isOccupied ? entity.key : new_key,
@@ -60,8 +164,8 @@ const MoveFinger = (entities: IEntityState[], event: EventItem) => {
         ...entity,
         position: {
           ...entity.position,
-          x: event.touch.x,
-          y: event.touch.y,
+          x: event.touch?.x || 0,
+          y: event.touch?.y || 0,
         },
       };
     }
@@ -69,13 +173,18 @@ const MoveFinger = (entities: IEntityState[], event: EventItem) => {
   });
   if (!isOccupied && event.type === 'end') {
     console.log(37, newEntites, event.type);
+    const matchingEntities = newEntites
+      .filter(
+        (entity) =>
+          entity.position.x === entity.indexes.x &&
+          entity.position.y === entity.indexes.y,
+      )
+      .map((entity) => entity.indexes);
     const move = {
-      key: event.entity?.key,
-      from: event.entity?.map,
-      to: newMap,
-      newKey: new_key,
+      x: newMap.x,
+      y: newMap.y,
     };
-    addToCache(move);
+    addToCache(move, matchingEntities);
   }
   return newEntites;
 };

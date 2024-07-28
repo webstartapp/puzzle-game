@@ -1,73 +1,30 @@
-import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useCallback, useEffect, useState } from 'react';
+import { useContext } from 'react';
+import { StoreContext } from '@/components/provider/StoreProvider';
+
 export interface IStore {}
 
-type UseStore<
-  T extends keyof IStore,
-  U extends IStore[T] | undefined = undefined,
-> = {
-  loading: boolean;
-  data: U | undefined;
-  setData: (newValue: U) => Promise<U>;
-};
+export const useStore = <T extends keyof IStore>(
+  storeKey?: T,
+): {
+  state: IStore;
+  setState: <T extends keyof IStore>(key: T, value: IStore[T]) => void;
+  data: IStore[T];
+} => {
+  const context = useContext(StoreContext);
 
-export const getStoreValue = async <
-  T extends keyof IStore,
-  U extends IStore[T] | undefined = undefined,
->(
-  key: T,
-  fallbackValue?: U,
-): Promise<U extends undefined ? IStore[T] | undefined : IStore[T]> => {
-  const data = await AsyncStorage.getItem(key);
-  if (data) {
-    return JSON.parse(data);
-  } else {
-    await AsyncStorage.setItem(key, JSON.stringify(fallbackValue));
-    return fallbackValue as IStore[T];
+  if (!context) {
+    throw new Error('useStore must be used within a StoreProvider');
   }
-};
 
-export const setStoreValue = async <
-  T extends keyof IStore,
-  U extends IStore[T] | undefined = undefined,
->(
-  key: T,
-  newValue?: U,
-): Promise<U | undefined> => {
-  await AsyncStorage.setItem(key, JSON.stringify(newValue));
-  return newValue;
-};
+  const { state, dispatch } = context;
 
-export const useStore = <
-  T extends keyof IStore = keyof IStore,
-  U extends IStore[T] | undefined = undefined,
->(
-  key: T,
-  fallbackValue?: U,
-): UseStore<T, U> => {
-  const [localValue, setLocalValue] = useState<U>();
-  const [loading, setLoading] = useState(true);
-  useEffect(() => {
-    (async () => {
-      const data = await AsyncStorage.getItem(key);
-      if (data) {
-        setLocalValue(JSON.parse(data));
-      } else {
-        await AsyncStorage.setItem(key, JSON.stringify(fallbackValue));
-        setLocalValue(fallbackValue);
-      }
-      setLoading(false);
-    })();
-  }, [fallbackValue, key]);
+  const setState = (key: string, value: any) => {
+    dispatch({ type: key, payload: value });
+  };
 
-  const setValue = useCallback(
-    async (newValue: U) => {
-      await AsyncStorage.setItem(key, JSON.stringify(newValue));
-      setValue(newValue);
-      return newValue;
-    },
-    [key],
-  );
-
-  return { data: localValue, loading, setData: setValue };
+  return {
+    state: state as IStore,
+    setState,
+    data: state[storeKey as T],
+  };
 };

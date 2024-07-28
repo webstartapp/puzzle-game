@@ -1,8 +1,14 @@
-import React, { FC, ReactElement, useMemo } from 'react';
+import React, { FC, useMemo } from 'react';
 import { View, StyleSheet, ViewStyle } from 'react-native';
 import DefaultRenderer, { EventItem } from './DefaultRenderer';
 
-export type TouchEventType = 'start' | 'end' | 'move' | 'press' | 'long-press';
+export type TouchEventType =
+  | 'custom'
+  | 'start'
+  | 'end'
+  | 'move'
+  | 'press'
+  | 'long-press';
 
 export type GridInit<REQIRED extends boolean = false> = {
   cell?: REQIRED extends true
@@ -49,28 +55,38 @@ export type GridState = Required<GridInit<true>> & {
 
 export interface IEntity {
   component: FC<{
-    entity: IEntityState;
+    entity: IStateEntity;
     world: PositionWorld;
   }>;
   position: Position;
 }
 
-export interface IEntityState extends IEntity {
+export interface ISystemCustomData {}
+
+export interface IStateEntity extends IEntity {
   eventStartPosition: Position;
   key: string;
 }
 
 export type GameEngineSystem = (
-  entities: IEntityState[],
+  entities: IStateEntity[],
   events: EventItem,
-) => IEntityState[];
+) => Promise<IStateEntity[] | undefined>;
+
+export type HeaderComponent = FC<{
+  entities: IStateEntity[];
+  dispatchSystem: (customData: ISystemCustomData) => void;
+}>;
 
 type GameEngineProps = {
   style: ViewStyle;
   children?: any;
   system?: GameEngineSystem;
   entities: Record<string, IEntity>;
-  header: ReactElement;
+  header: {
+    height: number;
+    component: HeaderComponent;
+  };
   running?: boolean;
   contentSize: {
     width: number;
@@ -108,6 +124,7 @@ const GameEngine: FC<GameEngineProps> = ({
       <DefaultRenderer
         entities={entities}
         contentSize={contentSize || { width: 100, height: 100 }}
+        header={header}
         style={style}
         system={system}
         gridSnaps={gridSnapsDefault}
