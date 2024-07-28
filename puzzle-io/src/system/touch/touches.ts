@@ -31,9 +31,7 @@ const MoveFinger: GameEngineSystem = async (entities, event) => {
   const level = levels[gameView.levelId];
 
   if (event.type === 'custom') {
-    console.log(22, event);
     if (event?.customData?.type === 'reset') {
-      console.log(22);
       const newEntites = await initiateGameLevel('level1');
       if (!newEntites) return undefined;
       const mapped: IStateEntity[] = Object.keys(newEntites).map((key) => {
@@ -54,7 +52,6 @@ const MoveFinger: GameEngineSystem = async (entities, event) => {
       return mapped;
     }
     if (event?.customData?.type === 'oneBack') {
-      console.log(22);
       const previousEntities = getStoreData() || {};
       if (!previousEntities.gameView) {
         return;
@@ -83,7 +80,6 @@ const MoveFinger: GameEngineSystem = async (entities, event) => {
         });
       });
       moves.pop();
-      console.log(86, lastMove, emptyCell, [...moves]);
       const newEntites = entities.map((entity) => {
         if (entity.map.x === lastMove.x && entity.map.y === lastMove.y) {
           const new_key = `${entity.key.split('x')[0]}x${Math.random()}`;
@@ -100,7 +96,6 @@ const MoveFinger: GameEngineSystem = async (entities, event) => {
         }
         return entity;
       });
-      console.log(100, moves);
       dispatchStoreData('gameView', {
         moves,
         matchingEntities,
@@ -113,7 +108,6 @@ const MoveFinger: GameEngineSystem = async (entities, event) => {
   }
 
   if (!event.entity || !event.touch) {
-    console.log(23);
     return entities;
   }
 
@@ -172,7 +166,6 @@ const MoveFinger: GameEngineSystem = async (entities, event) => {
     return entity;
   });
   if (!isOccupied && event.type === 'end') {
-    console.log(37, newEntites, event.type);
     const matchingEntities = newEntites
       .filter(
         (entity) =>

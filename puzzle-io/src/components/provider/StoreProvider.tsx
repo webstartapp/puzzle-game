@@ -44,9 +44,7 @@ const StoreProvider: FC<PropsWithChildren> = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
   const [isLoading, setIsLoading] = useState(true);
 
-  console.log(47, state);
   useEffect(() => {
-    console.log(48, state);
     globalState = state;
     globalDispatch = dispatch;
   }, [state]);

@@ -18,7 +18,6 @@ export const initiateGameLevel = async (
   try {
     const img = new Image();
     img.src = `${level.image}`;
-    console.log(img);
 
     await loadImage(img);
     const width = img.width;
