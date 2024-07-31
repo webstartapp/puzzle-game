@@ -2,12 +2,54 @@ import { Finger } from '@/components/items/Finger';
 import { Grid } from '@/config/grid/indexedGrid';
 import { LevelId, levels } from '@/config/levels';
 import { IEntity } from '@/system/gameEngine/GameEngine';
+import { Platform } from 'react-native';
+import { Asset } from 'expo-asset';
+import { Image as NativeImage } from 'react-native';
+import * as ImageManipulator from 'expo-image-manipulator';
 
-const loadImage = (img: HTMLImageElement) =>
-  new Promise<HTMLImageElement>((resolve, reject) => {
+type LoadImageType = {
+  uri: string;
+  width: number;
+  height: number;
+};
+
+const loadImageWeb = (img: HTMLImageElement): Promise<HTMLImageElement> =>
+  new Promise((resolve, reject) => {
     img.onload = () => resolve(img);
     img.onerror = (error) => reject(error);
   });
+const loadImageExpo = async (uri: string): Promise<LoadImageType> =>
+  new Promise((resolve) => {
+    const asset = NativeImage.getSize(uri, (width, height) => {
+      resolve({ width, height, uri });
+    });
+  });
+
+const cropImage = async (
+  uri: string,
+  { left = 0, top = 0, width = 100, height = 100 },
+) => {
+  const result = await ImageManipulator.manipulateAsync(
+    uri,
+    [{ crop: { originX: left, originY: top, width: width, height: height } }],
+    { format: ImageManipulator.SaveFormat.PNG },
+  );
+  return result.uri;
+};
+
+const loadImage = async (
+  src: string,
+): Promise<
+  { uri: string; width: number; height: number } | HTMLImageElement
+> => {
+  if (Platform.OS === 'web') {
+    const img = new Image();
+    img.src = src;
+    return loadImageWeb(img);
+  } else {
+    return loadImageExpo(src);
+  }
+};
 
 export const initiateGameLevel = async (
   levelId: LevelId,
@@ -16,10 +58,7 @@ export const initiateGameLevel = async (
   const entities: Record<string, IEntity> = {};
 
   try {
-    const img = new Image();
-    img.src = `${level.image}`;
-
-    await loadImage(img);
+    const img = await loadImage(`${level.image}`);
     const width = img.width;
     const height = img.height;
 
@@ -28,26 +67,43 @@ export const initiateGameLevel = async (
       height: height / level.grid.y,
     };
 
-    const canvas = document.createElement('canvas');
-    const ctx = canvas.getContext('2d');
-    canvas.width = pixelSize.width;
-    canvas.height = pixelSize.height;
-
-    if (!ctx) return {};
     for (let i = 0; i < level.grid.x; i++) {
       for (let j = 0; j < level.grid.y; j++) {
-        ctx.drawImage(
-          img,
-          i * pixelSize.width,
-          j * pixelSize.height,
-          pixelSize.width,
-          pixelSize.height,
-          0,
-          0,
-          pixelSize.width,
-          pixelSize.height,
-        );
-        const croppedBase64 = canvas.toDataURL('image/jpeg');
+        const imageUri: LoadImageType = {
+          uri: '',
+          width: pixelSize.width,
+          height: pixelSize.height,
+        };
+        if (Platform.OS === 'web') {
+          const canvas = document.createElement('canvas');
+          const ctx = canvas.getContext('2d');
+          canvas.width = pixelSize.width;
+          canvas.height = pixelSize.height;
+
+          if (ctx) {
+            ctx.drawImage(
+              img as HTMLImageElement,
+              i * pixelSize.width,
+              j * pixelSize.height,
+              pixelSize.width,
+              pixelSize.height,
+              0,
+              0,
+              pixelSize.width,
+              pixelSize.height,
+            );
+            const croppedBase64 = canvas.toDataURL('image/jpeg');
+            imageUri.uri = croppedBase64;
+          }
+        } else {
+          const croppedBase64 = await cropImage(level.image, {
+            left: i * pixelSize.width,
+            top: j * pixelSize.height,
+            width: pixelSize.width,
+            height: pixelSize.height,
+          });
+          imageUri.uri = croppedBase64;
+        }
         entities[`${i}-${j}`] = {
           position: {
             x: i,
@@ -65,11 +121,7 @@ export const initiateGameLevel = async (
             y: j,
           },
           component: Finger,
-          image: {
-            uri: croppedBase64,
-            height: pixelSize.height,
-            width: pixelSize.width,
-          },
+          image: imageUri,
         } as IEntity;
       }
     }
