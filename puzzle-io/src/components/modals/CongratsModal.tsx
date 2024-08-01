@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { FC, useEffect, useRef, useState } from 'react';
 import {
   Modal,
   StyleSheet,
@@ -9,7 +9,7 @@ import {
   Animated,
   Easing,
 } from 'react-native';
-import ConfettiCannon from 'react-native-confetti-cannon';
+import Confetti from 'react-native-confetti';
 
 interface CongratsModalProps {
   visible: boolean;
@@ -22,7 +22,7 @@ interface CongratsModalProps {
 
 const { width, height } = Dimensions.get('window');
 
-const CongratsModal: React.FC<CongratsModalProps> = ({
+const CongratsModal: FC<CongratsModalProps> = ({
   visible,
   turns,
   time,
@@ -32,6 +32,8 @@ const CongratsModal: React.FC<CongratsModalProps> = ({
 }) => {
   const [showConfetti, setShowConfetti] = useState(false);
   const [confettiVisible, setConfettiVisible] = useState(visible);
+
+  const confettiRef = useRef<Confetti>(null);
 
   // Use `showConfetti` to control confetti visibility
   const handleContinue = () => {
@@ -47,7 +49,7 @@ const CongratsModal: React.FC<CongratsModalProps> = ({
     });
   };
 
-  React.useEffect(() => {
+  useEffect(() => {
     if (visible) {
       setShowConfetti(true);
       setConfettiVisible(true);
@@ -55,6 +57,14 @@ const CongratsModal: React.FC<CongratsModalProps> = ({
       setConfettiVisible(false);
     }
   }, [visible]);
+
+  useEffect(() => {
+    if (showConfetti && confettiVisible) {
+      confettiRef.current?.startConfetti();
+    } else {
+      confettiRef.current?.stopConfetti();
+    }
+  }, [showConfetti, confettiVisible]);
 
   return (
     <Modal
@@ -88,17 +98,13 @@ const CongratsModal: React.FC<CongratsModalProps> = ({
           >
             <Text style={styles.buttonText}>Continue</Text>
           </TouchableOpacity>
-          {showConfetti && confettiVisible && (
-            <ConfettiCannon
-              count={200}
-              origin={{ x: width / 2, y: height / 2 }}
-              fadeOut={true}
-              autoStart={true}
-              fallSpeed={3000}
-            />
-          )}
         </View>
       </View>
+      <Confetti
+        ref={confettiRef}
+        confettiCount={200}
+        duration={3000}
+      />
     </Modal>
   );
 };
