@@ -20,7 +20,7 @@ interface CongratsModalProps {
   onContinue: () => void;
 }
 
-const { width, height } = Dimensions.get('window');
+const { width } = Dimensions.get('window');
 
 const CongratsModal: FC<CongratsModalProps> = ({
   visible,
