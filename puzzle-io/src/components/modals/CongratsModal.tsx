@@ -33,7 +33,7 @@ const CongratsModal: FC<CongratsModalProps> = ({
   const [showConfetti, setShowConfetti] = useState(false);
   const [confettiVisible, setConfettiVisible] = useState(visible);
 
-  const confettiRef = useRef<Confetti>(null);
+  const confettiRef = useRef<any>(null);
 
   // Use `showConfetti` to control confetti visibility
   const handleContinue = () => {

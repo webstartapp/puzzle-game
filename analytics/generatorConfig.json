@@ -1,0 +1,26 @@
+[
+    {
+        "template": "backendOperation.mustache",
+        "destination": "../puzzle-game/server/src/_generated/sessionOperations.ts",
+        "singleFile": true,
+        "swaggerGroups": [
+            "session.yaml"
+        ],
+        "replaces": [],
+        "pathReplaces": [],
+        "name": "webpackRun",
+        "override": true
+    },
+    {
+        "template": "apiOperation.mustache",
+        "destination": "../puzzle-game/puzzle-io/src/_generated/sessionOperations.ts",
+        "singleFile": true,
+        "swaggerGroups": [
+            "session.yaml"
+        ],
+        "replaces": [],
+        "pathReplaces": [],
+        "name": "webpackRun",
+        "override": true
+    }
+]

@@ -1,0 +1,319 @@
+openapi: 3.0.0
+info:
+  version: 1.0.0
+  title: User Authentication API
+  description: A simple API for user authentication.
+
+paths:
+  /user:
+    get:
+      operationId: getUser
+      summary: Get user data
+      description: Retrieves the session of the logged-in user (requires verified user token).
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: Successfully retrieved user data
+          headers:
+            Authorization:
+              description: Bearer token for the user
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '401':
+          description: Unauthorized
+    delete:
+      operationId: deleteUser
+      summary: Delete user account
+      description: Deletes the user account.
+      security:
+        - bearerAuth: []
+      responses:
+        '201':
+          description: User account deleted successfully
+        '401':
+          description: Unauthorized
+
+  /session:
+    put:
+      operationId: updateSession
+      summary: Update user session
+      description: Updates the user session.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserSession'
+      responses:
+        '201':
+          description: Successfully updated user session
+
+        '401':
+          description: Unauthorized
+
+  /register:
+    post:
+      operationId: registerUser
+      summary: Register a new user
+      description: Registers a new user and returns a user token in the header.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLogin'
+      responses:
+        '200':
+          description: User registered successfully
+          headers:
+            Authorization:
+              description: Bearer token for the user
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '400':
+          description: Bad request
+
+  /login:
+    post:
+      operationId: loginUser
+      summary: Sign in a user
+      description: Signs in a user and returns a user token in the header.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/UserLogin'
+      responses:
+        '200':
+          description: User signed in successfully
+          headers:
+            Authorization:
+              description: Bearer token for the user
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+        '401':
+          description: Unauthorized
+
+  /logout:
+    post:
+      operationId: logoutUser
+      summary: Sign out a user
+      description: Signs out a user.
+      security:
+        - bearerAuth: []
+      responses:
+        '201':
+          description: User signed out successfully
+        '401':
+          description: Unauthorized
+
+  /forgot-password:
+    post:
+      operationId: forgotPassword
+      summary: Request a password reset
+      description: Requests a password reset for a user.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ForgotPasswordEmail'
+      responses:
+        '201':
+          description: Password reset request submitted
+        '404':
+          description: User not found
+
+  /reset-password:
+    post:
+      operationId: resetPassword
+      summary: Set a new password after forgetting the old one
+      description: Sets a new password after a password reset request.
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TokenPassword'
+      responses:
+        '200':
+          headers:
+            Authorization:
+              description: Bearer token for the user
+              schema:
+                type: string
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserProfile'
+          description: Password reset successfully
+        '400':
+          description: Invalid token or bad request
+
+components:
+  schemas:
+    ForgotPasswordEmail:
+      type: object
+      properties:
+        email:
+          type: string
+      required:
+        - email
+    TokenPassword:
+      type: object
+      properties:
+        token:
+          type: string
+        password:
+          type: string
+      required:
+        - token
+        - password
+    UserRegister:
+      type: object
+      properties:
+        email:
+          type: string
+        username:
+          type: string
+        password:
+          type: string
+        userId:
+          type: string
+      required:
+        - email
+        - password
+        - userId
+    Grid:
+      type: object
+      properties:
+        x:
+          type: integer
+        y:
+          type: integer
+    Limits:
+      type: object
+      properties:
+        moves:
+          type: integer
+        time:
+          type: integer
+        stars:
+          type: integer
+    LevelGroup:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        subtitle:
+          type: string
+        levels:
+          type: array
+          items:
+            type: object
+            allOf:
+              - $ref: '#/components/schemas/Grid'
+              - type: object
+                properties:
+                  levelId:
+                    type: string
+                  label:
+                    type: string
+        image:
+          type: string
+    Level:
+      type: object
+      properties:
+        id:
+          type: integer
+        title:
+          type: string
+        characters:
+          type: array
+          items:
+            type: string
+        objective:
+          type: string
+        image:
+          type: string
+        grid:
+          $ref: '#/components/schemas/Grid'
+        shifts:
+          type: array
+          items:
+            $ref: '#/components/schemas/Grid'
+        limits:
+          type: array
+          items:
+            $ref: '#/components/schemas/Limits'
+    UserLogin:
+      type: object
+      properties:
+        email:
+          type: string
+        password:
+          type: string
+      required:
+        - email
+        - password
+    LevelStats:
+      type: object
+      properties:
+        levelId:
+          type: string
+        moves:
+          type: array
+          items:
+            $ref: '#/components/schemas/Grid'
+        completed:
+          type: boolean
+        stars:
+          type: integer
+        time:
+          type: integer
+    UserSession:
+      type: object
+      properties:
+        coins:
+          type: integer
+        latest:
+          $ref: '#/components/schemas/LevelStats'
+        previous:
+          type: array
+          items:
+            $ref: '#/components/schemas/LevelStats'
+    UserProfile:
+      type: object
+      properties:
+        id:
+          type: string
+        email:
+          type: string
+        session:
+          $ref: '#/components/schemas/UserSession'
+      required:
+        - id
+        - email
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
