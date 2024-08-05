@@ -312,6 +312,16 @@ components:
       required:
         - id
         - email
+    TokenBody:
+      type: object
+      properties:
+        userId:
+          type: string
+        iat:
+          type: integer
+        exp:
+          type: integer
+
   securitySchemes:
     bearerAuth:
       type: http

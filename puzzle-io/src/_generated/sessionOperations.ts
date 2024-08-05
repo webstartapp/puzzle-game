@@ -23,6 +23,7 @@ export interface GlobalStorageDataType {
         LevelStats?: ILevelStats
         UserSession?: IUserSession
         UserProfile?: IUserProfile
+        TokenBody?: ITokenBody
 };
 
 const ForgotPasswordEmailValidation = ()=>({
@@ -754,6 +755,63 @@ const UserProfileForm = ()=>({
 
 });
 
+
+const TokenBodyValidation = ()=>({
+   userId: yup
+            
+        .string()
+        
+        
+        .nullable()
+        .trim()
+        ,
+
+   iat: yup
+            
+        .number()
+        .integer((message)=>`${message.path} should be integer`)
+        ,
+
+   exp: yup
+            
+        .number()
+        .integer((message)=>`${message.path} should be integer`)
+        ,
+
+});
+export interface ITokenBody {
+userId?: string
+iat?: number
+exp?: number
+}
+
+
+const TokenBodyForm = ()=>({
+        userId: {
+            id: 'userId',
+            label: ``,
+            formId: 'TokenBodyForm',
+            maxLength: parseInt(``) || undefined,
+        }, 
+
+        iat: {
+            id: 'iat',
+            label: ``,
+            formId: 'TokenBodyForm',
+            maxLength: parseInt(``) || undefined,            type: COREInputTypeEnum.number,
+
+        }, 
+
+        exp: {
+            id: 'exp',
+            label: ``,
+            formId: 'TokenBodyForm',
+            maxLength: parseInt(``) || undefined,            type: COREInputTypeEnum.number,
+
+        }, 
+
+});
+
 export type GlobalLabelType<T extends object = any> = COREFormFieldType<T>
 let GlobalInnerLabels: Record<string, Record<string, GlobalLabelType>> = {};
 /**
@@ -1167,6 +1225,7 @@ export const restValidations = {
     LevelStats: LevelStatsValidation(),
     UserSession: UserSessionValidation(),
     UserProfile: UserProfileValidation(),
+    TokenBody: TokenBodyValidation(),
     getUserCallQuery: getUserCallQueryValidation(),
     deleteUserCallQuery: deleteUserCallQueryValidation(),
     updateSessionCallQuery: updateSessionCallQueryValidation(),
@@ -1209,6 +1268,8 @@ export interface GlobalFormTypes {
     UserSessionForm: IUserSession,
 
     UserProfileForm: IUserProfile,
+
+    TokenBodyForm: ITokenBody,
    getUserCallQuery: IgetUserCallQuery,
    deleteUserCallQuery: IdeleteUserCallQuery,
    updateSessionCallQuery: IupdateSessionCallQuery,
@@ -1241,6 +1302,8 @@ export interface GlobalFormValuesTypes {
     UserSessionForm: Record<keyof IUserSession, GlobalLabelType<IUserSession>>,
 
     UserProfileForm: Record<keyof IUserProfile, GlobalLabelType<IUserProfile>>,
+
+    TokenBodyForm: Record<keyof ITokenBody, GlobalLabelType<ITokenBody>>,
    getUserCallQuery: Record<keyof IgetUserCallQuery, GlobalLabelType<IgetUserCallQuery>>,
    deleteUserCallQuery: Record<keyof IdeleteUserCallQuery, GlobalLabelType<IdeleteUserCallQuery>>,
    updateSessionCallQuery: Record<keyof IupdateSessionCallQuery, GlobalLabelType<IupdateSessionCallQuery>>,
@@ -1262,6 +1325,7 @@ export const GlobalLabels = {
     LevelStatsForm: LevelStatsForm(),
     UserSessionForm: UserSessionForm(),
     UserProfileForm: UserProfileForm(),
+    TokenBodyForm: TokenBodyForm(),
     getUserCallQuery,
     deleteUserCallQuery,
     updateSessionCallQuery,
