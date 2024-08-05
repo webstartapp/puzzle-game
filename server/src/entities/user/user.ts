@@ -23,7 +23,8 @@ export const UserDB = ExpressTypeResolver({
     created: "created",
     username: "username",
     email: "email",
-    token: "token"
+    token: "token",
+    password: "password"
   },
   resolvers: {
     getViewer: async (props: { userId: string }, req: Request): Promise<IUserProfile> => {

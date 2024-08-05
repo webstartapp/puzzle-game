@@ -1,4 +1,5 @@
 import { APIResolversType } from "@/_generated/sessionOperations";
+import { IDBType } from "@/types/KnexDBType";
 import { Request } from "express";
 
 export type Viewer = {
@@ -22,8 +23,8 @@ export type LocalResolverType<
 > = (props: ARGS, body: BODY, context: ContextType) => Promise<RET>;
 
 export type ExpressResolverType<
-  TABLE extends string = string,
-  PROPS extends Record<string, string> = Record<string, string>,
+  TABLE extends keyof IDBType = keyof IDBType,
+  PROPS extends { [K in keyof IDBType[TABLE]]: K } = { [K in keyof IDBType[TABLE]]: K },
   ARGS extends Record<string, any> = any,
   RET extends Record<string, any> = any
 > = {

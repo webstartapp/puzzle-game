@@ -1,7 +1,7 @@
 // import knexHandler, { Config } from "knex";
 import { knex as knexHandler, Knex } from "knex";
 import { ExpressResolverType } from "@/resolvers/expressTypeResolver";
-import { IKnexDBType } from "@/types/KnexDBType";
+import { IDBType } from "@/types/KnexDBType";
 
 const dotenv = require("dotenv");
 dotenv.config({ path: ".env" });
@@ -24,7 +24,7 @@ export const sanateInsertData = <T extends string>(
       throw new Error("DBModel.properties is not defined");
     }
     Object.keys(DBModel.properties || {}).forEach((key) => {
-      const property = DBModel.properties[key];
+      const property = DBModel.properties[key as keyof typeof DBModel.properties];
       if (Array.isArray(d[property])) {
         out[key] = JSON.stringify(d[property]);
       } else {
@@ -58,5 +58,5 @@ export const configKnex: (p?: { followerDB?: boolean }) => Knex.Config = (p) => 
 
 const knexWrapper = knexHandler(configKnex());
 
-const knex = <T extends keyof IKnexDBType>(dbName: T): Knex.QueryBuilder<IKnexDBType[T]> => knexWrapper(dbName);
+const knex = <T extends keyof IDBType>(dbName: T): Knex.QueryBuilder<IDBType[T]> => knexWrapper(dbName);
 export default knex;

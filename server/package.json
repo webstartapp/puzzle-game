@@ -26,11 +26,16 @@
       "^.+\\.tsx?$": "ts-jest"
     }
   },
+  "_moduleAliases": {
+    "@/knex": "./src/knex",
+    "@/": "./src/"
+  },
   "packageManager": "yarn@3.4.1",
   "devDependencies": {
     "@types/cors": "^2.8.17",
     "@types/node": "^20.12.7",
     "@types/pg": "^8.11.5",
+    "module-alias": "^2.2.3",
     "prettier": "^3.2.5",
     "typescript": "^5.4.5"
   },
