@@ -24,6 +24,7 @@ export interface GlobalStorageDataType {
         UserSession?: IUserSession
         UserProfile?: IUserProfile
         TokenBody?: ITokenBody
+        ProviderSetupBase?: IProviderSetupBase
 };
 
 const ForgotPasswordEmailValidation = ()=>({
@@ -139,10 +140,10 @@ const UserRegisterValidation = ()=>({
 
 });
 export interface IUserRegister {
-email?: string
+email: string
 username?: string
-password?: string
-userId?: string
+password: string
+userId: string
 }
 
 
@@ -780,9 +781,9 @@ const TokenBodyValidation = ()=>({
 
 });
 export interface ITokenBody {
-userId?: string
-iat?: number
-exp?: number
+userId: string
+iat: number
+exp: number
 }
 
 
@@ -806,6 +807,63 @@ const TokenBodyForm = ()=>({
             id: 'exp',
             label: ``,
             formId: 'TokenBodyForm',
+            maxLength: parseInt(``) || undefined,            type: COREInputTypeEnum.number,
+
+        }, 
+
+});
+
+
+const ProviderSetupBaseValidation = ()=>({
+   validSince: yup
+            
+        .date()
+        .nullable()
+        ,
+
+   attributes: yup
+            
+        .string()
+        
+        
+        .nullable()
+        .trim()
+        ,
+
+   provider: yup
+            
+        .number()
+        .integer((message)=>`${message.path} should be integer`)
+        ,
+
+});
+export interface IProviderSetupBase {
+validSince: string
+attributes: string
+provider: number
+}
+
+
+const ProviderSetupBaseForm = ()=>({
+        validSince: {
+            id: 'validSince',
+            label: ``,
+            formId: 'ProviderSetupBaseForm',
+            maxLength: parseInt(``) || undefined,            type: COREInputTypeEnum.dateTime,
+
+        }, 
+
+        attributes: {
+            id: 'attributes',
+            label: ``,
+            formId: 'ProviderSetupBaseForm',
+            maxLength: parseInt(``) || undefined,
+        }, 
+
+        provider: {
+            id: 'provider',
+            label: ``,
+            formId: 'ProviderSetupBaseForm',
             maxLength: parseInt(``) || undefined,            type: COREInputTypeEnum.number,
 
         }, 
@@ -1226,6 +1284,7 @@ export const restValidations = {
     UserSession: UserSessionValidation(),
     UserProfile: UserProfileValidation(),
     TokenBody: TokenBodyValidation(),
+    ProviderSetupBase: ProviderSetupBaseValidation(),
     getUserCallQuery: getUserCallQueryValidation(),
     deleteUserCallQuery: deleteUserCallQueryValidation(),
     updateSessionCallQuery: updateSessionCallQueryValidation(),
@@ -1270,6 +1329,8 @@ export interface GlobalFormTypes {
     UserProfileForm: IUserProfile,
 
     TokenBodyForm: ITokenBody,
+
+    ProviderSetupBaseForm: IProviderSetupBase,
    getUserCallQuery: IgetUserCallQuery,
    deleteUserCallQuery: IdeleteUserCallQuery,
    updateSessionCallQuery: IupdateSessionCallQuery,
@@ -1304,6 +1365,8 @@ export interface GlobalFormValuesTypes {
     UserProfileForm: Record<keyof IUserProfile, GlobalLabelType<IUserProfile>>,
 
     TokenBodyForm: Record<keyof ITokenBody, GlobalLabelType<ITokenBody>>,
+
+    ProviderSetupBaseForm: Record<keyof IProviderSetupBase, GlobalLabelType<IProviderSetupBase>>,
    getUserCallQuery: Record<keyof IgetUserCallQuery, GlobalLabelType<IgetUserCallQuery>>,
    deleteUserCallQuery: Record<keyof IdeleteUserCallQuery, GlobalLabelType<IdeleteUserCallQuery>>,
    updateSessionCallQuery: Record<keyof IupdateSessionCallQuery, GlobalLabelType<IupdateSessionCallQuery>>,
@@ -1326,6 +1389,7 @@ export const GlobalLabels = {
     UserSessionForm: UserSessionForm(),
     UserProfileForm: UserProfileForm(),
     TokenBodyForm: TokenBodyForm(),
+    ProviderSetupBaseForm: ProviderSetupBaseForm(),
     getUserCallQuery,
     deleteUserCallQuery,
     updateSessionCallQuery,

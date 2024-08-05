@@ -10,6 +10,7 @@ import { COREFormInputTypeEnum, COREInputTypeEnum } from '@/types/enums';
 import { AnyTypeValidation, IAnyType } from '@/types/IAnyType';
 import dayjs from 'dayjs';
 import { ExpressRouteType } from '@/resolvers/expressResolver';
+import { LocalResolverType } from '@/resolvers/expressTypeResolver';
 
 let faker;
 
@@ -39,6 +40,7 @@ export interface GlobalStorageDataType {
         UserSession?: IUserSession
         UserProfile?: IUserProfile
         TokenBody?: ITokenBody
+        ProviderSetupBase?: IProviderSetupBase
 };
 
 const ForgotPasswordEmailValidation = ()=>({
@@ -53,7 +55,7 @@ const ForgotPasswordEmailValidation = ()=>({
 
 });
 export interface IForgotPasswordEmail {
-email?: string
+email: string
 }
 
 
@@ -89,8 +91,8 @@ const TokenPasswordValidation = ()=>({
 
 });
 export interface ITokenPassword {
-token?: string
-password?: string
+token: string
+password: string
 }
 
 
@@ -151,10 +153,10 @@ const UserRegisterValidation = ()=>({
 
 });
 export interface IUserRegister {
-email?: string
+email: string
 username?: string
-password?: string
-userId?: string
+password: string
+userId: string
 }
 
 
@@ -543,8 +545,8 @@ const UserLoginValidation = ()=>({
 
 });
 export interface IUserLogin {
-email?: string
-password?: string
+email: string
+password: string
 }
 
 
@@ -738,8 +740,8 @@ const UserProfileValidation = ()=>({
 
 });
 export interface IUserProfile {
-id?: string
-email?: string
+id: string
+email: string
 session?: IUserSession
 }
 
@@ -788,9 +790,9 @@ const TokenBodyValidation = ()=>({
 
 });
 export interface ITokenBody {
-userId?: string
-iat?: number
-exp?: number
+userId: string
+iat: number
+exp: number
 }
 
 
@@ -814,6 +816,63 @@ const TokenBodyForm = ()=>({
             id: 'exp',
             label: ``,
             formId: 'TokenBodyForm',
+            maxLength: parseInt(``) || undefined,            type: COREInputTypeEnum.number,
+
+        }, 
+
+});
+
+
+const ProviderSetupBaseValidation = ()=>({
+   validSince: yup
+            
+        .date()
+        .nullable()
+        ,
+
+   attributes: yup
+            
+        .string()
+        
+        
+        .nullable()
+        .trim()
+        ,
+
+   provider: yup
+            
+        .number()
+        .integer((message)=>`${message.path} should be integer`)
+        ,
+
+});
+export interface IProviderSetupBase {
+validSince: string
+attributes: string
+provider: number
+}
+
+
+const ProviderSetupBaseForm = ()=>({
+        validSince: {
+            id: 'validSince',
+            label: ``,
+            formId: 'ProviderSetupBaseForm',
+            maxLength: parseInt(``) || undefined,            type: COREInputTypeEnum.dateTime,
+
+        }, 
+
+        attributes: {
+            id: 'attributes',
+            label: ``,
+            formId: 'ProviderSetupBaseForm',
+            maxLength: parseInt(``) || undefined,
+        }, 
+
+        provider: {
+            id: 'provider',
+            label: ``,
+            formId: 'ProviderSetupBaseForm',
             maxLength: parseInt(``) || undefined,            type: COREInputTypeEnum.number,
 
         }, 
@@ -873,6 +932,7 @@ export interface IgetUserCallQuery {
 type getUserCallResponse = IUserProfile
     ;
 
+type getUserInnerResponse = getUserCallResponse|'' 
 
 /**
  * 
@@ -881,6 +941,7 @@ type getUserCallResponse = IUserProfile
  * @param {*} [options] Override http request option.
  * @throws {RequiredError}
  */
+export type IgetUserCallResolver = LocalResolverType<IgetUserCallQuery, undefined, getUserInnerResponse>
 const getUserCall = (
         queryParams?: IgetUserCallQuery,
         body?: undefined,
@@ -918,6 +979,7 @@ export interface IdeleteUserCallQuery {
 }
 type deleteUserCallResponse = '';
 
+type deleteUserInnerResponse = deleteUserCallResponse|'' 
 
 /**
  * 
@@ -926,6 +988,7 @@ type deleteUserCallResponse = '';
  * @param {*} [options] Override http request option.
  * @throws {RequiredError}
  */
+export type IdeleteUserCallResolver = LocalResolverType<IdeleteUserCallQuery, undefined, deleteUserInnerResponse>
 const deleteUserCall = (
         queryParams?: IdeleteUserCallQuery,
         body?: undefined,
@@ -963,6 +1026,7 @@ export interface IupdateSessionCallQuery {
 }
 type updateSessionCallResponse = '';
 
+type updateSessionInnerResponse = updateSessionCallResponse|'' 
 
 /**
  * 
@@ -971,6 +1035,7 @@ type updateSessionCallResponse = '';
  * @param {*} [options] Override http request option.
  * @throws {RequiredError}
  */
+export type IupdateSessionCallResolver = LocalResolverType<IupdateSessionCallQuery, IUserSession, updateSessionInnerResponse>
 const updateSessionCall = (
         queryParams?: IupdateSessionCallQuery,
         body?: IUserSession,
@@ -1009,6 +1074,7 @@ export interface IregisterUserCallQuery {
 type registerUserCallResponse = IUserProfile
     ;
 
+type registerUserInnerResponse = registerUserCallResponse|'' 
 
 /**
  * 
@@ -1017,6 +1083,7 @@ type registerUserCallResponse = IUserProfile
  * @param {*} [options] Override http request option.
  * @throws {RequiredError}
  */
+export type IregisterUserCallResolver = LocalResolverType<IregisterUserCallQuery, IUserLogin, registerUserInnerResponse>
 const registerUserCall = (
         queryParams?: IregisterUserCallQuery,
         body?: IUserLogin,
@@ -1055,6 +1122,7 @@ export interface IloginUserCallQuery {
 type loginUserCallResponse = IUserProfile
     ;
 
+type loginUserInnerResponse = loginUserCallResponse|'' 
 
 /**
  * 
@@ -1063,6 +1131,7 @@ type loginUserCallResponse = IUserProfile
  * @param {*} [options] Override http request option.
  * @throws {RequiredError}
  */
+export type IloginUserCallResolver = LocalResolverType<IloginUserCallQuery, IUserLogin, loginUserInnerResponse>
 const loginUserCall = (
         queryParams?: IloginUserCallQuery,
         body?: IUserLogin,
@@ -1100,6 +1169,7 @@ export interface IlogoutUserCallQuery {
 }
 type logoutUserCallResponse = '';
 
+type logoutUserInnerResponse = logoutUserCallResponse|'' 
 
 /**
  * 
@@ -1108,6 +1178,7 @@ type logoutUserCallResponse = '';
  * @param {*} [options] Override http request option.
  * @throws {RequiredError}
  */
+export type IlogoutUserCallResolver = LocalResolverType<IlogoutUserCallQuery, undefined, logoutUserInnerResponse>
 const logoutUserCall = (
         queryParams?: IlogoutUserCallQuery,
         body?: undefined,
@@ -1145,6 +1216,7 @@ export interface IforgotPasswordCallQuery {
 }
 type forgotPasswordCallResponse = '';
 
+type forgotPasswordInnerResponse = forgotPasswordCallResponse|'' 
 
 /**
  * 
@@ -1153,6 +1225,7 @@ type forgotPasswordCallResponse = '';
  * @param {*} [options] Override http request option.
  * @throws {RequiredError}
  */
+export type IforgotPasswordCallResolver = LocalResolverType<IforgotPasswordCallQuery, IForgotPasswordEmail, forgotPasswordInnerResponse>
 const forgotPasswordCall = (
         queryParams?: IforgotPasswordCallQuery,
         body?: IForgotPasswordEmail,
@@ -1191,6 +1264,7 @@ export interface IresetPasswordCallQuery {
 type resetPasswordCallResponse = IUserProfile
     ;
 
+type resetPasswordInnerResponse = resetPasswordCallResponse|'' 
 
 /**
  * 
@@ -1199,6 +1273,7 @@ type resetPasswordCallResponse = IUserProfile
  * @param {*} [options] Override http request option.
  * @throws {RequiredError}
  */
+export type IresetPasswordCallResolver = LocalResolverType<IresetPasswordCallQuery, ITokenPassword, resetPasswordInnerResponse>
 const resetPasswordCall = (
         queryParams?: IresetPasswordCallQuery,
         body?: ITokenPassword,
@@ -1242,6 +1317,7 @@ export const restValidations = {
     UserSession: UserSessionValidation(),
     UserProfile: UserProfileValidation(),
     TokenBody: TokenBodyValidation(),
+    ProviderSetupBase: ProviderSetupBaseValidation(),
     getUserCallQuery: getUserCallQueryValidation(),
     deleteUserCallQuery: deleteUserCallQueryValidation(),
     updateSessionCallQuery: updateSessionCallQueryValidation(),
@@ -1286,6 +1362,8 @@ export interface GlobalFormTypes {
     UserProfileForm: IUserProfile,
 
     TokenBodyForm: ITokenBody,
+
+    ProviderSetupBaseForm: IProviderSetupBase,
    getUserCallQuery: IgetUserCallQuery,
    deleteUserCallQuery: IdeleteUserCallQuery,
    updateSessionCallQuery: IupdateSessionCallQuery,
@@ -1320,6 +1398,8 @@ export interface GlobalFormValuesTypes {
     UserProfileForm: Record<keyof IUserProfile, GlobalLabelType<IUserProfile>>,
 
     TokenBodyForm: Record<keyof ITokenBody, GlobalLabelType<ITokenBody>>,
+
+    ProviderSetupBaseForm: Record<keyof IProviderSetupBase, GlobalLabelType<IProviderSetupBase>>,
    getUserCallQuery: Record<keyof IgetUserCallQuery, GlobalLabelType<IgetUserCallQuery>>,
    deleteUserCallQuery: Record<keyof IdeleteUserCallQuery, GlobalLabelType<IdeleteUserCallQuery>>,
    updateSessionCallQuery: Record<keyof IupdateSessionCallQuery, GlobalLabelType<IupdateSessionCallQuery>>,
@@ -1342,6 +1422,7 @@ export const GlobalLabels = {
     UserSessionForm: UserSessionForm(),
     UserProfileForm: UserProfileForm(),
     TokenBodyForm: TokenBodyForm(),
+    ProviderSetupBaseForm: ProviderSetupBaseForm(),
     getUserCallQuery,
     deleteUserCallQuery,
     updateSessionCallQuery,
@@ -1352,11 +1433,11 @@ export const GlobalLabels = {
     resetPasswordCallQuery,
 };
 
-let _404 = async (props: Record<string, string>, body: Record<string, string>, context: any) => {
+let _404 = async (props: any, body: any, context: any) => {
     context?.res?.status?.(404);
     return {
         message: "Not Found"
-    };
+    } as any;
 };
 
 try {
@@ -1417,7 +1498,7 @@ try {
 };
 
 
-let pre_mapped_getUserReslover = _404;
+let pre_mapped_getUserReslover = _404 as IgetUserCallResolver;
 try {
     const _pre_mapped_getUserReslover = require('../resolvers/apiPaths/getUser');
     if(_pre_mapped_getUserReslover) {
@@ -1426,7 +1507,7 @@ try {
 } catch(e) {
     console.error('Mapping getUser failed with error', e);
 }
-let pre_mapped_deleteUserReslover = _404;
+let pre_mapped_deleteUserReslover = _404 as IdeleteUserCallResolver;
 try {
     const _pre_mapped_deleteUserReslover = require('../resolvers/apiPaths/deleteUser');
     if(_pre_mapped_deleteUserReslover) {
@@ -1435,7 +1516,7 @@ try {
 } catch(e) {
     console.error('Mapping deleteUser failed with error', e);
 }
-let pre_mapped_updateSessionReslover = _404;
+let pre_mapped_updateSessionReslover = _404 as IupdateSessionCallResolver;
 try {
     const _pre_mapped_updateSessionReslover = require('../resolvers/apiPaths/updateSession');
     if(_pre_mapped_updateSessionReslover) {
@@ -1444,7 +1525,7 @@ try {
 } catch(e) {
     console.error('Mapping updateSession failed with error', e);
 }
-let pre_mapped_registerUserReslover = _404;
+let pre_mapped_registerUserReslover = _404 as IregisterUserCallResolver;
 try {
     const _pre_mapped_registerUserReslover = require('../resolvers/apiPaths/registerUser');
     if(_pre_mapped_registerUserReslover) {
@@ -1453,7 +1534,7 @@ try {
 } catch(e) {
     console.error('Mapping registerUser failed with error', e);
 }
-let pre_mapped_loginUserReslover = _404;
+let pre_mapped_loginUserReslover = _404 as IloginUserCallResolver;
 try {
     const _pre_mapped_loginUserReslover = require('../resolvers/apiPaths/loginUser');
     if(_pre_mapped_loginUserReslover) {
@@ -1462,7 +1543,7 @@ try {
 } catch(e) {
     console.error('Mapping loginUser failed with error', e);
 }
-let pre_mapped_logoutUserReslover = _404;
+let pre_mapped_logoutUserReslover = _404 as IlogoutUserCallResolver;
 try {
     const _pre_mapped_logoutUserReslover = require('../resolvers/apiPaths/logoutUser');
     if(_pre_mapped_logoutUserReslover) {
@@ -1471,7 +1552,7 @@ try {
 } catch(e) {
     console.error('Mapping logoutUser failed with error', e);
 }
-let pre_mapped_forgotPasswordReslover = _404;
+let pre_mapped_forgotPasswordReslover = _404 as IforgotPasswordCallResolver;
 try {
     const _pre_mapped_forgotPasswordReslover = require('../resolvers/apiPaths/forgotPassword');
     if(_pre_mapped_forgotPasswordReslover) {
@@ -1480,7 +1561,7 @@ try {
 } catch(e) {
     console.error('Mapping forgotPassword failed with error', e);
 }
-let pre_mapped_resetPasswordReslover = _404;
+let pre_mapped_resetPasswordReslover = _404 as IresetPasswordCallResolver;
 try {
     const _pre_mapped_resetPasswordReslover = require('../resolvers/apiPaths/resetPassword');
     if(_pre_mapped_resetPasswordReslover) {

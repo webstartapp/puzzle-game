@@ -17,9 +17,9 @@ export type ContextType = {
 };
 
 export type LocalResolverType<
-  ARGS extends Record<string, any> = Record<string, any>,
-  BODY extends Record<string, any> = Record<string, any>,
-  RET extends Record<string, any> = Record<string, any>
+  ARGS extends Record<string, any> | undefined = Record<string, any> | undefined,
+  BODY extends Record<string, any> | undefined = Record<string, any> | undefined,
+  RET extends any = any
 > = (props: ARGS, body: BODY, context: ContextType) => Promise<RET>;
 
 export type ExpressResolverType<

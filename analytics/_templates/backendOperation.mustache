@@ -10,6 +10,7 @@ import { COREFormInputTypeEnum, COREInputTypeEnum } from '@/types/enums';
 import { AnyTypeValidation, IAnyType } from '@/types/IAnyType';
 import dayjs from 'dayjs';
 import { ExpressRouteType } from '@/resolvers/expressResolver';
+import { LocalResolverType } from '@/resolvers/expressTypeResolver';
 
 let faker;
 
@@ -155,6 +156,7 @@ type {{{operationId}}}CallResponse = {{#responses}}{{#status=204}}''{{/status=20
     {{/items.$ref}}{{/type=array}}{{/schema}}{{/status=201}}{{#status=201}}{{#schema}}{{#type=array}}{{^items.$ref}}Array<any>
     {{/items.$ref}}{{/type=array}}{{/schema}}{{/status=201}}{{/responses}};
 
+type {{{operationId}}}InnerResponse = {{{operationId}}}CallResponse|'' {{#responses}}{{#status=200}}{{#contentType=application/octet-stream}}='arraybuffer' as any{{/contentType=application/octet-stream}}{{/status=200}}{{/responses}}
 
 /**
  * 
@@ -163,6 +165,7 @@ type {{{operationId}}}CallResponse = {{#responses}}{{#status=204}}''{{/status=20
  * @param {*} [options] Override http request option.
  * @throws {RequiredError}
  */
+export type I{{{operationId}}}CallResolver = LocalResolverType<I{{{operationId}}}CallQuery, {{^requestBody}}undefined{{/requestBody}}{{#requestBody}}I{{key:PascalCase}}{{/requestBody}}, {{{operationId}}}InnerResponse>
 const {{{operationId}}}Call = (
         queryParams{{^parameters}}?{{/parameters}}: I{{{operationId}}}CallQuery,
         body?: {{^requestBody}}undefined{{/requestBody}}{{#requestBody}}I{{key:PascalCase}}{{/requestBody}},
@@ -223,11 +226,11 @@ export const GlobalLabels = { {{#schemas}}{{#type=object}}
     {{operationId}}CallQuery,{{/paths}}
 };
 
-let _404 = async (props: Record<string, string>, body: Record<string, string>, context: any) => {
+let _404 = async (props: any, body: any, context: any) => {
     context?.res?.status?.(404);
     return {
         message: "Not Found"
-    };
+    } as any;
 };
 
 try {
@@ -289,7 +292,7 @@ try {
 
 
 {{#paths}}
-let pre_mapped_{{{operationId}}}Reslover = _404;
+let pre_mapped_{{{operationId}}}Reslover = _404 as I{{{operationId}}}CallResolver;
 try {
     const _pre_mapped_{{{operationId}}}Reslover = require('../resolvers/apiPaths/{{{operationId}}}');
     if(_pre_mapped_{{{operationId}}}Reslover) {

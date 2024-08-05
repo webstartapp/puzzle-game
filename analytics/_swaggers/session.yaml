@@ -321,7 +321,26 @@ components:
           type: integer
         exp:
           type: integer
+      required:
+        - userId
+        - iat
+        - exp
 
+    ProviderSetupBase:
+      type: object
+      properties:
+        validSince:
+          type: string
+          format: date-time
+        attributes:
+          type: string
+        provider:
+          type: integer
+          example: 43
+      required:
+        - validSince
+        - attributes
+        - provider
   securitySchemes:
     bearerAuth:
       type: http

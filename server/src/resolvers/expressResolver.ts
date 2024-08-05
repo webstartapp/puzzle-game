@@ -2,7 +2,7 @@ import { NextFunction, Request, Response, Router } from "express";
 import jwt from "jsonwebtoken";
 import { ContextType, LocalResolverType, Viewer } from "./expressTypeResolver";
 import { UserDB } from "../entities/user/user";
-import { apiResolvers } from "@/_generated/sessionOperations";
+import { apiResolvers, ITokenBody } from "@/_generated/sessionOperations";
 
 const router = Router();
 
@@ -19,18 +19,18 @@ const getuser = async (req: Request) => {
     throw new Error("No session");
   }
   const token = session.split(" ")[1];
-  const sessionData = jwt.decode(token);
-  if (!sessionData?.sub) {
+  const sessionData = jwt.decode(token) as ITokenBody;
+  if (!sessionData?.userId) {
     throw new Error("Invalid session");
   }
-  const user = await UserDB.resolvers.getUser({ userId: sessionData.sub as string });
+  const user = await UserDB.resolvers.getUser({ userId: sessionData.userId });
 
   if (!user) {
     throw new Error("User not found");
   }
 
   return {
-    id: sessionData.sub as string,
+    id: sessionData.userId,
     roles: []
   };
 };
@@ -39,7 +39,7 @@ const resolvers = (routes: ExpressRouteType[]) => {
   routes.forEach((route) => {
     router[route.method.toLowerCase() as "get"](route.path, async (req: Request, res: Response, next: NextFunction) => {
       let viewer: Viewer | undefined = undefined;
-    console.log(route);
+      console.log(route);
       try {
         viewer = await getuser(req);
       } catch (e) {
