@@ -14,6 +14,7 @@ export type ContextType = {
   resolvers: APIResolversType;
   statusSet: boolean;
   setResponseStatus: (status: number) => void;
+  responseHeaders: Record<string, string>;
 };
 
 export type LocalResolverType<

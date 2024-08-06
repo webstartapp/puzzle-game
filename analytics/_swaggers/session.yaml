@@ -68,7 +68,7 @@ paths:
         content:
           application/json:
             schema:
-              $ref: '#/components/schemas/UserLogin'
+              $ref: '#/components/schemas/UserRegister'
       responses:
         '200':
           description: User registered successfully
@@ -267,12 +267,12 @@ components:
     UserLogin:
       type: object
       properties:
-        email:
+        username:
           type: string
         password:
           type: string
       required:
-        - email
+        - username
         - password
     LevelStats:
       type: object
@@ -294,12 +294,15 @@ components:
       properties:
         coins:
           type: integer
-        latest:
+        current:
           $ref: '#/components/schemas/LevelStats'
         previous:
           type: array
           items:
             $ref: '#/components/schemas/LevelStats'
+      required:
+        - coins
+        - previous
     UserProfile:
       type: object
       properties:
@@ -312,6 +315,7 @@ components:
       required:
         - id
         - email
+        - session
     TokenBody:
       type: object
       properties:

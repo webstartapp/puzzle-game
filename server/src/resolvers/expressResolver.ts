@@ -71,7 +71,8 @@ const resolvers = (routes: ExpressRouteType[]) => {
             context.statusSet = true;
             res.status(status);
           }
-        }
+        },
+        responseHeaders: { Authorization: req.headers?.Authorization as string }
       };
       try {
         const params = req.params;
@@ -87,6 +88,9 @@ const resolvers = (routes: ExpressRouteType[]) => {
         console.log(68, context.statusSet);
         context.setResponseStatus(200);
         res.json(result);
+        Object.keys(context.responseHeaders).forEach((key) => {
+          res.setHeader(key, context.responseHeaders[key]);
+        });
         return;
       } catch (e: any) {
         const errorData = await apiResolvers._500({ message: e?.message }, {}, context);

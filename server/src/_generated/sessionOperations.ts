@@ -525,7 +525,7 @@ const LevelForm = ()=>({
 
 
 const UserLoginValidation = ()=>({
-   email: yup
+   username: yup
             
         .string()
         
@@ -545,14 +545,14 @@ const UserLoginValidation = ()=>({
 
 });
 export interface IUserLogin {
-email: string
+username: string
 password: string
 }
 
 
 const UserLoginForm = ()=>({
-        email: {
-            id: 'email',
+        username: {
+            id: 'username',
             label: ``,
             formId: 'UserLoginForm',
             maxLength: parseInt(``) || undefined,
@@ -671,7 +671,7 @@ const UserSessionValidation = ()=>({
         .integer((message)=>`${message.path} should be integer`)
         ,
 
-   latest: yup
+   current: yup
             
             .object(LevelStatsValidation())
         ,
@@ -684,9 +684,9 @@ const UserSessionValidation = ()=>({
             ),
 });
 export interface IUserSession {
-coins?: number
-latest?: ILevelStats
-previous?: Array<ILevelStats>
+coins: number
+current?: ILevelStats
+previous: Array<ILevelStats>
 }
 
 
@@ -699,7 +699,7 @@ const UserSessionForm = ()=>({
 
         }, 
 
-        latest: LevelStatsForm(),
+        current: LevelStatsForm(),
 
         previous: {
             id: 'previous',
@@ -742,7 +742,7 @@ const UserProfileValidation = ()=>({
 export interface IUserProfile {
 id: string
 email: string
-session?: IUserSession
+session: IUserSession
 }
 
 
@@ -1083,10 +1083,10 @@ type registerUserInnerResponse = registerUserCallResponse|''
  * @param {*} [options] Override http request option.
  * @throws {RequiredError}
  */
-export type IregisterUserCallResolver = LocalResolverType<IregisterUserCallQuery, IUserLogin, registerUserInnerResponse>
+export type IregisterUserCallResolver = LocalResolverType<IregisterUserCallQuery, IUserRegister, registerUserInnerResponse>
 const registerUserCall = (
         queryParams?: IregisterUserCallQuery,
-        body?: IUserLogin,
+        body?: IUserRegister,
         options: Partial<RESTRequestType> = {}): RESTRequestType<registerUserCallResponse> => {
     
     const localVarPath = getPath(`registerUser`, `${globalPath}/register`, queryParams || {} , [], {  });
@@ -1505,7 +1505,7 @@ try {
         pre_mapped_getUserReslover = _pre_mapped_getUserReslover?.default || _pre_mapped_getUserReslover;
     }
 } catch(e) {
-    console.error('Mapping getUser failed with error', e);
+    console.error('Mapping at src/resolvers/apiPaths/getUser.ts not created');
 }
 let pre_mapped_deleteUserReslover = _404 as IdeleteUserCallResolver;
 try {
@@ -1514,7 +1514,7 @@ try {
         pre_mapped_deleteUserReslover = _pre_mapped_deleteUserReslover?.default || _pre_mapped_deleteUserReslover;
     }
 } catch(e) {
-    console.error('Mapping deleteUser failed with error', e);
+    console.error('Mapping at src/resolvers/apiPaths/deleteUser.ts not created');
 }
 let pre_mapped_updateSessionReslover = _404 as IupdateSessionCallResolver;
 try {
@@ -1523,7 +1523,7 @@ try {
         pre_mapped_updateSessionReslover = _pre_mapped_updateSessionReslover?.default || _pre_mapped_updateSessionReslover;
     }
 } catch(e) {
-    console.error('Mapping updateSession failed with error', e);
+    console.error('Mapping at src/resolvers/apiPaths/updateSession.ts not created');
 }
 let pre_mapped_registerUserReslover = _404 as IregisterUserCallResolver;
 try {
@@ -1532,7 +1532,7 @@ try {
         pre_mapped_registerUserReslover = _pre_mapped_registerUserReslover?.default || _pre_mapped_registerUserReslover;
     }
 } catch(e) {
-    console.error('Mapping registerUser failed with error', e);
+    console.error('Mapping at src/resolvers/apiPaths/registerUser.ts not created');
 }
 let pre_mapped_loginUserReslover = _404 as IloginUserCallResolver;
 try {
@@ -1541,7 +1541,7 @@ try {
         pre_mapped_loginUserReslover = _pre_mapped_loginUserReslover?.default || _pre_mapped_loginUserReslover;
     }
 } catch(e) {
-    console.error('Mapping loginUser failed with error', e);
+    console.error('Mapping at src/resolvers/apiPaths/loginUser.ts not created');
 }
 let pre_mapped_logoutUserReslover = _404 as IlogoutUserCallResolver;
 try {
@@ -1550,7 +1550,7 @@ try {
         pre_mapped_logoutUserReslover = _pre_mapped_logoutUserReslover?.default || _pre_mapped_logoutUserReslover;
     }
 } catch(e) {
-    console.error('Mapping logoutUser failed with error', e);
+    console.error('Mapping at src/resolvers/apiPaths/logoutUser.ts not created');
 }
 let pre_mapped_forgotPasswordReslover = _404 as IforgotPasswordCallResolver;
 try {
@@ -1559,7 +1559,7 @@ try {
         pre_mapped_forgotPasswordReslover = _pre_mapped_forgotPasswordReslover?.default || _pre_mapped_forgotPasswordReslover;
     }
 } catch(e) {
-    console.error('Mapping forgotPassword failed with error', e);
+    console.error('Mapping at src/resolvers/apiPaths/forgotPassword.ts not created');
 }
 let pre_mapped_resetPasswordReslover = _404 as IresetPasswordCallResolver;
 try {
@@ -1568,7 +1568,7 @@ try {
         pre_mapped_resetPasswordReslover = _pre_mapped_resetPasswordReslover?.default || _pre_mapped_resetPasswordReslover;
     }
 } catch(e) {
-    console.error('Mapping resetPassword failed with error', e);
+    console.error('Mapping at src/resolvers/apiPaths/resetPassword.ts not created');
 }
 
 export const apiResolvers = {

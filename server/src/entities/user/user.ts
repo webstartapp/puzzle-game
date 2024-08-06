@@ -3,6 +3,7 @@ import { ExpressTypeResolver } from "@/resolvers/expressTypeResolver";
 import { Request } from "express";
 import { IUserProfile, IUserRegister } from "@/_generated/sessionOperations";
 import { randomUUID } from "crypto";
+import { comparePassword } from "@/utils/password";
 
 export const getToken = (req: Request) => {
   const bearer = req.headers.authorization || req.headers.Authorization;
@@ -33,10 +34,15 @@ export const UserDB = ExpressTypeResolver({
       return user;
     },
     getUser: async (props: { userId: string }): Promise<IUserProfile> => {
-      const user = await knex("users")
+      const user: IUserProfile = await knex("users")
         .where("id", props.userId)
         .select(UserDB.properties.username, UserDB.properties.id)
         .first();
+      user.session = {
+        coins: 0,
+        previous: []
+      };
+      (user as any).password = undefined;
       return user;
     },
     registerUser: async (props: {}, body: IUserRegister): Promise<IUserProfile> => {
@@ -56,6 +62,20 @@ export const UserDB = ExpressTypeResolver({
         .onConflict("token")
         .ignore();
       return await UserDB.resolvers.getUser({ userId: body.userId });
+    },
+    deleteUser: async (props: { userId: string }): Promise<void> => {
+      await knex("users").where("id", props.userId).delete();
+    },
+    loginUser: async (props: { username: string; password: string }): Promise<IUserProfile> => {
+      const user = await knex("users").where("username", props.username).first();
+      if (!user) {
+        throw new Error("User not found");
+      }
+      const comparedPassword = await comparePassword(props.password, user.password);
+      if (!comparedPassword) {
+        throw new Error("Invalid password");
+      }
+      return await UserDB.resolvers.getUser({ userId: user.id });
     }
   }
 });

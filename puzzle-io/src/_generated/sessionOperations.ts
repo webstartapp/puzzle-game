@@ -109,7 +109,8 @@ const UserRegisterValidation = ()=>({
         
         .nullable()
         .trim()
-        ,
+        .required((message)=>`${message.path} is required`)
+,
 
    username: yup
             
@@ -127,7 +128,8 @@ const UserRegisterValidation = ()=>({
         
         .nullable()
         .trim()
-        ,
+        .required((message)=>`${message.path} is required`)
+,
 
    userId: yup
             
@@ -136,7 +138,8 @@ const UserRegisterValidation = ()=>({
         
         .nullable()
         .trim()
-        ,
+        .required((message)=>`${message.path} is required`)
+,
 
 });
 export interface IUserRegister {
@@ -512,7 +515,7 @@ const LevelForm = ()=>({
 
 
 const UserLoginValidation = ()=>({
-   email: yup
+   username: yup
             
         .string()
         
@@ -534,14 +537,14 @@ const UserLoginValidation = ()=>({
 
 });
 export interface IUserLogin {
-email: string
+username: string
 password: string
 }
 
 
 const UserLoginForm = ()=>({
-        email: {
-            id: 'email',
+        username: {
+            id: 'username',
             label: ``,
             formId: 'UserLoginForm',
             maxLength: parseInt(``) || undefined,
@@ -658,9 +661,10 @@ const UserSessionValidation = ()=>({
             
         .number()
         .integer((message)=>`${message.path} should be integer`)
-        ,
+        .required((message)=>`${message.path} is required`)
+,
 
-   latest: yup
+   current: yup
             
             .object(LevelStatsValidation())
         ,
@@ -673,9 +677,9 @@ const UserSessionValidation = ()=>({
             ),
 });
 export interface IUserSession {
-coins?: number
-latest?: ILevelStats
-previous?: Array<ILevelStats>
+coins: number
+current?: ILevelStats
+previous: Array<ILevelStats>
 }
 
 
@@ -688,7 +692,7 @@ const UserSessionForm = ()=>({
 
         }, 
 
-        latest: LevelStatsForm(),
+        current: LevelStatsForm(),
 
         previous: {
             id: 'previous',
@@ -733,7 +737,7 @@ const UserProfileValidation = ()=>({
 export interface IUserProfile {
 id: string
 email: string
-session?: IUserSession
+session: IUserSession
 }
 
 
@@ -1065,7 +1069,7 @@ type registerUserCallResponse = IUserProfile
  */
 const registerUserCall = (
         queryParams?: IregisterUserCallQuery,
-        body?: IUserLogin,
+        body?: IUserRegister,
         options: Partial<RESTRequestType> = {}): RESTRequestType<registerUserCallResponse> => {
     
     const localVarPath = getPath(`registerUser`, `${globalPath}/register`, queryParams || {} , [], {  });
