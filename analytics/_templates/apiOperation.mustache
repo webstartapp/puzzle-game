@@ -206,3 +206,5 @@ export const GlobalLabels = { {{#schemas}}{{#type=object}}
     {{key}}Form: {{key}}Form(),{{/type=object}}{{/schemas}}{{#paths}}
     {{operationId}}CallQuery,{{/paths}}
 };
+
+export const restCall = wrapRestCalls(restOperations, 'http://localhost:4000');

@@ -22,7 +22,7 @@ export type ResponseDataStatusType = {
   time?: number;
 };
 
-type APIRequestCallType<T = any, U = any, V = any> = (
+export type APIRequestCallType<T = any, U = any, V = any> = (
   queryParams?: T,
   body?: U,
   options?: Partial<RESTRequestType>,
@@ -50,3 +50,23 @@ export type APIHandlerType<T = any, U = any, V = any> = (
   >,
   next: APINextFNType,
 ) => Promise<Response | void>;
+
+export type APIErrorObject = {
+  path?: string;
+  params?: Record<string, any>;
+  method?: string;
+  name?: string;
+  body?: Record<string, any>;
+  data?: string | Record<string, any>;
+  isAxiosError?: boolean;
+  code?: string;
+  message?: string;
+  status?: number;
+};
+export type ErrorObject = {
+  title?: string | undefined;
+  message?: string | undefined;
+  statusCode?: number;
+  stack?: string;
+  APIError?: APIErrorObject;
+};
