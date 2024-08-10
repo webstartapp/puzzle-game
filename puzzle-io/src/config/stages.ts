@@ -1,4 +1,18 @@
+import { Numberify } from './grid/indexedGrid';
 import { LevelId } from './levels';
+
+type OneTo20 =
+  | Numberify<`${1}${0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9}`>
+  | 1
+  | 2
+  | 3
+  | 4
+  | 5
+  | 6
+  | 7
+  | 8
+  | 9
+  | 20;
 
 type Scene = {
   level: LevelId;
@@ -13,6 +27,8 @@ type StageType<T extends string> = {
   characters: string[];
   scenes: Scene[];
   resolution: string;
+  x: OneTo20;
+  y: OneTo20;
 };
 
 const gameStageFN = <T extends string>(
@@ -22,6 +38,8 @@ const gameStageFN = <T extends string>(
 export const gameStages = gameStageFN([
   {
     id: 'enchanted_forest',
+    x: 10,
+    y: 13,
     title: 'The Enchanted Forest',
     settings: 'A lush, magical forest filled with talking animals.',
     objective:
@@ -97,6 +115,8 @@ export const gameStages = gameStageFN([
   },
   {
     id: 'aquatic_realm',
+    x: 6,
+    y: 17,
     title: 'The Aquatic Realm',
     settings: 'An underwater kingdom with vibrant marine life.',
     objective:
@@ -161,6 +181,8 @@ export const gameStages = gameStageFN([
   },
   {
     id: 'desert_oasis',
+    x: 2,
+    y: 14,
     title: 'The Desert Oasis',
     settings: 'A vast desert with a hidden oasis and ancient ruins.',
     objective: 'Solve puzzles to unlock water sources and revive the oasis.',
@@ -228,6 +250,8 @@ export const gameStages = gameStageFN([
   },
   {
     id: 'mountain_peaks',
+    x: 1,
+    y: 10,
     title: 'The Mountain Peaks',
     settings: 'Snow-covered mountains with treacherous paths and hidden caves.',
     objective:
@@ -294,6 +318,8 @@ export const gameStages = gameStageFN([
   },
   {
     id: 'jungle_canopy',
+    x: 2,
+    y: 7,
     title: 'The Jungle Canopy',
     settings: 'A dense jungle with towering trees and hidden dangers.',
     objective:
@@ -361,71 +387,9 @@ export const gameStages = gameStageFN([
       "Taro the Tiger reveals that the jungle's heart has been sealed, affecting the entire ecosystem.",
   },
   {
-    id: 'arctic_tundra',
-    title: 'The Arctic Tundra',
-    settings: 'A frozen tundra with shimmering icebergs and snowy plains.',
-    objective: 'Solve puzzles to melt the ice and uncover ancient artifacts.',
-    characters: ['Aurora the Polar Bear', 'Frost the Arctic Fox'],
-    scenes: [
-      {
-        level: 'level2',
-        title: 'The Enchanted Squirrels',
-        description: 'The hero receives a magical torch to melt ice.',
-      },
-      {
-        level: 'level2',
-        title: 'The Enchanted Squirrels',
-        description: 'The hero encounters a group of seals trapped in ice.',
-      },
-      {
-        level: 'level2',
-        title: 'The Enchanted Squirrels',
-        description: 'The hero solves a puzzle to free the trapped seals.',
-      },
-      {
-        level: 'level2',
-        title: 'The Enchanted Squirrels',
-        description: 'The hero discovers an ice cave with ancient carvings.',
-      },
-      {
-        level: 'level2',
-        title: 'The Enchanted Squirrels',
-        description: 'The hero encounters a snowstorm and seeks shelter.',
-      },
-      {
-        level: 'level2',
-        title: 'The Enchanted Squirrels',
-        description:
-          'The hero solves a puzzle to navigate through the snowstorm.',
-      },
-      {
-        level: 'level2',
-        title: 'The Enchanted Squirrels',
-        description: 'The hero finds an ancient relic in the cave.',
-      },
-      {
-        level: 'level2',
-        title: 'The Enchanted Squirrels',
-        description:
-          'The hero encounters Frost the Arctic Fox with information on the artifacts.',
-      },
-      {
-        level: 'level2',
-        title: 'The Enchanted Squirrels',
-        description: "The hero solves a puzzle to gain Frost's trust.",
-      },
-      {
-        level: 'level2',
-        title: 'The Enchanted Squirrels',
-        description:
-          'The hero reaches the heart of the tundra and uncovers the ancient artifacts.',
-      },
-    ],
-    resolution:
-      "Aurora the Polar Bear reveals the prophecy and the hero's role in restoring the balance of the tundra.",
-  },
-  {
     id: 'volcanic_caverns',
+    x: 5,
+    y: 6,
     title: 'The Volcanic Caverns',
     settings:
       'A network of volcanic caves with flowing lava and precious gems.',
@@ -494,6 +458,8 @@ export const gameStages = gameStageFN([
   },
   {
     id: 'enchanted_gardens',
+    x: 8,
+    y: 7,
     title: 'The Enchanted Gardens',
     settings: 'A beautiful garden filled with magical flora and fauna.',
     objective: 'Solve puzzles to revive the dying plants and heal the land.',
@@ -558,6 +524,8 @@ export const gameStages = gameStageFN([
   },
   {
     id: 'celestial_realm',
+    x: 10,
+    y: 5,
     title: 'The Celestial Realm',
     settings:
       'A mystical realm in the sky with floating islands and celestial beings.',
@@ -617,7 +585,75 @@ export const gameStages = gameStageFN([
       'Orion reveals the final piece of the prophecy, guiding the hero to the last challenge.',
   },
   {
+    id: 'arctic_tundra',
+    x: 16,
+    y: 4,
+    title: 'The Arctic Tundra',
+    settings: 'A frozen tundra with shimmering icebergs and snowy plains.',
+    objective: 'Solve puzzles to melt the ice and uncover ancient artifacts.',
+    characters: ['Aurora the Polar Bear', 'Frost the Arctic Fox'],
+    scenes: [
+      {
+        level: 'level2',
+        title: 'The Enchanted Squirrels',
+        description: 'The hero receives a magical torch to melt ice.',
+      },
+      {
+        level: 'level2',
+        title: 'The Enchanted Squirrels',
+        description: 'The hero encounters a group of seals trapped in ice.',
+      },
+      {
+        level: 'level2',
+        title: 'The Enchanted Squirrels',
+        description: 'The hero solves a puzzle to free the trapped seals.',
+      },
+      {
+        level: 'level2',
+        title: 'The Enchanted Squirrels',
+        description: 'The hero discovers an ice cave with ancient carvings.',
+      },
+      {
+        level: 'level2',
+        title: 'The Enchanted Squirrels',
+        description: 'The hero encounters a snowstorm and seeks shelter.',
+      },
+      {
+        level: 'level2',
+        title: 'The Enchanted Squirrels',
+        description:
+          'The hero solves a puzzle to navigate through the snowstorm.',
+      },
+      {
+        level: 'level2',
+        title: 'The Enchanted Squirrels',
+        description: 'The hero finds an ancient relic in the cave.',
+      },
+      {
+        level: 'level2',
+        title: 'The Enchanted Squirrels',
+        description:
+          'The hero encounters Frost the Arctic Fox with information on the artifacts.',
+      },
+      {
+        level: 'level2',
+        title: 'The Enchanted Squirrels',
+        description: "The hero solves a puzzle to gain Frost's trust.",
+      },
+      {
+        level: 'level2',
+        title: 'The Enchanted Squirrels',
+        description:
+          'The hero reaches the heart of the tundra and uncovers the ancient artifacts.',
+      },
+    ],
+    resolution:
+      "Aurora the Polar Bear reveals the prophecy and the hero's role in restoring the balance of the tundra.",
+  },
+  {
     id: 'menagerie_heart',
+    x: 11,
+    y: 10,
     title: 'The Heart of the Menagerie',
     settings:
       'The central hub of all animal kingdoms, now shrouded in darkness.',

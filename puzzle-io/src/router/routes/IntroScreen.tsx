@@ -1,12 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  Image,
-  StyleSheet,
-  TouchableOpacity,
-  Animated,
-} from 'react-native';
+import { View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import HeloImage from '@/assets/images/welcome_screen.jpeg';
 import introScreen from '@/assets/music/intro_screen_bg.mp3';
@@ -74,7 +67,7 @@ const IntroScreen = () => {
         <Button
           title="New Game"
           onPress={() => {
-            setRoute('stageScreen');
+            setRoute('WorldMapScreen');
           }}
           variant="default"
         />

@@ -1,7 +1,7 @@
 import { createContext, FC, useContext, useState } from 'react';
 import IntroScreen from '@/router/routes/IntroScreen';
 import PuzzleScreen from '@/router//routes/PuzzleScreen';
-import StageScreen from '@/router/routes/StageScreen';
+import StageScreen from '@/router/routes/WorldMapScreen';
 
 type Route<ROUTE extends string> = {
   name: ROUTE;
@@ -22,7 +22,7 @@ const routeList = RouteFN([
     component: PuzzleScreen,
   },
   {
-    name: 'stageScreen',
+    name: 'WorldMapScreen',
     component: StageScreen,
   },
 ]);

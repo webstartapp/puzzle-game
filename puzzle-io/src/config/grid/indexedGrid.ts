@@ -18,7 +18,7 @@ type GridValues<K extends string> = K extends `${infer X}x${infer Y}`
   : never;
 
 // Utility type to convert string literal to number
-type Numberify<S extends string> = S extends `${infer N extends number}`
+export type Numberify<S extends string> = S extends `${infer N extends number}`
   ? N
   : never;
 
