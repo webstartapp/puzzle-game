@@ -1,7 +1,9 @@
 import { useContext } from 'react';
 import { StoreContext } from '@/components/provider/StoreProvider';
 
-export interface IStore {}
+export interface IStore {
+  initiated: boolean;
+}
 
 export const useStore = <T extends keyof IStore>(
   storeKey?: T,

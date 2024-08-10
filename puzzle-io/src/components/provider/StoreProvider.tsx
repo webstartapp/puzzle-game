@@ -10,7 +10,9 @@ import React, {
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { IStore } from '@/hooks/store/useStore';
 
-const initialState: IStore = {};
+const initialState: IStore = {
+  initiated: false,
+} as IStore;
 
 export const StoreContext = createContext<{
   state: IStore;
@@ -37,28 +39,53 @@ const reducer = <T extends keyof IStore | 'INIT'>(
 
 let globalState: IStore = initialState;
 let globalDispatch: React.Dispatch<Action<keyof IStore | 'INIT'>> = () => null;
+import uuid from 'react-native-uuid';
 
 const PERSISTED_STATE_KEY = 'my-app-store';
 
 const StoreProvider: FC<PropsWithChildren> = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
-  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
+    if (!state.initiated) {
+      return;
+    }
     globalState = state;
     globalDispatch = dispatch;
   }, [state]);
 
   useEffect(() => {
     const loadState = async () => {
-      const savedState = await AsyncStorage.getItem(PERSISTED_STATE_KEY);
-      setIsLoading(false);
-      if (savedState) {
-        dispatch({
-          type: 'INIT' as keyof IStore,
-          payload: JSON.parse(savedState),
-        });
+      let localState = globalState;
+      if (!localState.initiated) {
+        return;
       }
+      const savedState = await AsyncStorage.getItem(PERSISTED_STATE_KEY);
+      try {
+        localState = {
+          ...globalState,
+          ...JSON.parse(savedState || '{}'),
+        };
+      } catch (e) {
+        console.error('Error loading state from storage', e);
+      }
+      if (!localState.initiated) {
+        localState.initiated = true;
+        if (!globalState.viewer) {
+          localState.viewer = {
+            session: {
+              coins: 0,
+              previous: [],
+            },
+            email: '',
+            id: uuid.v4() as string,
+          };
+        }
+      }
+      dispatch({
+        type: 'INIT' as keyof IStore,
+        payload: globalState,
+      });
     };
 
     loadState();
@@ -74,7 +101,7 @@ const StoreProvider: FC<PropsWithChildren> = ({ children }) => {
 
   return (
     <StoreContext.Provider value={{ state, dispatch }}>
-      {isLoading ? <></> : children}
+      {state.initiated ? <></> : children}
     </StoreContext.Provider>
   );
 };

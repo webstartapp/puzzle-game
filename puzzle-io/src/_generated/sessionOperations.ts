@@ -1317,4 +1317,4 @@ export const GlobalLabels = {
   resetPasswordCallQuery,
 };
 
-export const restCall = wrapRestCalls(restOperations, 'http://localhost:4000');
+export const restCalls = wrapRestCalls(restOperations);
