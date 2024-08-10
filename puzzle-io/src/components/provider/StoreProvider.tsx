@@ -34,7 +34,8 @@ const reducer = <T extends keyof IStore | 'INIT'>(
   if (action.type === 'INIT') {
     return action.payload as IStore;
   }
-  return { ...state, [action.type]: action.payload };
+  globalState = { ...state, [action.type]: action.payload };
+  return globalState;
 };
 
 let globalState: IStore = initialState;

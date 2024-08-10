@@ -1,5 +1,6 @@
 import { FC } from 'react';
-import { StyleSheet, TouchableOpacity, Text } from 'react-native';
+import { TouchableOpacity, Text } from 'react-native';
+import { buttonStyles } from '@/styles/buttonStyles';
 
 type ButtonProps = {
   title: string;
@@ -8,31 +9,19 @@ type ButtonProps = {
 };
 
 const Button: FC<ButtonProps> = ({ title, onPress, variant }) => {
-  const styleText = styles[`${variant}Text`];
-  const styleButton = styleText ? styles[variant] || undefined : undefined;
+  const styleText = buttonStyles[`${variant}Text`];
+  const styleButton = styleText
+    ? buttonStyles[variant] || undefined
+    : undefined;
 
   return (
     <TouchableOpacity
-      style={styleButton || styles.default}
+      style={styleButton || buttonStyles.default}
       onPress={onPress}
     >
-      <Text style={styleText || styles.defaultText}>{title}</Text>
+      <Text style={styleText || buttonStyles.defaultText}>{title}</Text>
     </TouchableOpacity>
   );
 };
-
-const styles = StyleSheet.create({
-  default: {
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    paddingVertical: 10,
-    paddingHorizontal: 20,
-    marginVertical: 10,
-    borderRadius: 10,
-  },
-  defaultText: {
-    fontSize: 20,
-    color: 'white',
-  },
-});
 
 export default Button;

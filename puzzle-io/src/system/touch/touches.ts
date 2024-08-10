@@ -23,7 +23,8 @@ const addToCache = async (entity: Grid, matchingEntities: Grid[]) => {
 const MoveFinger: GameEngineSystem = async (entities, event) => {
   const mapToString = (map: Grid) => `${map.x}-${map.y}`;
   const ocupiedCells = entities.map((entity) => mapToString(entity.map));
-  const { gameView } = getStoreData() || {};
+  const storeData = getStoreData() || {};
+  const gameView = storeData.gameView;
   if (!gameView) {
     return;
   }

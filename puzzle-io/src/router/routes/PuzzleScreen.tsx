@@ -33,7 +33,7 @@ declare module '@/hooks/store/useStore' {
 
 const level = levels.level1;
 
-export default function Index() {
+const PuzzleScreen = () => {
   const [localEntyties, setLocalEntyties] = useState<Record<string, IEntity>>(
     {},
   );
@@ -79,4 +79,5 @@ export default function Index() {
       <StatusBar hidden={true} />
     </GameEngine>
   );
-}
+};
+export default PuzzleScreen;

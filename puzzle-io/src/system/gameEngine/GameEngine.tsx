@@ -119,6 +119,8 @@ const GameEngine: FC<GameEngineProps> = ({
     };
   }, [gridSnaps]);
 
+  console.log(entities['0-1']);
+
   return (
     <View style={[css.container]}>
       <DefaultRenderer

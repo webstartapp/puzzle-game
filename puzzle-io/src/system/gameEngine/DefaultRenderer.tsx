@@ -62,6 +62,7 @@ const EntityRenderer: FC<EntityRendererProps> = ({
   const [entityList, setEntityList] = useState<IStateEntity[]>([]);
 
   const ratio = useMemo(() => {
+    console.log(screen);
     const screenHeight = screen.current.height - (header?.height || 0);
     const ratioOfScreen = screen.current.width / screenHeight;
     const ratioOfGame = contentSize.width / contentSize.height;
