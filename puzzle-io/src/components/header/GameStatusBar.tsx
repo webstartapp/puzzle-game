@@ -2,15 +2,19 @@ import { useStore } from '@/hooks/store/useStore';
 import { HeaderComponent } from '@/system/gameEngine/GameEngine';
 import { Pressable, Text, View } from 'react-native';
 import CongratsModal from '../modals/CongratsModal';
-import { levels } from '@/config/levels';
+import { LevelId, levels } from '@/config/levels';
 import { useMemo } from 'react';
 
 const GameStatusBar: HeaderComponent = ({ dispatchSystem }) => {
   const { data } = useStore('gameView');
 
   const level = useMemo(() => {
-    const levelId = data?.levelId || 'level1';
-    return levels[levelId] || levels.level1;
+    const levelId = data?.levelId;
+    if (!levelId) {
+      throw new Error('unknown level');
+    }
+
+    return levels[levelId];
   }, [data?.levelId]);
 
   const successs = useMemo(() => {
