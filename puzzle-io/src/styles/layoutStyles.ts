@@ -7,6 +7,7 @@ export const layoutStyles = StyleSheet.create({
     height: '100%',
     justifyContent: 'center',
     alignItems: 'center',
+    overflow: 'hidden',
   },
   centeredContiner: {
     position: 'absolute',

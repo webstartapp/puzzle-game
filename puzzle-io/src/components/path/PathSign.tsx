@@ -1,21 +1,24 @@
 import { FC } from 'react';
 import Arrow from '@/assets/images/paths/rectangle-sign.png';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import { PathCheckpoint } from './PathDrawing';
 
 type PathSignProps = {
   x: number;
   y: number;
-  label: string;
-  onClick: () => void;
+  title: string;
+  onClick: (checkpoint: PathCheckpoint) => void;
   scale: number;
+  id: string;
 };
 
 export const PathSign: FC<PathSignProps> = ({
   x,
   y,
-  label,
+  title,
   onClick,
   scale,
+  id,
 }) => {
   const style = StyleSheet.create({
     container: {
@@ -40,7 +43,7 @@ export const PathSign: FC<PathSignProps> = ({
   });
   return (
     <TouchableOpacity
-      onPress={onClick}
+      onPress={() => onClick({ x, y, title, id })}
       style={style.container}
     >
       <Image
@@ -50,7 +53,7 @@ export const PathSign: FC<PathSignProps> = ({
           height: 50 * scale,
         }}
       />
-      <Text style={style.text}>{label || 'Missing'}</Text>
+      <Text style={style.text}>{title || 'Missing'}</Text>
     </TouchableOpacity>
   );
 };

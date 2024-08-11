@@ -3,7 +3,7 @@ import GameEngine from '@/src/system/gameEngine/GameEngine';
 import { MoveFinger } from '@/src/system/touch/touches';
 import { ImageResult } from 'expo-image-manipulator';
 import { StatusBar } from 'expo-status-bar';
-import { useEffect, useState } from 'react';
+import { FC, useEffect, useState } from 'react';
 import { useStore } from '@/hooks/store/useStore';
 import GameStatusBar from '@/components/header/GameStatusBar';
 import { LevelId, levels } from '@/config/levels';
@@ -33,7 +33,12 @@ declare module '@/hooks/store/useStore' {
 
 const level = levels.level1;
 
-const PuzzleScreen = () => {
+type PuzzleScreenProps = {
+  level: LevelId;
+  continue?: boolean;
+};
+
+const PuzzleScreen: FC<PuzzleScreenProps> = () => {
   const [localEntyties, setLocalEntyties] = useState<Record<string, IEntity>>(
     {},
   );

@@ -8,16 +8,17 @@ import { Asset } from 'expo-asset';
 export type PathCheckpoint = {
   x: number;
   y: number;
-  label: string;
-  onClick: () => void;
+  title: string;
+  id: string;
 };
 
 type PathDrawingProps = {
   paths: PathCheckpoint[];
   image: ImageSourcePropType;
+  onClick: (checkpoint: Omit<PathCheckpoint, 'onClick'>) => void;
 };
 
-const PathDrawing: FC<PathDrawingProps> = ({ paths, image }) => {
+const PathDrawing: FC<PathDrawingProps> = ({ paths, image, onClick }) => {
   const screen = useRef(Dimensions.get('window'));
 
   const size = useMemo(() => {
@@ -38,14 +39,14 @@ const PathDrawing: FC<PathDrawingProps> = ({ paths, image }) => {
       x: number;
       y: number;
       rotation: number;
-      label: string;
-      onClick: () => void;
+      title: string;
       isSign?: boolean;
       scale: number;
+      id: string;
     }[] = [];
     const itemSize = size.size / 20;
 
-    (paths || []).forEach(({ x, y, label, onClick }, index) => {
+    (paths || []).forEach(({ x, y, title, id }, index) => {
       const next = paths[index + 1];
       const scale = itemSize / 50;
 
@@ -53,10 +54,10 @@ const PathDrawing: FC<PathDrawingProps> = ({ paths, image }) => {
         x: x * itemSize,
         y: y * itemSize,
         rotation: 0,
-        label,
-        onClick,
+        title,
         isSign: true,
         scale,
+        id,
       });
       if (!next) {
         return;
@@ -74,9 +75,9 @@ const PathDrawing: FC<PathDrawingProps> = ({ paths, image }) => {
           x: newX,
           y: newY,
           rotation,
-          label,
+          title,
           scale,
-          onClick: () => {},
+          id,
         });
       }
     });
@@ -104,16 +105,17 @@ const PathDrawing: FC<PathDrawingProps> = ({ paths, image }) => {
         }}
       />
       {pathsWithRotation.map(
-        ({ x, y, rotation, label, onClick, isSign, scale }, index) => {
+        ({ x, y, rotation, title, isSign, scale, id }, index) => {
           if (isSign) {
             return (
               <PathSign
                 key={index}
                 x={x}
                 y={y}
-                label={label}
+                title={title}
                 onClick={onClick}
                 scale={scale}
+                id={id}
               />
             );
           }

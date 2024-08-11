@@ -1,5 +1,16 @@
 import { Numberify } from './grid/indexedGrid';
 import { LevelId } from './levels';
+import aquatic_realm from '@/assets/images/stages/aquatic_realm.jpg';
+import arctic_tundra from '@/assets/images/stages/arctic_tundra.jpg';
+import celestial_realm from '@/assets/images/stages/celestial_realm.jpg';
+import desert_oasis from '@/assets/images/stages/desert_oasis.jpg';
+import enchanted_forest from '@/assets/images/stages/enchanted_forest.jpg';
+import enchanted_gardens from '@/assets/images/stages/enchanted_gardens.jpg';
+import jungle_canopy from '@/assets/images/stages/jungle_canopy.jpg';
+import mountain_peaks from '@/assets/images/stages/mountain_peaks.jpg';
+import volcanic_caverns from '@/assets/images/stages/volcanic_caverns.jpg';
+import menagerie_heart from '@/assets/images/stages/menagerie_heart.jpg';
+import { ImageSourcePropType } from 'react-native';
 
 type OneTo20 =
   | Numberify<`${1}${0 | 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9}`>
@@ -18,6 +29,8 @@ type Scene = {
   level: LevelId;
   title: string;
   description: string;
+  x: OneTo20;
+  y: OneTo20;
 };
 type StageType<T extends string> = {
   id: T;
@@ -29,6 +42,7 @@ type StageType<T extends string> = {
   resolution: string;
   x: OneTo20;
   y: OneTo20;
+  image: ImageSourcePropType;
 };
 
 const gameStageFN = <T extends string>(
@@ -51,67 +65,90 @@ export const gameStages = gameStageFN([
         title: 'The Forest Clearing',
         description:
           'Orion finds a magical map leading to the enchanted forest.',
+        x: 10,
+        y: 17,
       },
       {
         level: 'level2',
         title: 'The Enchanted Squirrels',
         description:
           'The hero meets a group of enchanted squirrels needing help,',
+        x: 10,
+        y: 13,
       },
       {
         level: 'level2',
         title: 'The Enchanted Squirrels',
         description:
           'The hero meets a group of enchanted squirrels needing help.',
+        x: 7,
+        y: 11,
       },
       {
         level: 'level2',
         title: 'The Enchanted Squirrels',
         description:
           'The hero solves a puzzle to free the squirrels from their enchantment.',
+        x: 2,
+        y: 10,
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'Hidden path',
         description: 'The hero discovers a hidden path in the forest.',
+        x: 3,
+        y: 6,
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The wise old deer',
         description:
           'The hero encounters a wise old deer with clues to the next puzzle.',
+        x: 7,
+        y: 3,
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The River Crossing',
         description: 'The hero solves a puzzle to clear a blocked river path.',
+        x: 13,
+        y: 3,
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The Ancient Tree',
         description:
           'The hero finds an ancient tree with carvings of the prophecy.',
+        x: 17,
+        y: 16,
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The mischievous fox',
         description:
           'The hero encounters a mischievous fox guarding the next clue.',
+        x: 14,
+        y: 15,
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The Fox Challenge',
         description: "The hero solves a puzzle to pass the fox's challenge.",
+        x: 12,
+        y: 12,
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'Orion the Owl',
         description:
           "The hero reaches Orion's nest at the top of the tallest tree.",
+        x: 11,
+        y: 10,
       },
     ],
     resolution:
       'Luna the Rabbit informs the hero about the curse and guides them to Orion, who reveals the prophecy.',
+    image: enchanted_forest,
   },
   {
     id: 'aquatic_realm',
@@ -125,59 +162,81 @@ export const gameStages = gameStageFN([
     scenes: [
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The Magical Pearl',
+        x: 18,
+        y: 6,
         description:
           'The hero receives a magical pearl that allows them to breathe underwater.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The school of fish',
+        x: 15,
+        y: 3,
         description: 'The hero encounters a school of fish trapped in a net.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The fish rescue',
+        x: 10,
+        y: 5,
         description: 'The hero solves a puzzle to free the trapped fish.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The sunken ship',
+        x: 5,
+        y: 7,
         description: 'The hero finds a sunken ship with a treasure map.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The octopus guardian',
+        x: 9,
+        y: 10,
         description: 'The hero encounters an octopus guarding a crucial clue.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The octopus challenge',
+        x: 8,
+        y: 13,
         description: "The hero solves a puzzle to gain the octopus's trust.",
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The hidden cave',
+        x: 4,
+        y: 10,
         description: 'The hero follows the treasure map to a hidden cave.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The coral garden',
+        x: 3,
+        y: 15,
         description:
           'The hero discovers a coral garden in need of restoration.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The coral challenge',
+        x: 6,
+        y: 17,
         description: 'The hero solves a puzzle to revive the coral garden.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The heart of the sea',
+        x: 11,
+        y: 15,
+
         description: 'The hero reaches the heart of the underwater kingdom.',
       },
     ],
     resolution:
       "Coral the Dolphin explains the disruption in the currents and the hero's need to restore balance.",
+    image: aquatic_realm,
   },
   {
     id: 'desert_oasis',
@@ -190,63 +249,84 @@ export const gameStages = gameStageFN([
     scenes: [
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The desert map',
+        x: 17,
+        y: 5,
         description: 'The hero finds an old map leading to the desert oasis.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The Encountered Traveler',
+        x: 9,
+        y: 4,
         description:
           'The hero encounters a group of travelers in need of water.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The underground water source',
+        x: 8,
+        y: 7,
         description:
           'The hero solves a puzzle to find an underground water source.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The ancient ruins',
+        x: 2,
+        y: 12,
         description:
           'The hero discovers ancient ruins with clues to the next puzzle.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The sandstorm',
+        x: 7,
+        y: 11,
         description: 'The hero encounters a sandstorm and seeks shelter.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The sandstorm nagiagation',
+        x: 9,
+        y: 12,
         description:
           'The hero solves a puzzle to navigate through the sandstorm.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The ancient artifact',
+        x: 15,
+        y: 14,
         description: 'The hero finds an ancient artifact in the ruins.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The Fennec Fox',
+        x: 14,
+        y: 17,
         description:
           'The hero encounters Zephyr the Fennec Fox with information on the oasis.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The Fennec Fox trust',
+        x: 12,
+        y: 15,
         description: "The hero solves a puzzle to gain Zephyr's trust.",
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The hidden oasis',
+        x: 8,
+        y: 16,
         description:
           'The hero reaches the hidden oasis and unlocks the water sources.',
       },
     ],
     resolution:
       'Sirocco the Camel reveals the curse affecting the desert and the need to restore the oasis.',
+    image: desert_oasis,
   },
   {
     id: 'mountain_peaks',
@@ -260,61 +340,82 @@ export const gameStages = gameStageFN([
     scenes: [
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The Cloak',
+        x: 14,
+        y: 18,
         description: 'The hero receives a magical cloak to withstand the cold.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The Avalanche',
+        x: 13,
+        y: 13,
         description:
           'The hero encounters a group of mountain goats trapped in an avalanche.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The trapped goats',
+        x: 10,
+        y: 15,
         description: 'The hero solves a puzzle to free the trapped goats.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The hidden cave',
+        x: 4,
+        y: 13,
         description: 'The hero discovers a hidden cave with ancient carvings.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The blizzard',
+        x: 5,
+        y: 11,
         description: ' The hero encounters a blizzard and seeks shelter.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The blizzard navigation',
+        x: 9,
+        y: 12,
         description:
           'The hero solves a puzzle to navigate through the blizzard.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The ancient relic',
+        x: 12,
+        y: 11,
         description: 'The hero finds an ancient relic in the cave.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The Mountain Goat',
+        x: 8,
+        y: 9,
         description:
           'The hero encounters Thistle the Mountain Goat with information on the Phoenix.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The Mountain Goat trust',
+        x: 7,
+        y: 6,
         description: "The hero solves a puzzle to gain Thistle's trust.",
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The peak of the mountain',
+        x: 9,
+        y: 2,
         description:
           'The hero reaches the peak of the mountain and finds Blaze the Phoenix.',
       },
     ],
     resolution:
       "Blaze the Phoenix reveals the prophecy and the hero's role in fulfilling it.",
+    image: mountain_peaks,
   },
   {
     id: 'jungle_canopy',
@@ -328,63 +429,84 @@ export const gameStages = gameStageFN([
     scenes: [
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The Magical Machete',
+        x: 10,
+        y: 17,
         description:
           'The hero receives a magical machete to cut through thick vines.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The trapped monkeys',
+        x: 7,
+        y: 15,
         description:
           'The hero encounters a group of monkeys trapped in the vines.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The monkey rescue',
+        x: 5,
+        y: 16,
         description: 'The hero solves a puzzle to free the trapped monkeys.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The hidden path',
+        x: 3,
+        y: 12,
         description: 'The hero discovers a hidden path in the jungle.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The wise old parrot',
+        x: 6,
+        y: 10,
         description:
           'The hero encounters a wise old parrot with clues to the next puzzle.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The River Crossing',
+        x: 10,
+        y: 4,
         description: 'The hero solves a puzzle to clear a blocked river path.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The Ancient Tree',
+        x: 13,
+        y: 10,
         description:
           'The hero finds an ancient tree with carvings of the prophecy.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The mischievous monkey',
+        x: 12,
+        y: 13,
         description:
           'The hero encounters a mischievous monkey guarding the next clue.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The monkey challenge',
+        x: 16,
+        y: 15,
         description: "The hero solves a puzzle to pass the monkey's challenge.",
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The secret temple',
+        x: 17,
+        y: 9,
         description:
           'The hero reaches the secret temple and uncovers its mysteries.',
       },
     ],
     resolution:
       "Taro the Tiger reveals that the jungle's heart has been sealed, affecting the entire ecosystem.",
+    image: jungle_canopy,
   },
   {
     id: 'volcanic_caverns',
@@ -399,62 +521,83 @@ export const gameStages = gameStageFN([
     scenes: [
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The Magical Shield',
+        x: 3,
+        y: 10,
         description: 'The hero receives a magical shield to withstand heat.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The trapped lizards',
+        x: 6,
+        y: 12,
         description:
           'The hero encounters a group of lizards trapped in the caves.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The lizard rescue',
+        x: 9,
+        y: 17,
         description: 'The hero solves a puzzle to free the trapped lizards.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The hidden chamber',
+        x: 15,
+        y: 16,
         description:
           'The hero discovers a hidden chamber with ancient carvings.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The lava flow',
+        x: 12,
+        y: 14,
         description: 'The hero encounters a lava flow and seeks shelter.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The lava navigation',
+        x: 10,
+        y: 13,
         description:
           'The hero solves a puzzle to navigate through the lava flow.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The ancient gem',
+        x: 7,
+        y: 9,
         description: 'The hero finds an ancient gem in the chamber.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The Salamander',
+        x: 4,
+        y: 6,
         description:
           'The hero encounters Flint the Salamander with information on the volcano.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The Salamander trust',
+        x: 5,
+        y: 3,
         description: "The hero solves a puzzle to gain Flint's trust.",
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The heart of the volcano',
+        x: 12,
+        y: 3,
         description:
           'The hero reaches the heart of the volcano and stabilizes it.',
       },
     ],
     resolution:
       "Ember the Dragon reveals the prophecy and the hero's role in preventing the volcano's eruption.",
+    image: volcanic_caverns,
   },
   {
     id: 'enchanted_gardens',
@@ -467,60 +610,82 @@ export const gameStages = gameStageFN([
     scenes: [
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The Magical Watering Can',
+        x: 10,
+        y: 10,
         description:
           'The hero receives a magical watering can to revive plants.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The thirsty flowers',
+        x: 8,
+        y: 8,
         description: 'The hero encounters a group of flowers in need of water.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The flower revival',
+        x: 5,
+        y: 6,
         description: 'The hero solves a puzzle to revive the flowers.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The hidden path',
+        x: 3,
+        y: 3,
         description: 'The hero discovers a hidden path in the garden.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The wise old tree',
+        x: 2,
+        y: 8,
         description:
           'The hero encounters a wise old tree with clues to the next puzzle.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The Stream Crossing',
+        x: 5,
+        y: 15,
         description: 'The hero solves a puzzle to clear a blocked stream.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The Ancient Seed',
+        x: 8,
+        y: 17,
         description: 'The hero finds an ancient seed in the garden.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The Hedgehog',
+        x: 10,
+        y: 18,
         description:
           'The hero encounters Thorn the Hedgehog with information on the plants.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The Hedgehog trust',
+        x: 15,
+        y: 15,
         description: "The hero solves a puzzle to gain Thorn's trust.",
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The heart of the garden',
+        x: 14,
+        y: 10,
+
         description: 'The hero reaches the heart of the garden and revives it.',
       },
     ],
     resolution:
       'Petal the Fairy reveals that the curse has drained the magic from the gardens, and only the hero can restore it.',
+    image: enchanted_gardens,
   },
   {
     id: 'celestial_realm',
@@ -534,55 +699,74 @@ export const gameStages = gameStageFN([
     scenes: [
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The Magical Compass',
+        x: 3,
+        y: 15,
         description: 'The hero receives a magical compass to navigate the sky.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The Enchanted Birds',
+        x: 6,
+        y: 17,
         description:
           'The hero encounters a group of birds in need of guidance.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The bird guidance',
+        x: 10,
+        y: 17,
         description: 'The hero solves a puzzle to guide the birds.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The hidden island',
+        x: 18,
+        y: 16,
         description:
           'The hero discovers a hidden island with ancient carvings.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The star constellation',
+        x: 15,
+        y: 14,
         description: 'The hero encounters a storm and seeks shelter.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The storm navigation',
+        x: 10,
+        y: 15,
         description: 'The hero solves a puzzle to navigate through the storm.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The ancient constellation',
+        x: 6,
+        y: 14,
         description: 'The hero finds an ancient constellation in the carvings.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The Pegasus',
+        x: 10,
+        y: 12,
         description:
           'The hero encounters Celeste the Pegasus with information on the stars.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The Pegasus trust',
+        x: 18,
+        y: 13,
         description: "The hero solves a puzzle to gain Celeste's trust.",
       },
     ],
     resolution:
       'Orion reveals the final piece of the prophecy, guiding the hero to the last challenge.',
+    image: celestial_realm,
   },
   {
     id: 'arctic_tundra',
@@ -595,60 +779,81 @@ export const gameStages = gameStageFN([
     scenes: [
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The Magical Torch',
+        x: 2,
+        y: 10,
         description: 'The hero receives a magical torch to melt ice.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The trapped seals',
+        x: 5,
+        y: 13,
         description: 'The hero encounters a group of seals trapped in ice.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The seal rescue',
+        x: 8,
+        y: 17,
         description: 'The hero solves a puzzle to free the trapped seals.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The hidden cave',
+        x: 16,
+        y: 15,
         description: 'The hero discovers an ice cave with ancient carvings.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The snowstorm',
+        x: 15,
+        y: 12,
         description: 'The hero encounters a snowstorm and seeks shelter.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The snowstorm navigation',
+        x: 10,
+        y: 13,
         description:
           'The hero solves a puzzle to navigate through the snowstorm.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The ancient relic',
+        x: 6,
+        y: 9,
         description: 'The hero finds an ancient relic in the cave.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The Arctic Fox',
+        x: 4,
+        y: 6,
         description:
           'The hero encounters Frost the Arctic Fox with information on the artifacts.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The Arctic Fox trust',
+        x: 5,
+        y: 3,
         description: "The hero solves a puzzle to gain Frost's trust.",
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The heart of the tundra',
+        x: 8,
+        y: 4,
         description:
           'The hero reaches the heart of the tundra and uncovers the ancient artifacts.',
       },
     ],
     resolution:
       "Aurora the Polar Bear reveals the prophecy and the hero's role in restoring the balance of the tundra.",
+    image: arctic_tundra,
   },
   {
     id: 'menagerie_heart',
@@ -674,62 +879,86 @@ export const gameStages = gameStageFN([
     scenes: [
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The dense fog',
+        x: 6,
+        y: 4,
         description:
           'The hero arrives at the heart of the menagerie and encounters a dense fog.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The fog puzzle',
+        x: 9,
+        y: 2,
         description: 'The hero solves a puzzle to clear the fog.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The broken statue',
+        x: 14,
+        y: 7,
         description:
           'The hero finds a broken statue with clues to the next puzzle.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The enchanted barrier',
+        x: 17,
+        y: 9,
+
         description: 'The hero encounters a barrier of darkness.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The barrier puzzle',
+        x: 18,
+        y: 12,
         description: 'The hero solves a puzzle to dispel the darkness.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The ancient inscription',
+        x: 11,
+        y: 10,
         description:
           'The hero discovers an ancient inscription with the final riddle.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The source of the curse',
+        x: 10,
+        y: 7,
         description: 'The hero encounters the source of the curse.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The curse puzzle',
+        x: 6,
+        y: 8,
         description: 'The hero solves a puzzle to weaken the curse.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The collected items',
+        x: 2,
+        y: 9,
         description:
           'The hero uses the collected items to confront the source.',
       },
       {
         level: 'level2',
-        title: 'The Enchanted Squirrels',
+        title: 'The Hearth of the Menagerie',
+        x: 4,
+        y: 13,
         description: 'The hero solves the final puzzle to lift the curse.',
       },
     ],
     resolution:
       'The hero gathers all the allies and items collected throughout the journey to confront the source of the curse and save the enchanted menagerie.',
+    image: menagerie_heart,
   },
 ]);
 
-export type GameStageID = (typeof gameStages)[number]['id'];
+export type GameStage = (typeof gameStages)[number];
+
+export type GameStageID = GameStage['id'];

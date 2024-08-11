@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, FC } from 'react';
 import { View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import HeloImage from '@/assets/images/enchanted-forest.jpeg';
@@ -12,7 +12,7 @@ import { MuteButton } from '@/components/icons/MuteButton';
 import { layoutStyles } from '@/styles/layoutStyles';
 import { useGameRouter } from '../Router';
 import PathDrawing from '@/components/path/PathDrawing';
-import { GameStageID, gameStages } from '@/config/stages';
+import { GameStage, GameStageID, gameStages } from '@/config/stages';
 
 declare module '@/hooks/store/useStore' {
   export interface IStore {
@@ -20,7 +20,11 @@ declare module '@/hooks/store/useStore' {
   }
 }
 
-const IntroScreen = () => {
+type StageMapScreenProps = {
+  stage: GameStageID;
+};
+
+const StageMapScreen: FC<StageMapScreenProps> = ({ stage }) => {
   const navigation = useNavigation();
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [username, setUsername] = useState('Guest');
@@ -28,13 +32,13 @@ const IntroScreen = () => {
   const { state, setState } = useStore();
   const { useCall } = useRestAPI('sessionCalls');
 
+  const stageData = gameStages.find((s) => s.id === stage) as GameStage;
+
   const { playSong, isPlaying, stopSong } = useSound(adventure, true);
-  useAnimatedBackground(HeloImage);
+  useAnimatedBackground(stageData.image);
   const { setRoute } = useGameRouter();
 
   const { data } = useCall('getUser', {});
-
-  console.log(data);
 
   useEffect(() => {
     playSong();
@@ -53,19 +57,19 @@ const IntroScreen = () => {
         }}
       />
       <PathDrawing
-        paths={gameStages.map((stage) => ({
-          title: stage.title,
-          x: stage.x,
-          y: stage.y,
-          id: stage.id,
+        paths={stageData.scenes.map((scene) => ({
+          title: scene.title,
+          x: scene.x,
+          y: scene.y,
+          id: scene.level,
         }))}
-        image={HeloImage}
         onClick={(stage) => {
-          setRoute('StageMapScreen', { stage: stage.id as GameStageID });
+          setRoute('WorldMapScreen');
         }}
+        image={stageData.image}
       />
     </View>
   );
 };
 
-export default IntroScreen;
+export default StageMapScreen;

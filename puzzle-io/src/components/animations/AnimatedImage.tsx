@@ -1,7 +1,6 @@
 import { layoutStyles } from '@/styles/layoutStyles';
-import { Asset } from 'expo-asset';
 import { createContext, FC, useContext, useEffect, useState } from 'react';
-import { StyleSheet, View } from 'react-native';
+import { ImageSourcePropType, StyleSheet, View } from 'react-native';
 import { Animated } from 'react-native';
 
 type AnimatedImageProps = {
@@ -87,13 +86,13 @@ export const AnimatedImage: FC<AnimatedImageProps> = ({ image }) => {
 };
 
 const AnimatedImageContext = createContext<{
-  bgImage?: Asset;
-  setBgImage: (image: Asset) => void;
+  bgImage?: ImageSourcePropType;
+  setBgImage: (image: ImageSourcePropType) => void;
 }>({
   setBgImage: () => {},
 });
 
-export const useAnimatedBackground = (image: Asset) => {
+export const useAnimatedBackground = (image: ImageSourcePropType) => {
   const context = useContext(AnimatedImageContext);
   if (!context) {
     throw new Error(
@@ -113,7 +112,7 @@ type AnimatedBackgroundProviderProps = {
 const AnimatedBackgroundProvider: FC<AnimatedBackgroundProviderProps> = ({
   children,
 }) => {
-  const [bgImage, setBgImage] = useState<Asset>();
+  const [bgImage, setBgImage] = useState<ImageSourcePropType>();
   return (
     <View style={layoutStyles.container}>
       <AnimatedImageContext.Provider value={{ bgImage, setBgImage }}>
