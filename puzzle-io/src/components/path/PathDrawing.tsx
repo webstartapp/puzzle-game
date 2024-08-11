@@ -5,20 +5,25 @@ import { IGrid } from '@/_generated/sessionOperations';
 import { FC, useMemo, useRef } from 'react';
 import { Asset } from 'expo-asset';
 
-export type PathCheckpoint = {
+export type PathCheckpoint<T extends any> = {
   x: number;
   y: number;
   title: string;
   id: string;
+  data: T;
 };
 
-type PathDrawingProps = {
-  paths: PathCheckpoint[];
+type PathDrawingProps<T extends any> = {
+  paths: PathCheckpoint<T>[];
   image: ImageSourcePropType;
-  onClick: (checkpoint: Omit<PathCheckpoint, 'onClick'>) => void;
+  onClick: (checkpoint: Omit<PathCheckpoint<T>, 'onClick'>) => void;
 };
 
-const PathDrawing: FC<PathDrawingProps> = ({ paths, image, onClick }) => {
+const PathDrawing = <T extends any = any>({
+  paths,
+  image,
+  onClick,
+}: PathDrawingProps<T>) => {
   const screen = useRef(Dimensions.get('window'));
 
   const size = useMemo(() => {
@@ -43,10 +48,11 @@ const PathDrawing: FC<PathDrawingProps> = ({ paths, image, onClick }) => {
       isSign?: boolean;
       scale: number;
       id: string;
+      data: T;
     }[] = [];
     const itemSize = size.size / 20;
 
-    (paths || []).forEach(({ x, y, title, id }, index) => {
+    (paths || []).forEach(({ x, y, title, id, data }, index) => {
       const next = paths[index + 1];
       const scale = itemSize / 50;
 
@@ -58,6 +64,7 @@ const PathDrawing: FC<PathDrawingProps> = ({ paths, image, onClick }) => {
         isSign: true,
         scale,
         id,
+        data,
       });
       if (!next) {
         return;
@@ -78,6 +85,7 @@ const PathDrawing: FC<PathDrawingProps> = ({ paths, image, onClick }) => {
           title,
           scale,
           id,
+          data,
         });
       }
     });
@@ -105,7 +113,7 @@ const PathDrawing: FC<PathDrawingProps> = ({ paths, image, onClick }) => {
         }}
       />
       {pathsWithRotation.map(
-        ({ x, y, rotation, title, isSign, scale, id }, index) => {
+        ({ x, y, rotation, title, isSign, scale, id, data }, index) => {
           if (isSign) {
             return (
               <PathSign
@@ -116,6 +124,7 @@ const PathDrawing: FC<PathDrawingProps> = ({ paths, image, onClick }) => {
                 onClick={onClick}
                 scale={scale}
                 id={id}
+                data={data}
               />
             );
           }

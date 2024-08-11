@@ -11,20 +11,23 @@ const GameStatusBar: HeaderComponent = ({ dispatchSystem }) => {
   const level = useMemo(() => {
     const levelId = data?.levelId;
     if (!levelId) {
-      throw new Error('unknown level');
+      return {} as any;
     }
 
     return levels[levelId];
   }, [data?.levelId]);
 
   const successs = useMemo(() => {
-    console.log(
-      17,
-      data?.matchingEntities?.length,
-      level.grid.x * level.grid.y,
+    return (
+      data?.matchingEntities?.length === level?.grid?.x * level?.grid?.y - 1
     );
-    return data?.matchingEntities?.length === level.grid.x * level.grid.y - 1;
-  }, [data?.matchingEntities, level.grid.x, level.grid.y]);
+  }, [data?.matchingEntities, level?.grid?.x, level?.grid?.y]);
+
+  console.log(24, data);
+
+  if (!data) {
+    return null;
+  }
 
   return (
     <View>

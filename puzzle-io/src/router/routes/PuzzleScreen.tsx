@@ -31,34 +31,35 @@ declare module '@/hooks/store/useStore' {
   }
 }
 
-const level = levels.level1;
-
 type PuzzleScreenProps = {
   level: LevelId;
-  continue?: boolean;
+  isContinue?: boolean;
 };
 
-const PuzzleScreen: FC<PuzzleScreenProps> = () => {
+const PuzzleScreen: FC<PuzzleScreenProps> = ({ level, isContinue }) => {
   const [localEntyties, setLocalEntyties] = useState<Record<string, IEntity>>(
     {},
   );
 
   const { setState } = useStore();
+  const levelData = levels[level];
 
   useEffect(() => {
     const T = async () => {
-      const entities = await initiateGameLevel('level1');
+      const entities = await initiateGameLevel(level);
+      console.log(50, entities);
       setLocalEntyties(entities);
       setState('gameView', {
         moves: [],
         matchingEntities: [],
-        levelId: level.id,
+        levelId: level,
       });
     };
     T();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  console.log(61, levelData, level);
   return (
     <GameEngine
       system={MoveFinger}
@@ -72,8 +73,8 @@ const PuzzleScreen: FC<PuzzleScreenProps> = () => {
       }}
       gridSnaps={{
         cell: {
-          width: 100 / level.grid.x,
-          height: 100 / level.grid.y,
+          width: 100 / levelData.grid.x,
+          height: 100 / levelData.grid.y,
         },
       }}
       contentSize={{

@@ -33,7 +33,13 @@ const MoveFinger: GameEngineSystem = async (entities, event) => {
 
   if (event.type === 'custom') {
     if (event?.customData?.type === 'reset') {
-      const newEntites = await initiateGameLevel('level1');
+      const previousEntities = getStoreData() || {};
+      if (!previousEntities.gameView) {
+        return;
+      }
+      const newEntites = await initiateGameLevel(
+        previousEntities.gameView.levelId,
+      );
       if (!newEntites) return undefined;
       const mapped: IStateEntity[] = Object.keys(newEntites).map((key) => {
         const entity: IStateEntity = {
@@ -100,7 +106,7 @@ const MoveFinger: GameEngineSystem = async (entities, event) => {
       dispatchStoreData('gameView', {
         moves,
         matchingEntities,
-        levelId: levels.level1.id,
+        levelId: level.id,
       });
       return newEntites;
     }

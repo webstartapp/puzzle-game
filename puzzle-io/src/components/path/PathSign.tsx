@@ -7,9 +7,10 @@ type PathSignProps = {
   x: number;
   y: number;
   title: string;
-  onClick: (checkpoint: PathCheckpoint) => void;
+  onClick: (checkpoint: PathCheckpoint<any>) => void;
   scale: number;
   id: string;
+  data: any;
 };
 
 export const PathSign: FC<PathSignProps> = ({
@@ -19,6 +20,7 @@ export const PathSign: FC<PathSignProps> = ({
   onClick,
   scale,
   id,
+  data,
 }) => {
   const style = StyleSheet.create({
     container: {
@@ -43,7 +45,7 @@ export const PathSign: FC<PathSignProps> = ({
   });
   return (
     <TouchableOpacity
-      onPress={() => onClick({ x, y, title, id })}
+      onPress={() => onClick({ x, y, title, id, data })}
       style={style.container}
     >
       <Image

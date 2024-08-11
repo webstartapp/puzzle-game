@@ -62,6 +62,8 @@ export const initiateGameLevel = async (
   const level = levels[levelId];
   const entities: Record<string, IEntity> = {};
 
+  console.log(65, level);
+
   try {
     const img = await loadImage(`${level.image}`);
     const width = img.width;

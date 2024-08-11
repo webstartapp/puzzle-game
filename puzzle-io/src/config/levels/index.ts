@@ -1,6 +1,4 @@
 import { Level } from '@/utils/levelConstructor';
-import level1 from '@/config/levels/levels/level1';
-import level2 from '@/config/levels/levels/level2';
 import levelMapping from '@/config/levels/levelInfo.json';
 import { indexedGrid, IndexedGridKeys } from '../grid/indexedGrid';
 import levelImages from '@/assets/static/levelImages.json';
@@ -22,8 +20,8 @@ const levelFN = (levelsIn: LevelRecord): Levels => {
       ...levelItem,
       id: levelKey,
       image: (levelImages as Record<string, string>)[levelKey],
-      title: level1.title,
-      subtitle: level1.subtitle,
+      title: '',
+      subtitle: '',
       grid: indexedGrid[levelItem.grid as IndexedGridKeys],
       shifts: levelItem.shifts.map(
         (shift) => indexedGrid[shift as IndexedGridKeys],

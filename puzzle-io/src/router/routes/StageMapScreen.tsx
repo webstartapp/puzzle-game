@@ -62,9 +62,11 @@ const StageMapScreen: FC<StageMapScreenProps> = ({ stage }) => {
           x: scene.x,
           y: scene.y,
           id: scene.level,
+          data: scene,
         }))}
-        onClick={(stage) => {
-          setRoute('WorldMapScreen');
+        onClick={({ data }) => {
+          console.log(data);
+          setRoute('puzzleScreen', { level: data.level });
         }}
         image={stageData.image}
       />

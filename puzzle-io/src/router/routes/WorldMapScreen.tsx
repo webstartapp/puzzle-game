@@ -26,15 +26,10 @@ const IntroScreen = () => {
   const [username, setUsername] = useState('Guest');
   const [collectedKeys, setCollectedKeys] = useState(0);
   const { state, setState } = useStore();
-  const { useCall } = useRestAPI('sessionCalls');
 
   const { playSong, isPlaying, stopSong } = useSound(adventure, true);
   useAnimatedBackground(HeloImage);
   const { setRoute } = useGameRouter();
-
-  const { data } = useCall('getUser', {});
-
-  console.log(data);
 
   useEffect(() => {
     playSong();
@@ -48,7 +43,6 @@ const IntroScreen = () => {
       <MuteButton
         isMuted={!isPlaying}
         onToggleMute={() => {
-          console.log(54, isPlaying);
           isPlaying ? stopSong() : playSong();
         }}
       />
@@ -58,10 +52,11 @@ const IntroScreen = () => {
           x: stage.x,
           y: stage.y,
           id: stage.id,
+          data: stage,
         }))}
         image={HeloImage}
-        onClick={(stage) => {
-          setRoute('StageMapScreen', { stage: stage.id as GameStageID });
+        onClick={({ data }) => {
+          setRoute('StageMapScreen', { stage: data.id as GameStageID });
         }}
       />
     </View>

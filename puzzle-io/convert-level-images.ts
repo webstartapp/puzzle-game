@@ -1,6 +1,7 @@
 import * as fs from 'fs';
 import * as path from 'path';
 import { promisify } from 'util';
+import mime from 'mime-types';
 
 const readFileAsync = promisify(fs.readFile);
 
@@ -10,9 +11,9 @@ async function generateImageMap(
   defaultImage: string,
 ): Promise<void> {
   const imageMap: Record<string, string> = {};
-  const rootDir = process.cwd(); // Get the current working directory
-  const resolvedInputDir = path.resolve(rootDir, inputDir); // Resolve input directory with root
-  const resolvedOutputFile = path.resolve(rootDir, outputFile); // Resolve output file with root
+  const rootDir = process.cwd();
+  const resolvedInputDir = path.resolve(rootDir, inputDir);
+  const resolvedOutputFile = path.resolve(rootDir, outputFile);
 
   for (let stage = 1; stage <= 10; stage++) {
     for (let level = 1; level <= 10; level++) {
@@ -21,10 +22,14 @@ async function generateImageMap(
 
       try {
         const imageData = await readFileAsync(imagePath);
-        imageMap[`${stage}x${level}`] = imageData.toString('base64');
+        const mimeType = mime.lookup(imagePath);
+        const base64Image = `data:${mimeType};base64,${imageData.toString(
+          'base64',
+        )}`;
+        imageMap[`level${stage}x${level}`] = base64Image;
       } catch (error) {
         // If the image doesn't exist or there's an error, use the default image
-        imageMap[`${stage}x${level}`] = defaultImage;
+        imageMap[`level${stage}x${level}`] = defaultImage;
       }
     }
   }
