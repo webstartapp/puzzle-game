@@ -3,6 +3,7 @@ import level1 from '@/config/levels/levels/level1';
 import level2 from '@/config/levels/levels/level2';
 import levelMapping from '@/config/levels/levelInfo.json';
 import { indexedGrid, IndexedGridKeys } from '../grid/indexedGrid';
+import levelImages from '@/assets/static/levelImages.json';
 
 export type LevelRecord = typeof levelMapping;
 
@@ -20,7 +21,7 @@ const levelFN = (levelsIn: LevelRecord): Levels => {
     const level: Level<LevelId> = {
       ...levelItem,
       id: levelKey,
-      image: level1.image,
+      image: (levelImages as Record<string, string>)[levelKey],
       title: level1.title,
       subtitle: level1.subtitle,
       grid: indexedGrid[levelItem.grid as IndexedGridKeys],

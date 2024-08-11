@@ -12,7 +12,8 @@
     "lint": "expo lint",
     "lint-fix": "eslint --fix --ext .ts,tsx .",
     "prettier": "prettier --write .",
-    "convert-licenses": "ts-node convert-licenses.ts"
+    "convert-licenses": "ts-node convert-licenses.ts",
+    "convert-level-images": "ts-node convert-level-images.ts"
   },
   "jest": {
     "preset": "jest-expo"

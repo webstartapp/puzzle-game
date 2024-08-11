@@ -14,3 +14,4 @@ web-build/
 .DS_Store
 
 server/.env
+puzzle-io/assets/static/levelImages.json
