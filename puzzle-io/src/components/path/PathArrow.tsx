@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import Arrow from '@/assets/images/paths/arrow.png';
+import Arrow from '@/assets/images/wooden_icons/arrow.png';
 import { Image, StyleSheet, Text, View } from 'react-native';
 
 type PathArrowProps = {

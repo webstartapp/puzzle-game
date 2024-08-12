@@ -1,5 +1,5 @@
 import { FC } from 'react';
-import Arrow from '@/assets/images/paths/rectangle-sign.png';
+import Arrow from '@/assets/images/wooden_icons/rectangle-sign.png';
 import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { PathCheckpoint } from './PathDrawing';
 
