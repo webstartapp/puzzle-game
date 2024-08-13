@@ -26,6 +26,7 @@ const levelFN = (levelsIn: LevelRecord): Levels => {
       shifts: levelItem.shifts.map(
         (shift) => indexedGrid[shift as IndexedGridKeys],
       ),
+      requirements: levelItem.requirements,
     };
     out[levelKey] = level;
   });

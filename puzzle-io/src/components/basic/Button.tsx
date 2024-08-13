@@ -5,6 +5,7 @@ import {
   Image,
   View,
   ImageBackground,
+  ImageSourcePropType,
 } from 'react-native';
 import { buttonStyles } from '@/styles/buttonStyles';
 import buttonTopLeft from '@/assets/images/wooden_icons/button-top-left.png';
@@ -17,29 +18,23 @@ import buttonMiddleTop from '@/assets/images/wooden_icons/button-middle-top.png'
 import buttonMiddleBottom from '@/assets/images/wooden_icons/button-middle-bottom.png';
 
 type ButtonProps = {
-  title: string;
+  asset?: ImageSourcePropType;
+  title?: string;
   onPress: () => void;
-  variant: 'default';
+  variant?: 'wooden' | 'asset';
 };
 
-const Button: FC<ButtonProps> = ({ title, onPress, variant }) => {
-  const styleText = buttonStyles[`${variant}Text`];
-  const styleButton = styleText
-    ? buttonStyles[variant] || undefined
-    : undefined;
+const WoodenButton: FC<ButtonProps> = ({ title, onPress, variant }) => {
   const [isPressed, setIsPressed] = useState(false);
 
   return (
     <TouchableOpacity
-      style={styleButton || buttonStyles.default}
+      style={buttonStyles.wooden}
       onPress={onPress}
       onPressIn={() => setIsPressed(true)}
       onPressOut={() => setIsPressed(false)}
     >
-      <view
-        onMouseEnter={() => setIsPressed(true)}
-        onMouseLeave={() => setIsPressed(false)}
-      >
+      <View>
         <View
           style={{
             flexDirection: 'row',
@@ -91,6 +86,11 @@ const Button: FC<ButtonProps> = ({ title, onPress, variant }) => {
               <ImageBackground
                 source={buttonMiddleTop}
                 resizeMode="repeat"
+                imageStyle={{
+                  height: 30,
+                  width: '100%',
+                  resizeMode: 'stretch',
+                }}
                 style={{
                   width: '100%',
                   height: 30,
@@ -105,7 +105,7 @@ const Button: FC<ButtonProps> = ({ title, onPress, variant }) => {
                 alignItems: 'center',
               }}
             >
-              <Text style={styleText || buttonStyles.defaultText}>{title}</Text>
+              <Text style={buttonStyles.woodenText}>{title}</Text>
             </View>
             <View
               style={{
@@ -117,6 +117,12 @@ const Button: FC<ButtonProps> = ({ title, onPress, variant }) => {
               <ImageBackground
                 source={buttonMiddleBottom}
                 resizeMode="repeat"
+                height={30}
+                imageStyle={{
+                  height: 30,
+                  width: '100%',
+                  resizeMode: 'stretch',
+                }}
                 style={{
                   width: '100%',
                   height: 30,
@@ -154,9 +160,39 @@ const Button: FC<ButtonProps> = ({ title, onPress, variant }) => {
             />
           </View>
         </View>
-      </view>
+      </View>
     </TouchableOpacity>
   );
+};
+
+const AssetButton: FC<ButtonProps> = ({ asset, title, onPress }) => {
+  return (
+    <TouchableOpacity
+      onPress={onPress}
+      style={{
+        width: 50,
+        height: 50,
+        justifyContent: 'center',
+        alignItems: 'center',
+      }}
+    >
+      <Image
+        source={asset}
+        style={{
+          width: 40,
+          height: 40,
+        }}
+      />
+      <Text>{title}</Text>
+    </TouchableOpacity>
+  );
+};
+
+const Button: FC<ButtonProps> = (props) => {
+  if (!props.variant || props.variant === 'wooden') {
+    return <WoodenButton {...props} />;
+  }
+  return <AssetButton {...props} />;
 };
 
 export default Button;
