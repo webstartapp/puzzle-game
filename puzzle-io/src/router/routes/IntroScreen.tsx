@@ -34,9 +34,7 @@ const IntroScreen = () => {
   useAnimatedBackground(HeloImage);
   const { setRoute } = useGameRouter();
 
-  const { data } = useCall('getUser', {});
-
-  console.log(data);
+  console.log(39);
 
   useEffect(() => {
     playSong();
@@ -61,7 +59,6 @@ const IntroScreen = () => {
             onPress={() => {
               // Handle Continue Progress
             }}
-            variant="default"
           />
         ) : null}
         <Button
@@ -69,14 +66,12 @@ const IntroScreen = () => {
           onPress={() => {
             setRoute('WorldMapScreen');
           }}
-          variant="default"
         />
         <Button
           title="Load Game"
           onPress={() => {
             // Handle Load Saved Game
           }}
-          variant="default"
         />
       </View>
     </View>

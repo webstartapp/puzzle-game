@@ -9,6 +9,9 @@ import React, {
 } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { IStore } from '@/hooks/store/useStore';
+import { preloadAssets } from '@/utils/preloadAssets';
+import * as SplashScreen from 'expo-splash-screen';
+SplashScreen.preventAutoHideAsync();
 
 const initialState: IStore = {
   initiated: false,
@@ -31,8 +34,15 @@ const reducer = <T extends keyof IStore | 'INIT'>(
   state: IStore,
   action: Action<T>,
 ): IStore => {
+  const payload: any = action.payload;
   if (action.type === 'INIT') {
+    if (typeof payload === 'function') {
+      return payload(state) as IStore;
+    }
     return action.payload as IStore;
+  }
+  if (typeof payload === 'function') {
+    return { ...state, [action.type]: payload((state as any)[action.type]) };
   }
   globalState = { ...state, [action.type]: action.payload };
   return globalState;
@@ -41,6 +51,7 @@ const reducer = <T extends keyof IStore | 'INIT'>(
 let globalState: IStore = initialState;
 let globalDispatch: React.Dispatch<Action<keyof IStore | 'INIT'>> = () => null;
 import uuid from 'react-native-uuid';
+import { Text } from 'react-native';
 
 const PERSISTED_STATE_KEY = 'my-app-store';
 
@@ -58,7 +69,13 @@ const StoreProvider: FC<PropsWithChildren> = ({ children }) => {
   useEffect(() => {
     const loadState = async () => {
       let localState = globalState;
-      if (!localState.initiated) {
+      try {
+        await preloadAssets();
+      } catch (e) {
+        console.error(e);
+      }
+      await SplashScreen.hideAsync();
+      if (localState.initiated) {
         return;
       }
       const savedState = await AsyncStorage.getItem(PERSISTED_STATE_KEY);
@@ -85,7 +102,7 @@ const StoreProvider: FC<PropsWithChildren> = ({ children }) => {
       }
       dispatch({
         type: 'INIT' as keyof IStore,
-        payload: globalState,
+        payload: localState,
       });
     };
 
@@ -100,9 +117,13 @@ const StoreProvider: FC<PropsWithChildren> = ({ children }) => {
     saveState();
   }, [state]);
 
+  if (!state.initiated) {
+    return <Text>waiting</Text>;
+  }
+
   return (
     <StoreContext.Provider value={{ state, dispatch }}>
-      {state.initiated ? <></> : children}
+      {children}
     </StoreContext.Provider>
   );
 };

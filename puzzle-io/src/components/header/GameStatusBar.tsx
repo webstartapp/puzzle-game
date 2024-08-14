@@ -1,21 +1,55 @@
 import { useStore } from '@/hooks/store/useStore';
 import { HeaderComponent } from '@/system/gameEngine/GameEngine';
-import { Pressable, Text, View } from 'react-native';
+import { Text, View } from 'react-native';
 import CongratsModal from '../modals/CongratsModal';
-import { LevelId, levels } from '@/config/levels';
-import { useMemo } from 'react';
+import { levels } from '@/config/levels';
+import { useEffect, useMemo, useState } from 'react';
+import home from '@/assets/images/wooden_icons/home.png';
+import leftArrow from '@/assets/images/wooden_icons/left-arrow.png';
+import reload from '@/assets/images/wooden_icons/reload.png';
+import { useGameRouter } from '@/router/Router';
+import Button from '../basic/Button';
+import dayjs from 'dayjs';
+import { Level } from '@/utils/levelConstructor';
 
 const GameStatusBar: HeaderComponent = ({ dispatchSystem }) => {
-  const { data } = useStore('gameView');
+  const { data, setState } = useStore('gameView');
+  const [timmer, setTimmer] = useState<NodeJS.Timeout | null>(null);
+  const { setRoute } = useGameRouter();
 
   const level = useMemo(() => {
     const levelId = data?.levelId;
     if (!levelId) {
-      return {} as any;
+      return {} as Level;
     }
 
     return levels[levelId];
   }, [data?.levelId]);
+
+  const [timeLeft, setTimeLeft] = useState<number>();
+
+  useEffect(() => {
+    if (timmer) {
+      clearInterval(timmer);
+    }
+    if (data) {
+      setTimmer(
+        setInterval(() => {
+          const left = data.timeEnds - dayjs().unix();
+          setTimeLeft(left);
+          setState('gameView', {
+            ...data,
+            timeNow: dayjs().unix(),
+          });
+        }, 500),
+      );
+    }
+    return () => {
+      if (timmer) {
+        clearInterval(timmer);
+      }
+    };
+  }, [data?.timeEnds]);
 
   const successs = useMemo(() => {
     return (
@@ -23,40 +57,89 @@ const GameStatusBar: HeaderComponent = ({ dispatchSystem }) => {
     );
   }, [data?.matchingEntities, level?.grid?.x, level?.grid?.y]);
 
-  console.log(24, data);
-
   if (!data) {
     return null;
   }
 
   return (
-    <View>
-      <Text>{data?.moves?.length || 0}</Text>
-      <Text>{data?.matchingEntities?.length || 0}</Text>
-      <Pressable
-        onPress={() => {
-          dispatchSystem({ type: 'reset' });
+    <View
+      style={{
+        flexDirection: 'row',
+        justifyContent: 'space-between',
+        alignItems: 'center',
+        padding: 10,
+      }}
+    >
+      <View
+        style={{
+          flexDirection: 'row',
         }}
       >
-        <Text>Reset</Text>
-      </Pressable>
-      <Pressable
-        onPress={() => {
-          dispatchSystem({ type: 'oneBack' });
+        <Button
+          variant="asset"
+          asset={home}
+          onPress={() => {
+            setRoute('StageMapScreen');
+          }}
+        />
+        <CongratsModal
+          coins={10}
+          stars={1}
+          time={100}
+          turns={10}
+          visible={successs}
+          onContinue={() => {
+            dispatchSystem({ type: 'reset' });
+          }}
+        />
+      </View>
+      <View
+        style={{
+          flexDirection: 'row',
         }}
       >
-        <Text>Back</Text>
-      </Pressable>
-      <CongratsModal
-        coins={10}
-        stars={1}
-        time={100}
-        turns={10}
-        visible={successs}
-        onContinue={() => {
-          dispatchSystem({ type: 'reset' });
+        <Text
+          style={{
+            color: 'white',
+            fontSize: 40,
+            lineHeight: 40,
+            marginHorizontal: 10,
+          }}
+        >
+          {timeLeft}
+        </Text>
+      </View>
+      <View
+        style={{
+          flexDirection: 'row',
+          alignItems: 'center',
         }}
-      />
+      >
+        <Button
+          variant="asset"
+          asset={leftArrow}
+          onPress={() => {
+            dispatchSystem({ type: 'oneBack' });
+          }}
+        />
+        <Text
+          style={{
+            color: 'white',
+            fontSize: 40,
+            lineHeight: 40,
+            marginHorizontal: 10,
+          }}
+        >
+          {level?.requirements?.maxMoves?.end - data.moves.length}
+        </Text>
+        <Button
+          variant="asset"
+          asset={reload}
+          onPress={() => {
+            dispatchSystem({ type: 'reset' });
+          }}
+        />
+      </View>
     </View>
   );
 };

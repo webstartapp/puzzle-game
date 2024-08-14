@@ -28,28 +28,18 @@ export type Level<T extends string = string> = {
   grid: Grid;
   image: string;
   shifts: Grid[];
+  requirements: {
+    maxMoves: {
+      '3keys': number;
+      '2keys': number;
+      '1key': number;
+      end: number;
+    };
+    maxTime: {
+      '3keys': number;
+      '2keys': number;
+      '1key': number;
+      end: number;
+    };
+  };
 };
-
-type LevelConstructorProps<
-  INDEX extends string,
-  GRID extends Grid,
-  SHIFTS extends Grid[],
-> = {
-  metaData: MetaData<INDEX>;
-  grid: GRID;
-  shifts: SHIFTS & UniqueObjectArray<SHIFTS>;
-};
-
-export const levelConstructor = <
-  INDEX extends string,
-  GRID extends Grid,
-  SHIFTS extends Grid[],
->({
-  metaData,
-  grid,
-  shifts,
-}: LevelConstructorProps<INDEX, GRID, SHIFTS>): Level<INDEX> => ({
-  ...metaData,
-  grid,
-  shifts,
-});

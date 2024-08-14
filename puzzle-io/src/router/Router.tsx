@@ -1,4 +1,4 @@
-import { createContext, FC, useContext, useState } from 'react';
+import { createContext, FC, useContext, useEffect, useState } from 'react';
 import IntroScreen from '@/router/routes/IntroScreen';
 import PuzzleScreen from '@/router//routes/PuzzleScreen';
 import StageScreen from '@/router/routes/StageMapScreen';
@@ -75,7 +75,6 @@ const RouterProvider = () => {
   const [routeInner, setInnerRoute] = useState(
     routeList[0] as (typeof routeList)[number],
   );
-
   const setRoute = <K extends RouterKeys>(
     route: K,
     params?: RouteParamsMap[K],

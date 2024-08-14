@@ -5,13 +5,16 @@ export interface IStore {
   initiated: boolean;
 }
 
-export const useStore = <T extends keyof IStore>(
-  storeKey?: T,
-): {
+type UseStore<T extends keyof IStore> = {
   state: IStore;
-  setState: <T extends keyof IStore>(key: T, value: IStore[T]) => void;
+  setState: <T extends keyof IStore>(
+    key: T,
+    value: IStore[T] | ((previous: Required<IStore>[T]) => IStore[T]),
+  ) => void;
   data: IStore[T];
-} => {
+};
+
+export const useStore = <T extends keyof IStore>(storeKey?: T): UseStore<T> => {
   const context = useContext(StoreContext);
 
   if (!context) {

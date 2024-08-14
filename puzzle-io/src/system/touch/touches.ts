@@ -9,6 +9,7 @@ import {
 import { Digit, Grid } from '@/config/grid/indexedGrid';
 import { levels } from '@/config/levels';
 import { initiateGameLevel } from '@/utils/initiateGameLevel';
+import dayJS from 'dayjs';
 
 const addToCache = async (entity: Grid, matchingEntities: Grid[]) => {
   const previousEntities = getStoreData() || {};
@@ -53,6 +54,10 @@ const MoveFinger: GameEngineSystem = async (entities, event) => {
           moves: [],
           matchingEntities: [],
           levelId: level.id,
+          timeEnds: dayJS()
+            .add(level.requirements.maxTime.end, 'second')
+            .unix(),
+          timeNow: dayJS().unix(),
         });
         return entity;
       });
@@ -107,6 +112,8 @@ const MoveFinger: GameEngineSystem = async (entities, event) => {
         moves,
         matchingEntities,
         levelId: level.id,
+        timeEnds: previousEntities.gameView.timeEnds,
+        timeNow: previousEntities.gameView.timeNow,
       });
       return newEntites;
     }

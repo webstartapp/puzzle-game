@@ -7,12 +7,12 @@ import RouterProvider from '@/router/Router';
 export default function RootLayout() {
   const [queryClient] = useState(() => new QueryClient());
   return (
-    <AnimatedBackgroundProvider>
-      <StoreProvider>
+    <StoreProvider>
+      <AnimatedBackgroundProvider>
         <QueryClientProvider client={queryClient}>
           <RouterProvider />
         </QueryClientProvider>
-      </StoreProvider>
-    </AnimatedBackgroundProvider>
+      </AnimatedBackgroundProvider>
+    </StoreProvider>
   );
 }
