@@ -9,8 +9,16 @@ import React, {
 } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { IStore } from '@/hooks/store/useStore';
-import { preloadAssets } from '@/utils/preloadAssets';
 import * as SplashScreen from 'expo-splash-screen';
+import uuid from 'react-native-uuid';
+import { Animated, Text, View } from 'react-native';
+import { useSound } from '../basic/Sound';
+import introImage from '@/config/preload/introImage.json';
+import { useAnimatedBackground } from '../animations/AnimatedImage';
+import introScreen from '@/assets/music/intro_screen_bg.mp3';
+import { layoutStyles } from '@/styles/layoutStyles';
+import { preloadAssets } from '@/utils/preloadAssets';
+import { secondaryAssets } from '@/config/preload/secondaryAssets';
 SplashScreen.preventAutoHideAsync();
 
 const initialState: IStore = {
@@ -50,13 +58,14 @@ const reducer = <T extends keyof IStore | 'INIT'>(
 
 let globalState: IStore = initialState;
 let globalDispatch: React.Dispatch<Action<keyof IStore | 'INIT'>> = () => null;
-import uuid from 'react-native-uuid';
-import { Text } from 'react-native';
 
 const PERSISTED_STATE_KEY = 'my-app-store';
 
 const StoreProvider: FC<PropsWithChildren> = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);
+  useSound(introScreen, true);
+  const [progress] = useState(new Animated.Value(0));
+  useAnimatedBackground(introImage);
 
   useEffect(() => {
     if (!state.initiated) {
@@ -70,7 +79,13 @@ const StoreProvider: FC<PropsWithChildren> = ({ children }) => {
     const loadState = async () => {
       let localState = globalState;
       try {
-        await preloadAssets();
+        await preloadAssets(secondaryAssets, (p) => {
+          Animated.timing(progress, {
+            toValue: p,
+            duration: 500,
+            useNativeDriver: false,
+          }).start();
+        });
       } catch (e) {
         console.error(e);
       }
@@ -117,8 +132,22 @@ const StoreProvider: FC<PropsWithChildren> = ({ children }) => {
     saveState();
   }, [state]);
 
+  const progressBarWidth = progress.interpolate({
+    inputRange: [0, 1],
+    outputRange: ['0%', '100%'],
+  });
+
   if (!state.initiated) {
-    return <Text>waiting</Text>;
+    return (
+      <View style={layoutStyles.container}>
+        <Text style={layoutStyles.loadingText}>Loading...</Text>
+        <View style={layoutStyles.progressBarContainer}>
+          <Animated.View
+            style={[layoutStyles.progressBar, { width: progressBarWidth }]}
+          />
+        </View>
+      </View>
+    );
   }
 
   return (

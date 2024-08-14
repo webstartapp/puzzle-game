@@ -5,10 +5,7 @@ import HeloImage from '@/assets/images/welcome_screen.jpeg';
 import introScreen from '@/assets/music/intro_screen_bg.mp3';
 import { useStore } from '@/hooks/store/useStore';
 import { IUserProfile } from '@/_generated/sessionOperations';
-import {
-  AnimatedImage,
-  useAnimatedBackground,
-} from '@/components/animations/AnimatedImage';
+import { useAnimatedBackground } from '@/components/animations/AnimatedImage';
 import Button from '@/components/basic/Button';
 import { useSound } from '@/components/basic/Sound';
 import { useRestAPI } from '@/components/provider/useRestQueries';
@@ -33,8 +30,6 @@ const IntroScreen = () => {
   const { playSong, isPlaying, stopSong } = useSound(introScreen, true);
   useAnimatedBackground(HeloImage);
   const { setRoute } = useGameRouter();
-
-  console.log(39);
 
   useEffect(() => {
     playSong();
