@@ -8,7 +8,7 @@ export const buttonStyles = StyleSheet.create({
   },
   woodenText: {
     fontSize: 20,
-    color: 'white',
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
+    color: '#16356a',
+    fontWeight: 'bold',
   },
 });

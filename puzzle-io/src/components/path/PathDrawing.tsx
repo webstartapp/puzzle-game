@@ -5,6 +5,11 @@ import { IGrid } from '@/_generated/sessionOperations';
 import { FC, useMemo, useRef } from 'react';
 import { Asset } from 'expo-asset';
 
+const gridSize: IGrid = {
+  x: 20,
+  y: 20,
+};
+
 export type PathCheckpoint<T extends any> = {
   x: number;
   y: number;
@@ -50,7 +55,7 @@ const PathDrawing = <T extends any = any>({
       id: string;
       data: T;
     }[] = [];
-    const itemSize = size.size / 20;
+    const itemSize = size.size / gridSize.x;
 
     (paths || []).forEach(({ x, y, title, id, data }, index) => {
       const next = paths[index + 1];
@@ -72,10 +77,10 @@ const PathDrawing = <T extends any = any>({
       const rotation = Math.atan2(next.y - y, next.x - x);
 
       const distance = Math.sqrt((next.y - y) ** 2 + (next.x - x) ** 2);
-      const steps = distance / 1;
+      const steps = distance * 2;
       const shiftedByX = (next.x - x) / steps;
       const shiftedByY = (next.y - y) / steps;
-      for (let i = 1; i < steps - 1; i++) {
+      for (let i = 2; i < steps - 1; i++) {
         const newX = (x + shiftedByX * i) * itemSize;
         const newY = (y + shiftedByY * i) * itemSize;
         out.push({
@@ -83,7 +88,7 @@ const PathDrawing = <T extends any = any>({
           y: newY,
           rotation,
           title,
-          scale,
+          scale: scale * 0.5,
           id,
           data,
         });

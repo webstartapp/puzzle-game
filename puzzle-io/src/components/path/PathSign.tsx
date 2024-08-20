@@ -22,11 +22,12 @@ export const PathSign: FC<PathSignProps> = ({
   id,
   data,
 }) => {
+  const scaledSize = 120 * scale;
   const style = StyleSheet.create({
     container: {
       position: 'absolute',
-      left: x,
-      top: y,
+      left: x - scaledSize / 2,
+      top: y - scaledSize / 2,
       zIndex: 10,
     },
     text: {
@@ -37,8 +38,8 @@ export const PathSign: FC<PathSignProps> = ({
       color: 'white',
       zIndex: 10,
       left: -20,
-      top: 50 * scale,
-      width: 40 + 50 * scale,
+      top: scaledSize,
+      width: 40 + scaledSize,
       textAlign: 'center',
       backgroundColor: 'rgba(0,0,0,0.5)',
     },
@@ -49,10 +50,20 @@ export const PathSign: FC<PathSignProps> = ({
       style={style.container}
     >
       <Image
+        source={data?.image}
+        style={{
+          width: scaledSize - 12,
+          height: scaledSize - 12,
+          top: 6,
+          left: 6,
+          position: 'absolute',
+        }}
+      />
+      <Image
         source={Arrow}
         style={{
-          width: 50 * scale,
-          height: 50 * scale,
+          width: scaledSize,
+          height: scaledSize,
         }}
       />
       <Text style={style.text}>{title || 'Missing'}</Text>

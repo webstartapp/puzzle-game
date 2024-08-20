@@ -14,8 +14,9 @@ import buttonBottomLeft from '@/assets/images/wooden_icons/button-bottom-left.pn
 import buttonBottomRight from '@/assets/images/wooden_icons/button-bottom-right.png';
 import buttonMiddleLeft from '@/assets/images/wooden_icons/button-middle-left.png';
 import buttonMiddleRight from '@/assets/images/wooden_icons/button-middle-right.png';
-import buttonMiddleTop from '@/assets/images/wooden_icons/button-middle-top.png';
+import buttonTopMiddle from '@/assets/images/wooden_icons/button-top-middle.png';
 import buttonMiddleBottom from '@/assets/images/wooden_icons/button-middle-bottom.png';
+import buttonMiddleMiddle from '@/assets/images/wooden_icons/button-middle-middle.png';
 
 type ButtonProps = {
   asset?: ImageSourcePropType;
@@ -84,7 +85,7 @@ const WoodenButton: FC<ButtonProps> = ({ title, onPress, variant }) => {
               }}
             >
               <ImageBackground
-                source={buttonMiddleTop}
+                source={buttonTopMiddle}
                 resizeMode="repeat"
                 imageStyle={{
                   height: 30,
@@ -105,6 +106,20 @@ const WoodenButton: FC<ButtonProps> = ({ title, onPress, variant }) => {
                 alignItems: 'center',
               }}
             >
+              <ImageBackground
+                source={buttonMiddleMiddle}
+                resizeMode="repeat"
+                imageStyle={{
+                  height: '100%',
+                  width: '100%',
+                  resizeMode: 'stretch',
+                }}
+                style={{
+                  width: '100%',
+                  height: '100%',
+                  position: 'absolute',
+                }}
+              />
               <Text style={buttonStyles.woodenText}>{title}</Text>
             </View>
             <View

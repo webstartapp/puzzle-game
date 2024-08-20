@@ -13,6 +13,7 @@ import { layoutStyles } from '@/styles/layoutStyles';
 import { useGameRouter } from '../Router';
 import PathDrawing from '@/components/path/PathDrawing';
 import { GameStage, GameStageID, gameStages } from '@/config/stages';
+import { levels } from '@/config/levels';
 
 declare module '@/hooks/store/useStore' {
   export interface IStore {
@@ -25,20 +26,11 @@ type StageMapScreenProps = {
 };
 
 const StageMapScreen: FC<StageMapScreenProps> = ({ stage }) => {
-  const navigation = useNavigation();
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [username, setUsername] = useState('Guest');
-  const [collectedKeys, setCollectedKeys] = useState(0);
-  const { state, setState } = useStore();
-  const { useCall } = useRestAPI('sessionCalls');
-
   const stageData = gameStages.find((s) => s.id === stage) as GameStage;
 
   const { playSong, isPlaying, stopSong } = useSound(adventure, true);
   useAnimatedBackground(stageData.image);
   const { setRoute } = useGameRouter();
-
-  const { data } = useCall('getUser', {});
 
   useEffect(() => {
     playSong();
@@ -57,13 +49,22 @@ const StageMapScreen: FC<StageMapScreenProps> = ({ stage }) => {
         }}
       />
       <PathDrawing
-        paths={stageData.scenes.map((scene) => ({
-          title: scene.title,
-          x: scene.x,
-          y: scene.y,
-          id: scene.level,
-          data: scene,
-        }))}
+        paths={stageData.scenes.map((scene) => {
+          const levelImage = levels[scene.level].image;
+          if (!levelImage) {
+            throw new Error(`Level ${scene.level} does not have an image`);
+          }
+          (scene as any).image = {
+            uri: levelImage,
+          };
+          return {
+            title: scene.title,
+            x: scene.x,
+            y: scene.y,
+            id: scene.level,
+            data: scene,
+          };
+        })}
         onClick={({ data }) => {
           console.log(data);
           setRoute('puzzleScreen', { level: data.level });

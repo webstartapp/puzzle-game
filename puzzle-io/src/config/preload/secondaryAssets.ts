@@ -6,6 +6,6 @@ export const secondaryAssets = [
   require('@/assets/images/wooden_icons/button-bottom-right.png'),
   require('@/assets/images/wooden_icons/button-middle-left.png'),
   require('@/assets/images/wooden_icons/button-middle-right.png'),
-  require('@/assets/images/wooden_icons/button-middle-top.png'),
+  require('@/assets/images/wooden_icons/button-top-middle.png'),
   require('@/assets/images/wooden_icons/button-middle-bottom.png'),
 ];

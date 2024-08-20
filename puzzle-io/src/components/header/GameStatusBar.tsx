@@ -4,7 +4,7 @@ import { Text, View } from 'react-native';
 import CongratsModal from '../modals/CongratsModal';
 import { levels } from '@/config/levels';
 import { useEffect, useMemo, useState } from 'react';
-import home from '@/assets/images/wooden_icons/home.png';
+import home from '@/assets/images/wooden_icons/sign.png';
 import leftArrow from '@/assets/images/wooden_icons/left-arrow.png';
 import reload from '@/assets/images/wooden_icons/reload.png';
 import { useGameRouter } from '@/router/Router';
