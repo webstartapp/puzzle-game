@@ -41,7 +41,7 @@ const cropImage = async (
 };
 
 // Load image based on platform
-const loadImage = async (
+export const loadImage = async (
   src: string,
 ): Promise<
   { uri: string; width: number; height: number } | HTMLImageElement

@@ -11,6 +11,8 @@ import { useGameRouter } from '@/router/Router';
 import Button from '../basic/Button';
 import dayjs from 'dayjs';
 import { Level } from '@/utils/levelConstructor';
+import { HederTextView } from '../basic/TextView';
+import { KeyGainChain } from './visuals/KeyGainChain';
 
 const GameStatusBar: HeaderComponent = ({ dispatchSystem }) => {
   const { data, setState } = useStore('gameView');
@@ -68,6 +70,7 @@ const GameStatusBar: HeaderComponent = ({ dispatchSystem }) => {
         justifyContent: 'space-between',
         alignItems: 'center',
         padding: 10,
+        height: 100,
       }}
     >
       <View
@@ -93,22 +96,13 @@ const GameStatusBar: HeaderComponent = ({ dispatchSystem }) => {
           }}
         />
       </View>
-      <View
-        style={{
-          flexDirection: 'row',
-        }}
+      <HederTextView text={level?.title} />
+      <HederTextView
+        text={timeLeft}
+        format="time"
       >
-        <Text
-          style={{
-            color: 'white',
-            fontSize: 40,
-            lineHeight: 40,
-            marginHorizontal: 10,
-          }}
-        >
-          {timeLeft}
-        </Text>
-      </View>
+        <KeyGainChain activeKeys={2} />
+      </HederTextView>
       <View
         style={{
           flexDirection: 'row',

@@ -46,6 +46,7 @@ const routeList = [
 
 type SingleRouteType = (typeof routeList)[number];
 type RouterKeys = SingleRouteType['path'];
+export type RouterPath = RouterKeys;
 
 type RouteParamsMap = {
   [K in RouterKeys]: Extract<SingleRouteType, { path: K }> extends {
