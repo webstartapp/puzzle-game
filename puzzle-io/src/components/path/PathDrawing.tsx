@@ -5,7 +5,7 @@ import { IGrid } from '@/_generated/sessionOperations';
 import { FC, useMemo, useRef } from 'react';
 import { Asset } from 'expo-asset';
 
-const gridSize: IGrid = {
+const gridSize = {
   x: 20,
   y: 20,
 };

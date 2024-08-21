@@ -59,6 +59,44 @@ const GameStatusBar: HeaderComponent = ({ dispatchSystem }) => {
     );
   }, [data?.matchingEntities, level?.grid?.x, level?.grid?.y]);
 
+  const activeKeys = useMemo(() => {
+    const levelLimits = level?.requirements;
+
+    if (!levelLimits) {
+      return 3;
+    }
+
+    const time =
+      levelLimits.maxTime.end - (data?.timeEnds || 0) + (data?.timeNow || 0);
+    console.log(
+      64,
+      data?.moves,
+      data?.timeNow,
+      data?.timeEnds,
+      time,
+      levelLimits,
+    );
+    if (
+      (data?.moves?.length || 0) < levelLimits.maxMoves['3keys'] &&
+      time < levelLimits.maxTime['3keys']
+    ) {
+      return 3;
+    }
+    if (
+      (data?.moves?.length || 0) < levelLimits.maxMoves['2keys'] &&
+      time < levelLimits.maxTime['2keys']
+    ) {
+      return 2;
+    }
+    if (
+      (data?.moves?.length || 0) < levelLimits.maxMoves['1key'] &&
+      time < levelLimits.maxTime['1key']
+    ) {
+      return 1;
+    }
+    return 0;
+  }, [data?.moves?.length, data?.timeNow, level?.requirements]);
+
   if (!data) {
     return null;
   }
@@ -101,7 +139,7 @@ const GameStatusBar: HeaderComponent = ({ dispatchSystem }) => {
         text={timeLeft}
         format="time"
       >
-        <KeyGainChain activeKeys={2} />
+        <KeyGainChain activeKeys={activeKeys} />
       </HederTextView>
       <View
         style={{
