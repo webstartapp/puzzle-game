@@ -6,7 +6,7 @@ import { levels } from '@/config/levels';
 import { useEffect, useMemo, useState } from 'react';
 import home from '@/assets/images/wooden_icons/sign.png';
 import leftArrow from '@/assets/images/wooden_icons/left-arrow.png';
-import reload from '@/assets/images/wooden_icons/reload.png';
+import settiongs from '@/assets/images/wooden_icons/settings.png';
 import { useGameRouter } from '@/router/Router';
 import Button from '../basic/Button';
 import dayjs from 'dayjs';
@@ -14,17 +14,15 @@ import { Level } from '@/utils/levelConstructor';
 import { HederTextView } from '../basic/TextView';
 import { KeyGainChain } from './visuals/KeyGainChain';
 import { headerStyles } from '@/styles/headerStyles';
+import PuzzleTileModal from '../modals/PuzzleTileModal';
 
 const GameStatusBar: HeaderComponent = ({
   dispatchSystem,
   timestampNow,
   timestampStart,
-  resetTime,
+  showSettings,
 }) => {
-  const { data, setState } = useStore('gameView');
-  const { setRoute } = useGameRouter();
-
-  console.log(23, timestampNow, timestampStart);
+  const { data } = useStore('gameView');
 
   const level = useMemo(() => {
     const levelId = data?.levelId;
@@ -96,15 +94,9 @@ const GameStatusBar: HeaderComponent = ({
       <View
         style={{
           flexDirection: 'row',
+          width: 200,
         }}
       >
-        <Button
-          variant="asset"
-          asset={home}
-          onPress={() => {
-            setRoute('StageMapScreen');
-          }}
-        />
         <CongratsModal
           coins={10}
           stars={1}
@@ -127,15 +119,19 @@ const GameStatusBar: HeaderComponent = ({
         style={{
           flexDirection: 'row',
           alignItems: 'center',
+          justifyContent: 'flex-end',
+          width: 200,
         }}
       >
-        <Button
-          variant="asset"
-          asset={leftArrow}
-          onPress={() => {
-            dispatchSystem({ type: 'oneBack' });
-          }}
-        />
+        {data.moves.length ? (
+          <Button
+            variant="asset"
+            asset={leftArrow}
+            onPress={() => {
+              dispatchSystem({ type: 'oneBack' });
+            }}
+          />
+        ) : null}
         <Text
           style={{
             color: 'white',
@@ -146,14 +142,15 @@ const GameStatusBar: HeaderComponent = ({
         >
           {level?.requirements?.maxMoves?.end - data.moves.length}
         </Text>
-        <Button
-          variant="asset"
-          asset={reload}
-          onPress={() => {
-            resetTime();
-            dispatchSystem({ type: 'reset' });
-          }}
-        />
+        {showSettings ? (
+          <Button
+            variant="asset"
+            asset={settiongs}
+            onPress={() => {
+              showSettings();
+            }}
+          />
+        ) : null}
       </View>
     </View>
   );

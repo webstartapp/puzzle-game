@@ -10,6 +10,10 @@ import { LevelId, levels } from '@/config/levels';
 import { Grid } from '@/config/grid/indexedGrid';
 import { initiateGameLevel } from '@/utils/initiateGameLevel';
 import dayjs from 'dayjs';
+import { View } from 'react-native';
+import { layoutStyles } from '@/styles/layoutStyles';
+import PuzzleTileModal from '@/components/modals/PuzzleTileModal';
+import { Level } from '@/utils/levelConstructor';
 
 declare module '@/system/gameEngine/GameEngine' {
   export interface IEntity {
@@ -23,7 +27,7 @@ declare module '@/system/gameEngine/GameEngine' {
   export interface IGameHeaderProps {
     timestampNow: number;
     timestampStart: number;
-    resetTime: () => void;
+    showSettings: () => void;
   }
 }
 
@@ -53,9 +57,10 @@ const PuzzleScreen: FC<PuzzleScreenProps> = ({ level, isContinue }) => {
   );
   const [timestampNow, setTimestampNow] = useState(dayjs().unix());
   const [timestampStart, setTimestampStart] = useState(dayjs().unix());
+  const [levelData, setLevelData] = useState<Level>();
 
   const { setState } = useStore('gameView');
-  const levelData = levels[level];
+  const levelItem = levels[level];
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -75,7 +80,7 @@ const PuzzleScreen: FC<PuzzleScreenProps> = ({ level, isContinue }) => {
         matchingEntities: [],
         levelId: level,
         timeEnds: dayjs()
-          .add(levelData.requirements.maxTime.end, 'second')
+          .add(levelItem.requirements.maxTime.end, 'second')
           .unix(),
         timeNow: dayjs().unix(),
       });
@@ -85,37 +90,43 @@ const PuzzleScreen: FC<PuzzleScreenProps> = ({ level, isContinue }) => {
   }, []);
 
   return (
-    <GameEngine
-      system={MoveFinger}
-      style={{
-        backgroundColor: 'rgba(255,255,255,0.8)',
-      }}
-      entities={localEntyties}
-      header={{
-        component: GameStatusBar,
-        height: 90,
-        props: {
-          timestampNow,
-          timestampStart,
-          resetTime: () => {
-            setTimestampStart(dayjs().add(0.8, 'seconds').unix());
-            setTimestampNow(dayjs().unix());
+    <View style={layoutStyles.container}>
+      <GameEngine
+        system={MoveFinger}
+        style={{
+          backgroundColor: 'rgba(255,255,255,0.8)',
+        }}
+        entities={localEntyties}
+        header={{
+          component: GameStatusBar,
+          height: 90,
+          props: {
+            timestampNow,
+            timestampStart,
+            showSettings: () => {
+              setLevelData(levelItem);
+            },
           },
-        },
-      }}
-      gridSnaps={{
-        cell: {
-          width: 100 / levelData.grid.x,
-          height: 100 / levelData.grid.y,
-        },
-      }}
-      contentSize={{
-        width: 100,
-        height: 100,
-      }}
-    >
-      <StatusBar hidden={true} />
-    </GameEngine>
+        }}
+        gridSnaps={{
+          cell: {
+            width: 100 / levelItem.grid.x,
+            height: 100 / levelItem.grid.y,
+          },
+        }}
+        contentSize={{
+          width: 100,
+          height: 100,
+        }}
+      >
+        <StatusBar hidden={true} />
+      </GameEngine>
+
+      <PuzzleTileModal
+        levelData={levelData}
+        setLevelData={() => setLevelData(undefined)}
+      />
+    </View>
   );
 };
 export default PuzzleScreen;

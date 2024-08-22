@@ -10,5 +10,13 @@ export const buttonStyles = StyleSheet.create({
     fontSize: 20,
     color: '#16356a',
     fontWeight: 'bold',
+    textAlign: 'center',
+  },
+  woodenTitle: {
+    fontSize: 40,
+    color: '#16356a',
+    fontWeight: 'bold',
+    textAlign: 'center',
+    paddingTop: 10,
   },
 });

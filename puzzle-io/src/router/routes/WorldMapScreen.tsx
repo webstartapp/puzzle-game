@@ -12,8 +12,9 @@ import { MuteButton } from '@/components/icons/MuteButton';
 import { layoutStyles } from '@/styles/layoutStyles';
 import { useGameRouter } from '../Router';
 import PathDrawing from '@/components/path/PathDrawing';
-import { GameStageID, gameStages } from '@/config/stages';
+import { GameStage, GameStageID, gameStages } from '@/config/stages';
 import MapStatusBar from '@/components/header/MapStatusBar';
+import StageTileModal from '@/components/modals/StageTileModal';
 
 declare module '@/hooks/store/useStore' {
   export interface IStore {
@@ -31,6 +32,7 @@ const IntroScreen = () => {
   const { playSong, isPlaying, stopSong } = useSound(adventure, true);
   useAnimatedBackground(HeloImage);
   const { setRoute } = useGameRouter();
+  const [stageData, setStageData] = useState<GameStage>();
 
   useEffect(() => {
     playSong();
@@ -58,7 +60,14 @@ const IntroScreen = () => {
         }))}
         image={HeloImage}
         onClick={({ data }) => {
-          setRoute('StageMapScreen', { stage: data.id as GameStageID });
+          setStageData(data);
+          //setRoute('StageMapScreen', { stage: data.id as GameStageID });
+        }}
+      />
+      <StageTileModal
+        stageData={stageData}
+        setStageData={() => {
+          setStageData(undefined);
         }}
       />
     </View>

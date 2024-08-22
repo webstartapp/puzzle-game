@@ -13,6 +13,7 @@ type KeyItemProps = {
 
 type KeyChainProps = {
   activeKeys: number;
+  size?: number;
 };
 
 const KeyItem: FC<KeyItemProps> = ({ inactive, rotateDeg, size = 30 }) => {
@@ -28,14 +29,14 @@ const KeyItem: FC<KeyItemProps> = ({ inactive, rotateDeg, size = 30 }) => {
   );
 };
 
-export const KeyGainChain: FC<KeyChainProps> = ({ activeKeys }) => {
+export const KeyGainChain: FC<KeyChainProps> = ({ activeKeys, size = 20 }) => {
   const KeyMaped = useMemo(() => {
     return Array.from({ length: 3 }, (_, i) => {
       return (
         <KeyItem
           inactive={i >= activeKeys}
           rotateDeg={i * 15 - 105}
-          size={20}
+          size={size}
         />
       );
     });
