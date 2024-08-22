@@ -1,5 +1,5 @@
-import React, { FC } from 'react';
-import { StyleSheet, View } from 'react-native';
+import React, { FC, useEffect, useState } from 'react';
+import { Animated, StyleSheet, View } from 'react-native';
 
 import { Image } from 'expo-image';
 import {
@@ -10,13 +10,32 @@ import {
 const Finger: FC<{
   entity: IStateEntity;
   world: PositionWorld;
-}> = ({ entity: { indexes, position, image }, world }) => {
+}> = ({ entity: { indexes, position, image, hidden }, world }) => {
+  const [opacity] = useState(new Animated.Value(1));
+
+  useEffect(() => {
+    if (hidden) {
+      Animated.timing(opacity, {
+        toValue: 0,
+        duration: 1000,
+        useNativeDriver: true,
+      }).start();
+    } else {
+      Animated.timing(opacity, {
+        toValue: 1,
+        duration: 1000,
+        useNativeDriver: true,
+      }).start();
+    }
+  }, [hidden]);
+
   const styles = StyleSheet.create({
     finger: {
-      width: world.width,
-      height: world.height,
+      width: world.width - 1,
+      height: world.height - 1,
       position: 'absolute',
       userSelect: 'none',
+      opacity: opacity,
     },
     text: {
       fontSize: world.width / 2,
@@ -25,22 +44,15 @@ const Finger: FC<{
     },
   });
 
-  // const ImageBody = cropImage(image, {
-  //   x: indexes?.x * world.width,
-  //   y: indexes?.y * world.height,
-  //   width: world.width,
-  //   height: world.height,
-  // });
-
   return (
-    <View style={[styles.finger]}>
+    <Animated.View style={[styles.finger]}>
       <Image
         source={image}
-        style={{ width: world.width, height: world.height }}
+        style={{ width: world.width - 1, height: world.height - 1 }}
         // @ts-ignore - expo-image type error
         draggable={false}
       />
-    </View>
+    </Animated.View>
   );
 };
 

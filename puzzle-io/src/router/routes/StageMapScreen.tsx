@@ -14,6 +14,7 @@ import { useGameRouter } from '../Router';
 import PathDrawing from '@/components/path/PathDrawing';
 import { GameStage, GameStageID, gameStages } from '@/config/stages';
 import { levels } from '@/config/levels';
+import MapStatusBar from '@/components/header/MapStatusBar';
 
 declare module '@/hooks/store/useStore' {
   export interface IStore {
@@ -41,6 +42,7 @@ const StageMapScreen: FC<StageMapScreenProps> = ({ stage }) => {
 
   return (
     <View style={layoutStyles.container}>
+      <MapStatusBar backTo="WorldMapScreen" />
       <MuteButton
         isMuted={!isPlaying}
         onToggleMute={() => {
@@ -66,8 +68,7 @@ const StageMapScreen: FC<StageMapScreenProps> = ({ stage }) => {
           };
         })}
         onClick={({ data }) => {
-          console.log(data);
-          setRoute('puzzleScreen', { level: data.level });
+          setRoute('puzzleScreenAnimation', { level: data.level });
         }}
         image={stageData.image}
       />

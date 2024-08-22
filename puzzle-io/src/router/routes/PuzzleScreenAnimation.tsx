@@ -10,32 +10,7 @@ import { LevelId, levels } from '@/config/levels';
 import { Grid } from '@/config/grid/indexedGrid';
 import { initiateGameLevel } from '@/utils/initiateGameLevel';
 import dayjs from 'dayjs';
-
-declare module '@/system/gameEngine/GameEngine' {
-  export interface IEntity {
-    indexes: Grid;
-    map: Grid;
-    image: ImageResult;
-  }
-  export interface ISystemCustomData {
-    type: 'reset' | 'oneBack';
-  }
-}
-
-export type GameViewState = {
-  moves: Grid[];
-  matchingEntities: Grid[];
-  //timestamp of the end of the game
-  timeEnds: number;
-  timeNow: number;
-  levelId: LevelId;
-};
-
-declare module '@/hooks/store/useStore' {
-  export interface IStore {
-    gameView?: GameViewState;
-  }
-}
+import { useGameRouter } from '../Router';
 
 type PuzzleScreenProps = {
   level: LevelId;
@@ -48,11 +23,14 @@ const PuzzleScreen: FC<PuzzleScreenProps> = ({ level, isContinue }) => {
   );
 
   const { setState } = useStore('gameView');
+  const { setRoute } = useGameRouter();
   const levelData = levels[level];
+  const [animationStage, setAnimationStage] = useState(0);
 
   useEffect(() => {
     const T = async () => {
-      const entities = await initiateGameLevel(level);
+      const entities = await initiateGameLevel(level, true);
+      console.log(30, entities);
       setLocalEntyties(entities);
       setState('gameView', {
         moves: [],
@@ -63,16 +41,52 @@ const PuzzleScreen: FC<PuzzleScreenProps> = ({ level, isContinue }) => {
           .unix(),
         timeNow: dayjs().unix(),
       });
+      setAnimationStage(1);
     };
     T();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+  const hideEntities = useCallback(
+    (index?: number) => {
+      const newEntities = { ...localEntyties };
+      Object.keys(newEntities).forEach((key, indexedKey) => {
+        if (index !== undefined && index !== indexedKey) return;
+        newEntities[key].hidden = true;
+      });
+      setLocalEntyties(newEntities);
+    },
+    [localEntyties],
+  );
+
+  useEffect(() => {
+    if (animationStage === 1) {
+      setTimeout(() => {
+        hideEntities(0);
+        setAnimationStage(2);
+      }, 2000);
+    }
+    if (animationStage === 2) {
+      setTimeout(() => {
+        setAnimationStage(3);
+      }, 5000);
+    }
+    if (animationStage === 3) {
+      hideEntities();
+      setTimeout(() => {
+        setAnimationStage(4);
+      }, 1500);
+    }
+    if (animationStage === 4) {
+      setRoute('puzzleScreen', { level });
+    }
+  }, [animationStage]);
+
   return (
     <GameEngine
-      system={MoveFinger}
+      system={async (ent) => ent}
       style={{
-        backgroundColor: 'rgba(255,255,255,0.8)',
+        backgroundColor: 'rgba(255,255,255,0.4)',
       }}
       entities={localEntyties}
       header={{

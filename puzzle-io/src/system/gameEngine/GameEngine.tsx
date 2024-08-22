@@ -59,6 +59,7 @@ export interface IEntity {
     world: PositionWorld;
   }>;
   position: Position;
+  hidden?: boolean;
 }
 
 export interface ISystemCustomData {}

@@ -10,7 +10,6 @@ export const preloadAssets = (
     assets.map((asset) => {
       return Asset.loadAsync(asset).then(() => {
         loaded += 1;
-        console.log(loaded / total);
         onProgress(loaded / total); // Update progress;
       });
     }),

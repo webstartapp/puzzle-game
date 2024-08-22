@@ -13,6 +13,7 @@ import dayjs from 'dayjs';
 import { Level } from '@/utils/levelConstructor';
 import { HederTextView } from '../basic/TextView';
 import { KeyGainChain } from './visuals/KeyGainChain';
+import { headerStyles } from '@/styles/headerStyles';
 
 const GameStatusBar: HeaderComponent = ({ dispatchSystem }) => {
   const { data, setState } = useStore('gameView');
@@ -68,14 +69,6 @@ const GameStatusBar: HeaderComponent = ({ dispatchSystem }) => {
 
     const time =
       levelLimits.maxTime.end - (data?.timeEnds || 0) + (data?.timeNow || 0);
-    console.log(
-      64,
-      data?.moves,
-      data?.timeNow,
-      data?.timeEnds,
-      time,
-      levelLimits,
-    );
     if (
       (data?.moves?.length || 0) < levelLimits.maxMoves['3keys'] &&
       time < levelLimits.maxTime['3keys']
@@ -102,15 +95,7 @@ const GameStatusBar: HeaderComponent = ({ dispatchSystem }) => {
   }
 
   return (
-    <View
-      style={{
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        padding: 10,
-        height: 100,
-      }}
-    >
+    <View style={headerStyles.wrapper}>
       <View
         style={{
           flexDirection: 'row',

@@ -13,6 +13,7 @@ import { layoutStyles } from '@/styles/layoutStyles';
 import { useGameRouter } from '../Router';
 import PathDrawing from '@/components/path/PathDrawing';
 import { GameStageID, gameStages } from '@/config/stages';
+import MapStatusBar from '@/components/header/MapStatusBar';
 
 declare module '@/hooks/store/useStore' {
   export interface IStore {
@@ -40,6 +41,7 @@ const IntroScreen = () => {
 
   return (
     <View style={layoutStyles.container}>
+      <MapStatusBar />
       <MuteButton
         isMuted={!isPlaying}
         onToggleMute={() => {

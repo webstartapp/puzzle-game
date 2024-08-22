@@ -58,11 +58,10 @@ export const loadImage = async (
 // Initiate game level
 export const initiateGameLevel = async (
   levelId: LevelId,
+  preview?: boolean,
 ): Promise<Record<string, IEntity>> => {
   const level = levels[levelId];
   const entities: Record<string, IEntity> = {};
-
-  console.log(65, level);
 
   try {
     const img = await loadImage(`${level.image}`);
@@ -142,6 +141,9 @@ export const initiateGameLevel = async (
       x: 0,
       y: 0,
     };
+    if (preview) {
+      return entities;
+    }
 
     // Apply shifts to entities
     level.shifts.forEach((shift) => {
@@ -160,6 +162,16 @@ export const initiateGameLevel = async (
       }
     });
 
+    const firstShift = level.shifts[0];
+    const firstId = `${firstShift.x}-${firstShift.y}`;
+    const fisrtEntity = entities[firstId];
+    if (fisrtEntity) {
+      fisrtEntity.position.x = emptyCell.x;
+      fisrtEntity.position.y = emptyCell.y;
+      fisrtEntity.map.x = emptyCell.x;
+      fisrtEntity.map.y = emptyCell.y;
+      entities[firstId] = fisrtEntity;
+    }
     // Remove initial empty cell
     delete entities['0-0'];
 

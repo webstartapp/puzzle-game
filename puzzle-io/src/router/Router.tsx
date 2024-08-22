@@ -1,6 +1,7 @@
 import { createContext, FC, useContext, useEffect, useState } from 'react';
 import IntroScreen from '@/router/routes/IntroScreen';
 import PuzzleScreen from '@/router//routes/PuzzleScreen';
+import PuzzleScreenAnimation from '@/router/routes/PuzzleScreenAnimation';
 import StageScreen from '@/router/routes/StageMapScreen';
 import WorldMapScreen from '@/router/routes/WorldMapScreen';
 
@@ -33,6 +34,10 @@ const routeList = [
   RouteFN({
     path: 'puzzleScreen',
     component: PuzzleScreen,
+  }),
+  RouteFN({
+    path: 'puzzleScreenAnimation',
+    component: PuzzleScreenAnimation,
   }),
   RouteFN({
     path: 'WorldMapScreen',
