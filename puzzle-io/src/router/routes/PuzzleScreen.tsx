@@ -20,6 +20,11 @@ declare module '@/system/gameEngine/GameEngine' {
   export interface ISystemCustomData {
     type: 'reset' | 'oneBack';
   }
+  export interface IGameHeaderProps {
+    timestampNow: number;
+    timestampStart: number;
+    resetTime: () => void;
+  }
 }
 
 export type GameViewState = {
@@ -46,9 +51,20 @@ const PuzzleScreen: FC<PuzzleScreenProps> = ({ level, isContinue }) => {
   const [localEntyties, setLocalEntyties] = useState<Record<string, IEntity>>(
     {},
   );
+  const [timestampNow, setTimestampNow] = useState(dayjs().unix());
+  const [timestampStart, setTimestampStart] = useState(dayjs().unix());
 
   const { setState } = useStore('gameView');
   const levelData = levels[level];
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setTimestampNow(dayjs().unix());
+    }, 250);
+    return () => {
+      clearInterval(interval);
+    };
+  }, []);
 
   useEffect(() => {
     const T = async () => {
@@ -77,7 +93,15 @@ const PuzzleScreen: FC<PuzzleScreenProps> = ({ level, isContinue }) => {
       entities={localEntyties}
       header={{
         component: GameStatusBar,
-        height: 100,
+        height: 90,
+        props: {
+          timestampNow,
+          timestampStart,
+          resetTime: () => {
+            setTimestampStart(dayjs().add(0.8, 'seconds').unix());
+            setTimestampNow(dayjs().unix());
+          },
+        },
       }}
       gridSnaps={{
         cell: {

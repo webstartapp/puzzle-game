@@ -91,7 +91,7 @@ const PuzzleScreen: FC<PuzzleScreenProps> = ({ level, isContinue }) => {
       entities={localEntyties}
       header={{
         component: GameStatusBar,
-        height: 100,
+        height: 90,
       }}
       gridSnaps={{
         cell: {

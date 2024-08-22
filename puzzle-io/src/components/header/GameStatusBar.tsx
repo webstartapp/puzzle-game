@@ -15,10 +15,16 @@ import { HederTextView } from '../basic/TextView';
 import { KeyGainChain } from './visuals/KeyGainChain';
 import { headerStyles } from '@/styles/headerStyles';
 
-const GameStatusBar: HeaderComponent = ({ dispatchSystem }) => {
+const GameStatusBar: HeaderComponent = ({
+  dispatchSystem,
+  timestampNow,
+  timestampStart,
+  resetTime,
+}) => {
   const { data, setState } = useStore('gameView');
-  const [timmer, setTimmer] = useState<NodeJS.Timeout | null>(null);
   const { setRoute } = useGameRouter();
+
+  console.log(23, timestampNow, timestampStart);
 
   const level = useMemo(() => {
     const levelId = data?.levelId;
@@ -28,31 +34,6 @@ const GameStatusBar: HeaderComponent = ({ dispatchSystem }) => {
 
     return levels[levelId];
   }, [data?.levelId]);
-
-  const [timeLeft, setTimeLeft] = useState<number>();
-
-  useEffect(() => {
-    if (timmer) {
-      clearInterval(timmer);
-    }
-    if (data) {
-      setTimmer(
-        setInterval(() => {
-          const left = data.timeEnds - dayjs().unix();
-          setTimeLeft(left);
-          setState('gameView', {
-            ...data,
-            timeNow: dayjs().unix(),
-          });
-        }, 500),
-      );
-    }
-    return () => {
-      if (timmer) {
-        clearInterval(timmer);
-      }
-    };
-  }, [data?.timeEnds]);
 
   const successs = useMemo(() => {
     return (
@@ -67,8 +48,8 @@ const GameStatusBar: HeaderComponent = ({ dispatchSystem }) => {
       return 3;
     }
 
-    const time =
-      levelLimits.maxTime.end - (data?.timeEnds || 0) + (data?.timeNow || 0);
+    const time = (timestampNow || 0) - (timestampStart || 0);
+    console.log(51, time);
     if (
       (data?.moves?.length || 0) < levelLimits.maxMoves['3keys'] &&
       time < levelLimits.maxTime['3keys']
@@ -88,7 +69,23 @@ const GameStatusBar: HeaderComponent = ({ dispatchSystem }) => {
       return 1;
     }
     return 0;
-  }, [data?.moves?.length, data?.timeNow, level?.requirements]);
+  }, [data?.moves?.length, level?.requirements, timestampNow, timestampStart]);
+
+  const timeLeft = useMemo(() => {
+    const levelLimits = level?.requirements;
+    if (!levelLimits) {
+      return 0;
+    }
+
+    const time = (timestampNow || 0) - (timestampStart || 0);
+    if (time < 0) {
+      return levelLimits.maxTime.end;
+    }
+    if (time > levelLimits.maxTime.end) {
+      return 0;
+    }
+    return levelLimits.maxTime.end - time;
+  }, [level?.requirements, timestampNow, timestampStart]);
 
   if (!data) {
     return null;
@@ -153,6 +150,7 @@ const GameStatusBar: HeaderComponent = ({ dispatchSystem }) => {
           variant="asset"
           asset={reload}
           onPress={() => {
+            resetTime();
             dispatchSystem({ type: 'reset' });
           }}
         />

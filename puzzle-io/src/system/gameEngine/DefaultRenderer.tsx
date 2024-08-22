@@ -12,6 +12,7 @@ import {
   GridInit,
   HeaderComponent,
   IEntity,
+  IGameHeaderProps,
   IStateEntity,
   ISystemCustomData,
   PositionWorld,
@@ -43,6 +44,7 @@ type EntityRendererProps = {
   header: {
     height: number;
     component: HeaderComponent;
+    props?: IGameHeaderProps;
   };
 };
 
@@ -191,6 +193,7 @@ const EntityRenderer: FC<EntityRendererProps> = ({
             dispatchSystem={(actionData) =>
               setEntities({ type: 'custom', customData: actionData })
             }
+            {...(header?.props || ({} as IGameHeaderProps))}
           />
         </View>
       ) : null}

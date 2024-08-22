@@ -74,10 +74,13 @@ export type GameEngineSystem = (
   events: EventItem,
 ) => Promise<IStateEntity[] | undefined>;
 
-export type HeaderComponent = FC<{
-  entities: IStateEntity[];
-  dispatchSystem: (customData: ISystemCustomData) => void;
-}>;
+export type HeaderComponent = FC<
+  {
+    entities: IStateEntity[];
+    dispatchSystem: (customData: ISystemCustomData) => void;
+  } & IGameHeaderProps
+>;
+export interface IGameHeaderProps {}
 
 type GameEngineProps = {
   style: ViewStyle;
@@ -87,6 +90,7 @@ type GameEngineProps = {
   header: {
     height: number;
     component: HeaderComponent;
+    props?: IGameHeaderProps;
   };
   running?: boolean;
   contentSize: {
