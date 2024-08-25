@@ -80,8 +80,6 @@ const IntroScreen = () => {
     return gameStages.findLast((stage) => openedStages[stage.id])?.id;
   }, [openedStages]);
 
-  console.log(72, openedStages);
-
   return (
     <View style={layoutStyles.container}>
       <MapStatusBar />

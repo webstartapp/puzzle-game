@@ -1,6 +1,6 @@
 import { useStore } from '@/hooks/store/useStore';
 import { RouterPath, useGameRouter } from '@/router/Router';
-import { FC, useMemo } from 'react';
+import { FC, useMemo, useState } from 'react';
 import { Text, View } from 'react-native';
 import Button from '../basic/Button';
 import home from '@/assets/images/wooden_icons/sign.png';
@@ -9,6 +9,7 @@ import coin from '@/assets/images/wooden_icons/coin.png';
 import settings from '@/assets/images/wooden_icons/settings.png';
 import { headerStyles } from '@/styles/headerStyles';
 import AssetIcon from '../icons/AssetIcon';
+import MenuModal from '../modals/MenuModal';
 
 type MapSatusBarProps = {
   backTo?: RouterPath;
@@ -16,7 +17,7 @@ type MapSatusBarProps = {
 
 const MapStatusBar: FC<MapSatusBarProps> = ({ backTo }) => {
   const { data } = useStore('viewer');
-  const { setRoute } = useGameRouter();
+  const { setRoute, setShowMenu } = useGameRouter();
 
   const keyCount = useMemo(() => {
     const keys = data?.session?.previous
@@ -52,7 +53,7 @@ const MapStatusBar: FC<MapSatusBarProps> = ({ backTo }) => {
         variant="asset"
         asset={settings}
         onPress={() => {
-          setRoute('ShopScreen');
+          setShowMenu(true);
         }}
       />
     </View>

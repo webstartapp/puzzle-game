@@ -67,13 +67,17 @@ const StageMapScreen: FC<StageMapScreenProps> = ({ stage }) => {
     return out;
   }, [state.viewer?.session?.previous, stageData.scenes, stage]);
 
+  const highLightedId = useMemo(() => {
+    return stageData.scenes.findLast((scene) => openedLevels[scene.level])
+      ?.level;
+  }, [openedLevels, stageData.scenes]);
+
   return (
     <View style={layoutStyles.container}>
       <MapStatusBar backTo="WorldMapScreen" />
       <MuteButton
         isMuted={!isPlaying}
         onToggleMute={() => {
-          console.log(54, isPlaying);
           isPlaying ? stopSong() : playSong();
         }}
       />
@@ -106,6 +110,7 @@ const StageMapScreen: FC<StageMapScreenProps> = ({ stage }) => {
           setLevelData(data);
         }}
         image={stageData.image}
+        highLightedId={highLightedId}
       />
       <LevelTileModal
         levelData={levelData}

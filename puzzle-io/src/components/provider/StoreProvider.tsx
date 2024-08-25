@@ -94,6 +94,7 @@ const StoreProvider: FC<PropsWithChildren> = ({ children }) => {
         return;
       }
       const savedState = await AsyncStorage.getItem(PERSISTED_STATE_KEY);
+      console.log(97, savedState, globalState);
       try {
         localState = {
           ...globalState,
@@ -115,6 +116,7 @@ const StoreProvider: FC<PropsWithChildren> = ({ children }) => {
           };
         }
       }
+      console.log('Loaded state', localState);
       dispatch({
         type: 'INIT' as keyof IStore,
         payload: localState,
@@ -126,6 +128,10 @@ const StoreProvider: FC<PropsWithChildren> = ({ children }) => {
 
   useEffect(() => {
     const saveState = async () => {
+      console.log(131, state);
+      if (!state.initiated) {
+        return;
+      }
       await AsyncStorage.setItem(PERSISTED_STATE_KEY, JSON.stringify(state));
     };
 

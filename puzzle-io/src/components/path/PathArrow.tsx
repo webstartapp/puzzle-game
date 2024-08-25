@@ -13,8 +13,8 @@ export const PathArrow: FC<PathArrowProps> = ({ x, y, rotation, scale }) => {
   const style = StyleSheet.create({
     container: {
       position: 'absolute',
-      left: x + scale * 8,
-      top: y + scale * 8,
+      left: x - scale * 15,
+      top: y - scale * 15,
     },
     text: {
       fontSize: 20,

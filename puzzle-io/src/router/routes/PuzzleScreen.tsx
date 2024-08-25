@@ -15,6 +15,7 @@ import { layoutStyles } from '@/styles/layoutStyles';
 import PuzzleTileModal from '@/components/modals/PuzzleTileModal';
 import { Level } from '@/utils/levelConstructor';
 import { useGameRouter } from '../Router';
+import PuzzleFailModal from '@/components/modals/PuzzleFailModal';
 
 declare module '@/system/gameEngine/GameEngine' {
   export interface IEntity {
@@ -59,6 +60,7 @@ const PuzzleScreen: FC<PuzzleScreenProps> = ({ level, isContinue }) => {
   const [timestampNow, setTimestampNow] = useState(dayjs().unix());
   const [timestampStart, setTimestampStart] = useState(dayjs().unix());
   const [levelData, setLevelData] = useState<Level>();
+  const [levelFailData, setLevelFailData] = useState<[Level, number, number]>();
 
   const {
     setState,
@@ -100,15 +102,14 @@ const PuzzleScreen: FC<PuzzleScreenProps> = ({ level, isContinue }) => {
   }, []);
 
   useEffect(() => {
+    if (levelFailData) {
+      return;
+    }
     if (
       moves > levelItem.requirements.maxMoves.end ||
       timestampNow - timestampStart > levelItem.requirements.maxTime.end
     ) {
-      setRoute('PuzzleSuccessAnimation', {
-        level,
-        time: timestampNow - timestampStart,
-        moves: data?.moves || [],
-      });
+      setLevelFailData([levelItem, timestampNow - timestampStart, moves]);
     }
     if (
       data?.matchingEntities &&
@@ -153,10 +154,19 @@ const PuzzleScreen: FC<PuzzleScreenProps> = ({ level, isContinue }) => {
         }}
       ></GameEngine>
 
-      <PuzzleTileModal
-        levelData={levelData}
-        setLevelData={() => setLevelData(undefined)}
-      />
+      {levelData ? (
+        <PuzzleTileModal
+          levelData={levelData}
+          setLevelData={() => setLevelData(undefined)}
+        />
+      ) : null}
+      {levelFailData ? (
+        <PuzzleFailModal
+          levelData={levelFailData?.[0]}
+          moves={levelFailData?.[2]}
+          time={levelFailData?.[1]}
+        />
+      ) : null}
     </View>
   );
 };

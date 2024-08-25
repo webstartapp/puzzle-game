@@ -34,6 +34,7 @@ export const KeyGainChain: FC<KeyChainProps> = ({ activeKeys, size = 20 }) => {
     return Array.from({ length: 3 }, (_, i) => {
       return (
         <KeyItem
+          key={`key-${i}-${activeKeys}`}
           inactive={i >= activeKeys}
           rotateDeg={i * 15 - 105}
           size={size}

@@ -28,4 +28,14 @@ export const licenses: License[] = [
     disclaimer:
       'This work is licensed under a Creative Commons Attribution 4.0 International License.',
   },
+  {
+    sources: [
+      'Story texts generated using ChatGPT by OpenAI',
+      'Story images generated using DALL·E by OpenAI',
+    ],
+    title: 'Content created with assistance from OpenAI',
+    license: 'Creative Commons Attribution 4.0 International (CC BY 4.0)',
+    disclaimer:
+      'This content was created with the assistance of AI tools provided by OpenAI, including ChatGPT for text generation and DALL·E for image creation. This work is licensed under a Creative Commons Attribution 4.0 International License.',
+  },
 ];

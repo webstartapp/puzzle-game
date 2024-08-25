@@ -5,21 +5,32 @@ import PuzzleScreenAnimation from '@/router/routes/PuzzleScreenAnimation';
 import StageScreen from '@/router/routes/StageMapScreen';
 import WorldMapScreen from '@/router/routes/WorldMapScreen';
 import PuzzleScreenSuccess from './routes/PuzzleSuccessAnimation';
+import * as Linking from 'expo-linking';
+import PrivacyPolicy from './routes/TermsScreen';
+import MenuModal from '@/components/modals/MenuModal';
+import CreditScreen from './routes/CreditScreen';
 
-type Route<ROUTE extends string, PARAMS extends Record<string, any> | never> = {
+type Route<
+  ROUTE extends string,
+  PARAMS extends Record<string, any> | never,
+  SLUG extends string = string,
+> = {
   path: ROUTE;
   component: FC<PARAMS>;
+  slug?: SLUG;
 };
 
 const RouteFN = <
   ROUTE extends string,
   PARAMS extends Record<string, any> | never = never,
+  SLUG extends string = string,
 >(
-  route: Route<ROUTE, PARAMS>,
+  route: Route<ROUTE, PARAMS, SLUG>,
 ): {
   path: ROUTE;
   component: FC<PARAMS>;
   props: PARAMS;
+  slug: SLUG;
 } => {
   const out: any = {
     ...route,
@@ -52,6 +63,16 @@ const routeList = [
     path: 'PuzzleSuccessAnimation',
     component: PuzzleScreenSuccess,
   }),
+  RouteFN({
+    path: 'terms',
+    component: PrivacyPolicy,
+    slug: 'terms',
+  }),
+  RouteFN({
+    path: 'credits',
+    component: CreditScreen,
+    slug: 'credits',
+  }),
 ];
 
 type SingleRouteType = (typeof routeList)[number];
@@ -72,9 +93,13 @@ const RouterContext = createContext<{
     route: K,
     params?: RouteParamsMap[K],
   ) => void;
+  showMenu: boolean;
+  setShowMenu: (show: boolean) => void;
 }>({
   route: routeList[0], // Default value
   setRoute: () => {},
+  showMenu: false,
+  setShowMenu: () => {},
 });
 
 export const useGameRouter = () => {
@@ -86,6 +111,8 @@ const RouterProvider = () => {
   const [routeInner, setInnerRoute] = useState(
     routeList[0] as (typeof routeList)[number],
   );
+  const [showMenu, setShowMenu] = useState(false);
+
   const setRoute = <K extends RouterKeys>(
     route: K,
     params?: RouteParamsMap[K],
@@ -105,6 +132,22 @@ const RouterProvider = () => {
       ...currentRoute,
     } as SingleRouteType);
   };
+  useEffect(() => {
+    const checkSlugInURL = async () => {
+      const initialUrl = await Linking.getInitialURL();
+      if (initialUrl) {
+        const parsedUrl = new URL(initialUrl);
+        const slug = parsedUrl.pathname.replace('/', ''); // Remove the leading slash
+        const matchedRoute = routeList.find((route) => route.slug === slug);
+
+        if (matchedRoute) {
+          setInnerRoute(matchedRoute);
+        }
+      }
+    };
+
+    checkSlugInURL();
+  }, []);
 
   const Component = routeInner.component as FC<any>;
 
@@ -113,9 +156,15 @@ const RouterProvider = () => {
       value={{
         route: routeInner,
         setRoute,
+        showMenu,
+        setShowMenu,
       }}
     >
       <Component {...(routeInner.props || {})} />
+      <MenuModal
+        shown={showMenu}
+        setShown={setShowMenu}
+      />
     </RouterContext.Provider>
   );
 };

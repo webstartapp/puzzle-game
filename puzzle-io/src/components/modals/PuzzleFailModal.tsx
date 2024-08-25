@@ -1,37 +1,31 @@
 import { GameStage } from '@/config/stages';
 import { layoutStyles } from '@/styles/layoutStyles';
-import { FC, useMemo } from 'react';
+import { FC } from 'react';
 import { Image, Modal, Text, View } from 'react-native';
 import WoodenBackground from '../basic/WoodenBackground';
+import { headerStyles } from '@/styles/headerStyles';
 import { buttonStyles } from '@/styles/buttonStyles';
 import Button from '../basic/Button';
 import cross from '@/assets/images/wooden_icons/cross.png';
 import { useGameRouter } from '@/router/Router';
 import { Level } from '@/utils/levelConstructor';
 import { KeyGainChain } from '../header/visuals/KeyGainChain';
-import { useStore } from '@/hooks/store/useStore';
+import home from '@/assets/images/wooden_icons/sign.png';
 import { timeToMinutes } from '@/utils/timeTominutes';
 
-type LevelTileModalProps = {
+type PuzzleFailModalProps = {
   levelData?: Level;
-  setLevelData: (levelData?: GameStage) => void;
+  moves: number;
+  time: number;
 };
 
-const LevelTileModal: FC<LevelTileModalProps> = ({
+const PuzzleFailModal: FC<PuzzleFailModalProps> = ({
   levelData,
-  setLevelData,
+  moves,
+  time,
 }) => {
   const { setRoute } = useGameRouter();
-  const { state } = useStore();
-  const progressSession = useMemo(() => {
-    const previous = (state.viewer?.session?.previous || []).find(
-      (p) => p.levelId === levelData?.id,
-    );
-    return previous;
-  }, [state.viewer?.session?.previous, levelData?.id]);
   if (!levelData) return null;
-
-  console.log(33, state);
   return (
     <View
       style={[
@@ -43,37 +37,37 @@ const LevelTileModal: FC<LevelTileModalProps> = ({
       ]}
     >
       <View style={[layoutStyles.modalWrapper]}>
-        <WoodenBackground width={300}>
+        <WoodenBackground width={350}>
           <View
             style={[
               layoutStyles.topRight,
               {
                 width: '100%',
+                justifyContent: 'space-between',
+                alignItems: 'center',
               },
             ]}
           >
             <View
               style={{
                 flexDirection: 'row',
-                justifyContent: 'space-between',
-                alignItems: 'center',
+                justifyContent: 'flex-end',
+                alignItems: 'flex-end',
                 width: '100%',
               }}
             >
-              <KeyGainChain
-                activeKeys={progressSession?.stars || 0}
-                size={30}
-              />
               <Button
                 variant="asset"
                 asset={cross}
                 onPress={() => {
-                  setLevelData();
+                  setRoute('WorldMapScreen');
                 }}
               />
             </View>
           </View>
-          <Text style={buttonStyles.woodenTitle}>{levelData?.title}</Text>
+          <Text style={buttonStyles.woodenTitle}>
+            {levelData?.title || ' '}
+          </Text>
           <View>
             <Image
               source={{ uri: levelData?.image }}
@@ -81,41 +75,50 @@ const LevelTileModal: FC<LevelTileModalProps> = ({
               height={250}
               style={{ width: 250, height: 250 }}
             />
-            {progressSession?.levelId ? (
-              <View
-                style={{
-                  position: 'absolute',
-                  top: 200,
-                  left: 0,
-                  width: '100%',
-                  height: 50,
-                  backgroundColor: 'rgba(255,255,255, 0.5)',
-                }}
+            <View
+              style={{
+                position: 'absolute',
+                top: 80,
+                left: 0,
+                width: '100%',
+                height: 50,
+              }}
+            >
+              <Text style={[buttonStyles.woodenTitle]}>FAILED</Text>
+            </View>
+            <View
+              style={{
+                position: 'absolute',
+                top: 200,
+                left: 0,
+                width: '100%',
+                height: 50,
+                backgroundColor: 'rgba(255,255,255, 0.5)',
+              }}
+            >
+              <Text
+                style={[
+                  buttonStyles.woodenText,
+                  {
+                    lineHeight: 25,
+                    padding: 0,
+                  },
+                ]}
               >
-                <Text
-                  style={[
-                    buttonStyles.woodenText,
-                    {
-                      lineHeight: 25,
-                      padding: 0,
-                    },
-                  ]}
-                >
-                  Best moves: {progressSession.moves}
-                </Text>
-                <Text
-                  style={[
-                    buttonStyles.woodenText,
-                    {
-                      lineHeight: 25,
-                      padding: 0,
-                    },
-                  ]}
-                >
-                  Best Time: {timeToMinutes(progressSession.time)}
-                </Text>
-              </View>
-            ) : null}
+                Moves: {moves}
+              </Text>
+              <Text
+                style={[
+                  buttonStyles.woodenText,
+                  {
+                    lineHeight: 25,
+                    padding: 0,
+                  },
+                ]}
+              >
+                Time: {timeToMinutes(time)}
+              </Text>
+            </View>
           </View>
           <Text style={buttonStyles.woodenText}>{levelData.subtitle}</Text>
           <View
@@ -127,9 +130,9 @@ const LevelTileModal: FC<LevelTileModalProps> = ({
           >
             <Button
               onPress={() => {
-                setLevelData();
+                setRoute('WorldMapScreen');
               }}
-              title="Close"
+              title="Exit"
             />
             <Button
               onPress={() => {
@@ -137,7 +140,7 @@ const LevelTileModal: FC<LevelTileModalProps> = ({
                   level: levelData.id as any,
                 });
               }}
-              title="Enter"
+              title="Restart"
             />
           </View>
         </WoodenBackground>
@@ -145,4 +148,4 @@ const LevelTileModal: FC<LevelTileModalProps> = ({
     </View>
   );
 };
-export default LevelTileModal;
+export default PuzzleFailModal;

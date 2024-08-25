@@ -39,6 +39,10 @@ const PathDrawing = <T extends any = any>({
     const size = Math.min(w, h);
     return {
       size,
+      ratio: {
+        x: w / size,
+        y: h / size,
+      },
       shift: {
         x: (w - size) / 2,
         y: (h - size) / 2,
@@ -57,15 +61,21 @@ const PathDrawing = <T extends any = any>({
       id: string;
       data: T;
     }[] = [];
-    const itemSize = size.size / gridSize.x;
+    const itemSize = {
+      scale: Math.min((size.size / gridSize.x, size.size / gridSize.y)),
+      x: (size.ratio.x * size.size) / gridSize.x,
+      y: (size.ratio.y * size.size) / gridSize.y,
+    };
+
+    console.log('itemSize', itemSize);
 
     (paths || []).forEach(({ x, y, title, id, data }, index) => {
       const next = paths[index + 1];
-      const scale = itemSize / 50;
+      const scale = itemSize.scale / 50;
 
       out.push({
-        x: x * itemSize,
-        y: y * itemSize,
+        x: x * itemSize.x,
+        y: y * itemSize.y,
         rotation: 0,
         title,
         isSign: true,
@@ -76,21 +86,25 @@ const PathDrawing = <T extends any = any>({
       if (!next) {
         return;
       }
-      const rotation = Math.atan2(next.y - y, next.x - x);
+
+      const rotation = Math.atan2(
+        (next.y - y) * size.ratio.y,
+        (next.x - x) * size.ratio.x,
+      );
 
       const distance = Math.sqrt((next.y - y) ** 2 + (next.x - x) ** 2);
-      const steps = distance * 2;
+      const steps = distance * 1.5;
       const shiftedByX = (next.x - x) / steps;
       const shiftedByY = (next.y - y) / steps;
       for (let i = 2; i < steps - 1; i++) {
-        const newX = (x + shiftedByX * i) * itemSize;
-        const newY = (y + shiftedByY * i) * itemSize;
+        const newX = (x + shiftedByX * i) * itemSize.x;
+        const newY = (y + shiftedByY * i) * itemSize.y;
         out.push({
           x: newX,
           y: newY,
           rotation,
           title,
-          scale: scale * 0.5,
+          scale: scale,
           id,
           data,
         });
@@ -106,19 +120,10 @@ const PathDrawing = <T extends any = any>({
         position: 'absolute',
         width: size.size,
         height: size.size,
-        backgroundColor: 'rgba(0,0,0,0.5)',
-        left: size.shift.x,
-        top: size.shift.y,
+        left: 0,
+        top: 0,
       }}
     >
-      <Image
-        source={image}
-        style={{
-          width: size.size,
-          height: size.size,
-          position: 'absolute',
-        }}
-      />
       {pathsWithRotation.map(
         ({ x, y, rotation, title, isSign, scale, id, data }, index) => {
           if (isSign) {

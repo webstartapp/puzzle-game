@@ -62,12 +62,6 @@ const IntroScreen = () => {
             setRoute('WorldMapScreen');
           }}
         />
-        <Button
-          title="Load Game"
-          onPress={() => {
-            // Handle Load Saved Game
-          }}
-        />
       </View>
     </View>
   );
