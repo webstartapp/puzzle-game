@@ -4,6 +4,7 @@ import PuzzleScreen from '@/router//routes/PuzzleScreen';
 import PuzzleScreenAnimation from '@/router/routes/PuzzleScreenAnimation';
 import StageScreen from '@/router/routes/StageMapScreen';
 import WorldMapScreen from '@/router/routes/WorldMapScreen';
+import PuzzleScreenSuccess from './routes/PuzzleSuccessAnimation';
 
 type Route<ROUTE extends string, PARAMS extends Record<string, any> | never> = {
   path: ROUTE;
@@ -46,6 +47,10 @@ const routeList = [
   RouteFN({
     path: 'StageMapScreen',
     component: StageScreen,
+  }),
+  RouteFN({
+    path: 'PuzzleSuccessAnimation',
+    component: PuzzleScreenSuccess,
   }),
 ];
 

@@ -1,6 +1,13 @@
-import { FC } from 'react';
+import { FC, useEffect, useRef } from 'react';
 import Arrow from '@/assets/images/wooden_icons/rectangle-sign.png';
-import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
+import {
+  Animated,
+  Image,
+  StyleSheet,
+  Text,
+  TouchableOpacity,
+  View,
+} from 'react-native';
 import { PathCheckpoint } from './PathDrawing';
 
 type PathSignProps = {
@@ -11,6 +18,7 @@ type PathSignProps = {
   scale: number;
   id: string;
   data: any;
+  highLighted?: boolean;
 };
 
 export const PathSign: FC<PathSignProps> = ({
@@ -21,7 +29,9 @@ export const PathSign: FC<PathSignProps> = ({
   scale,
   id,
   data,
+  highLighted,
 }) => {
+  const animatedValue = useRef(new Animated.Value(1)).current;
   const scaledSize = 120 * scale;
   const style = StyleSheet.create({
     container: {
@@ -32,9 +42,10 @@ export const PathSign: FC<PathSignProps> = ({
     },
     text: {
       position: 'absolute',
-      fontSize: 15 * scale,
+      fontSize: 18 * scale,
       fontWeight: 'bold',
-      lineHeight: 18 * scale,
+      lineHeight: 20 * scale,
+      padding: 5,
       color: 'white',
       zIndex: 10,
       left: -20,
@@ -44,29 +55,59 @@ export const PathSign: FC<PathSignProps> = ({
       backgroundColor: 'rgba(0,0,0,0.5)',
     },
   });
+  useEffect(() => {
+    if (!highLighted) {
+      return;
+    }
+    Animated.loop(
+      Animated.sequence([
+        Animated.timing(animatedValue, {
+          toValue: 0.5,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+        Animated.timing(animatedValue, {
+          toValue: 1,
+          duration: 1000,
+          useNativeDriver: true,
+        }),
+      ]),
+    ).start();
+  }, [animatedValue]);
   return (
     <TouchableOpacity
-      onPress={() => onClick({ x, y, title, id, data })}
-      style={style.container}
+      onPress={() => {
+        onClick({ x, y, title, id, data });
+      }}
     >
-      <Image
-        source={data?.image}
-        style={{
-          width: scaledSize - 12,
-          height: scaledSize - 12,
-          top: 6,
-          left: 6,
-          position: 'absolute',
-        }}
-      />
-      <Image
-        source={Arrow}
-        style={{
-          width: scaledSize,
-          height: scaledSize,
-        }}
-      />
-      <Text style={style.text}>{title || 'Missing'}</Text>
+      <Animated.View
+        style={[
+          style.container,
+          {
+            borderColor: 'red',
+            opacity: animatedValue,
+          },
+        ]}
+      >
+        <Image
+          source={data?.image}
+          style={{
+            width: scaledSize - 12,
+            height: scaledSize - 12,
+            top: 6,
+            left: 6,
+            position: 'absolute',
+          }}
+        />
+        <Image
+          source={Arrow}
+          style={{
+            width: scaledSize,
+            height: scaledSize,
+          }}
+        />
+        <Text style={style.text}>{title || 'Missing'}</Text>
+      </Animated.View>
     </TouchableOpacity>
   );
 };

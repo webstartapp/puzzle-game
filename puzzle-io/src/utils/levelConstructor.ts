@@ -1,4 +1,5 @@
 import { Grid } from '@/config/grid/indexedGrid';
+import { GameStageID, Scene } from '@/config/stages';
 
 type HasDuplicates<T extends readonly { x: number; y: number }[]> =
   T extends readonly [infer F, ...infer R]
@@ -28,6 +29,13 @@ export type Level<T extends string = string> = {
   grid: Grid;
   image: string;
   shifts: Grid[];
+  stageId: GameStageID;
+  sceneId: number;
+  nextLevel: {
+    level?: string;
+    stageId?: GameStageID;
+    sceneId?: number;
+  };
   requirements: {
     maxMoves: {
       '3keys': number;

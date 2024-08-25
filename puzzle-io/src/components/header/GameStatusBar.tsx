@@ -91,24 +91,7 @@ const GameStatusBar: HeaderComponent = ({
 
   return (
     <View style={headerStyles.wrapper}>
-      <View
-        style={{
-          flexDirection: 'row',
-          width: 200,
-        }}
-      >
-        <CongratsModal
-          coins={10}
-          stars={1}
-          time={100}
-          turns={10}
-          visible={successs}
-          onContinue={() => {
-            dispatchSystem({ type: 'reset' });
-          }}
-        />
-      </View>
-      <HederTextView text={level?.title} />
+      <HederTextView text={' '} />
       <HederTextView
         text={timeLeft}
         format="time"

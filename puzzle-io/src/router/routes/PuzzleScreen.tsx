@@ -3,7 +3,7 @@ import GameEngine from '@/src/system/gameEngine/GameEngine';
 import { MoveFinger } from '@/src/system/touch/touches';
 import { ImageResult } from 'expo-image-manipulator';
 import { StatusBar } from 'expo-status-bar';
-import { FC, useCallback, useEffect, useState } from 'react';
+import { FC, useCallback, useEffect, useMemo, useState } from 'react';
 import { useStore } from '@/hooks/store/useStore';
 import GameStatusBar from '@/components/header/GameStatusBar';
 import { LevelId, levels } from '@/config/levels';
@@ -14,6 +14,7 @@ import { View } from 'react-native';
 import { layoutStyles } from '@/styles/layoutStyles';
 import PuzzleTileModal from '@/components/modals/PuzzleTileModal';
 import { Level } from '@/utils/levelConstructor';
+import { useGameRouter } from '../Router';
 
 declare module '@/system/gameEngine/GameEngine' {
   export interface IEntity {
@@ -59,8 +60,17 @@ const PuzzleScreen: FC<PuzzleScreenProps> = ({ level, isContinue }) => {
   const [timestampStart, setTimestampStart] = useState(dayjs().unix());
   const [levelData, setLevelData] = useState<Level>();
 
-  const { setState } = useStore('gameView');
+  const {
+    setState,
+    data,
+    state: { viewer },
+  } = useStore('gameView');
   const levelItem = levels[level];
+  const { setRoute } = useGameRouter();
+
+  const moves = useMemo(() => {
+    return data?.moves?.length || 0;
+  }, [data?.moves?.length]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -88,6 +98,29 @@ const PuzzleScreen: FC<PuzzleScreenProps> = ({ level, isContinue }) => {
     T();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
+  useEffect(() => {
+    if (
+      moves > levelItem.requirements.maxMoves.end ||
+      timestampNow - timestampStart > levelItem.requirements.maxTime.end
+    ) {
+      setRoute('PuzzleSuccessAnimation', {
+        level,
+        time: timestampNow - timestampStart,
+        moves: data?.moves || [],
+      });
+    }
+    if (
+      data?.matchingEntities &&
+      data.matchingEntities.length === levelItem.grid.x * levelItem.grid.y - 1
+    ) {
+      setRoute('PuzzleSuccessAnimation', {
+        level,
+        time: timestampNow - timestampStart,
+        moves: data?.moves || [],
+      });
+    }
+  }, [moves, timestampNow, timestampStart]);
 
   return (
     <View style={layoutStyles.container}>
@@ -118,9 +151,7 @@ const PuzzleScreen: FC<PuzzleScreenProps> = ({ level, isContinue }) => {
           width: 100,
           height: 100,
         }}
-      >
-        <StatusBar hidden={true} />
-      </GameEngine>
+      ></GameEngine>
 
       <PuzzleTileModal
         levelData={levelData}

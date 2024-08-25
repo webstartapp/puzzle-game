@@ -87,7 +87,7 @@ type GameEngineProps = {
   children?: any;
   system?: GameEngineSystem;
   entities: Record<string, IEntity>;
-  header: {
+  header?: {
     height: number;
     component: HeaderComponent;
     props?: IGameHeaderProps;
@@ -134,13 +134,18 @@ const GameEngine: FC<GameEngineProps> = ({
         system={system}
         gridSnaps={gridSnapsDefault}
       />
-
-      <View
-        pointerEvents={'box-none'}
-        style={StyleSheet.absoluteFill}
-      >
-        {children}
-      </View>
+      {children ? (
+        <View
+          style={[
+            css.contentInMiddle,
+            {
+              zIndex: 1000,
+            },
+          ]}
+        >
+          <View>{children}</View>
+        </View>
+      ) : null}
     </View>
   );
 };
@@ -152,6 +157,16 @@ const css = StyleSheet.create({
   entityContainer: {
     flex: 1,
     backgroundColor: 'transparent',
+  },
+  contentInMiddle: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems: 'center',
+    position: 'absolute',
+    width: '100%',
+    height: '100%',
+    top: 0,
+    left: 0,
   },
 });
 

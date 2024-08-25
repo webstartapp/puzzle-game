@@ -37,6 +37,7 @@ export interface GlobalStorageDataType {
         Level?: ILevel
         UserLogin?: IUserLogin
         LevelStats?: ILevelStats
+        LevelProgress?: ILevelProgress
         UserSession?: IUserSession
         UserProfile?: IUserProfile
         TokenBody?: ITokenBody
@@ -579,11 +580,11 @@ const LevelStatsValidation = ()=>({
         ,
 
    moves: yup
-    .array()
-        .of(yup
             
-            .object(GridValidation())
-            ),
+        .number()
+        .integer((message)=>`${message.path} should be integer`)
+        ,
+
    completed: yup
             
         .boolean()
@@ -601,13 +602,29 @@ const LevelStatsValidation = ()=>({
         .integer((message)=>`${message.path} should be integer`)
         ,
 
+   stage: yup
+            
+        .string()
+        
+        
+        .nullable()
+        .trim()
+        ,
+
+   scene: yup
+            
+        .number()
+        ,
+
 });
 export interface ILevelStats {
-levelId?: string
-moves?: Array<IGrid>
-completed?: boolean
-stars?: number
-time?: number
+levelId: string
+moves: number
+completed: boolean
+stars: number
+time: number
+stage: string
+scene: number
 }
 
 
@@ -623,9 +640,7 @@ const LevelStatsForm = ()=>({
             id: 'moves',
             label: ``,
             formId: 'LevelStatsForm',
-            maxLength: parseInt(``) || undefined,
-            multi: true,
-            item: {"type":"object","properties":{"x":{"type":"integer","required":false},"y":{"type":"integer","required":false}},"typeOf":"schemas","fileName":"session.yaml","key":"Grid","reference":"Grid","$ref":"#/components/schemas/Grid","required":[]},
+            maxLength: parseInt(``) || undefined,            type: COREInputTypeEnum.number,
 
         }, 
 
@@ -661,6 +676,146 @@ const LevelStatsForm = ()=>({
 
         }, 
 
+        stage: {
+            id: 'stage',
+            label: ``,
+            formId: 'LevelStatsForm',
+            maxLength: parseInt(``) || undefined,
+        }, 
+
+        scene: {
+            id: 'scene',
+            label: ``,
+            formId: 'LevelStatsForm',
+            maxLength: parseInt(``) || undefined,
+        }, 
+
+});
+
+
+const LevelProgressValidation = ()=>({
+   levelId: yup
+            
+        .string()
+        
+        
+        .nullable()
+        .trim()
+        ,
+
+   moves: yup
+    .array()
+        .of(yup
+            
+            .object(GridValidation())
+            ),
+   completed: yup
+            
+        .boolean()
+        ,
+
+   stars: yup
+            
+        .number()
+        .integer((message)=>`${message.path} should be integer`)
+        ,
+
+   time: yup
+            
+        .number()
+        .integer((message)=>`${message.path} should be integer`)
+        ,
+
+   stage: yup
+            
+        .string()
+        
+        
+        .nullable()
+        .trim()
+        ,
+
+   scene: yup
+            
+        .number()
+        ,
+
+});
+export interface ILevelProgress {
+levelId: string
+moves: Array<IGrid>
+completed: boolean
+stars: number
+time: number
+stage: string
+scene: number
+}
+
+
+const LevelProgressForm = ()=>({
+        levelId: {
+            id: 'levelId',
+            label: ``,
+            formId: 'LevelProgressForm',
+            maxLength: parseInt(``) || undefined,
+        }, 
+
+        moves: {
+            id: 'moves',
+            label: ``,
+            formId: 'LevelProgressForm',
+            maxLength: parseInt(``) || undefined,
+            multi: true,
+            item: {"type":"object","properties":{"x":{"type":"integer","required":false},"y":{"type":"integer","required":false}},"typeOf":"schemas","fileName":"session.yaml","key":"Grid","reference":"Grid","$ref":"#/components/schemas/Grid","required":[]},
+
+        }, 
+
+        completed: {
+            id: 'completed',
+            label: ``,
+            formId: 'LevelProgressForm',
+            maxLength: parseInt(``) || undefined,
+            input: COREFormInputTypeEnum.Checkboxes,
+            options: [
+                {
+                    label: 'TRUE',
+                    value: true,
+                    negative: false,
+                }
+            ],
+
+        }, 
+
+        stars: {
+            id: 'stars',
+            label: ``,
+            formId: 'LevelProgressForm',
+            maxLength: parseInt(``) || undefined,            type: COREInputTypeEnum.number,
+
+        }, 
+
+        time: {
+            id: 'time',
+            label: ``,
+            formId: 'LevelProgressForm',
+            maxLength: parseInt(``) || undefined,            type: COREInputTypeEnum.number,
+
+        }, 
+
+        stage: {
+            id: 'stage',
+            label: ``,
+            formId: 'LevelProgressForm',
+            maxLength: parseInt(``) || undefined,
+        }, 
+
+        scene: {
+            id: 'scene',
+            label: ``,
+            formId: 'LevelProgressForm',
+            maxLength: parseInt(``) || undefined,
+        }, 
+
 });
 
 
@@ -673,7 +828,7 @@ const UserSessionValidation = ()=>({
 
    current: yup
             
-            .object(LevelStatsValidation())
+            .object(LevelProgressValidation())
         ,
 
    previous: yup
@@ -685,7 +840,7 @@ const UserSessionValidation = ()=>({
 });
 export interface IUserSession {
 coins: number
-current?: ILevelStats
+current?: ILevelProgress
 previous: Array<ILevelStats>
 }
 
@@ -699,7 +854,7 @@ const UserSessionForm = ()=>({
 
         }, 
 
-        current: LevelStatsForm(),
+        current: LevelProgressForm(),
 
         previous: {
             id: 'previous',
@@ -707,7 +862,7 @@ const UserSessionForm = ()=>({
             formId: 'UserSessionForm',
             maxLength: parseInt(``) || undefined,
             multi: true,
-            item: {"type":"object","properties":{"levelId":{"type":"string","required":false},"moves":{"type":"array","items":{"$ref":"#/components/schemas/Grid"},"required":false},"completed":{"type":"boolean","required":false},"stars":{"type":"integer","required":false},"time":{"type":"integer","required":false}},"typeOf":"schemas","fileName":"session.yaml","key":"LevelStats","reference":"LevelStats","$ref":"#/components/schemas/LevelStats","required":[]},
+            item: {"type":"object","properties":{"levelId":{"type":"string","required":true},"moves":{"type":"integer","required":true},"completed":{"type":"boolean","required":true},"stars":{"type":"integer","required":true},"time":{"type":"integer","required":true},"stage":{"type":"string","required":true},"scene":{"type":"number","required":true}},"required":["levelId","moves","completed","stars","time","stage","scene"],"typeOf":"schemas","fileName":"session.yaml","key":"LevelStats","reference":"LevelStats","$ref":"#/components/schemas/LevelStats"},
 
         }, 
 
@@ -1314,6 +1469,7 @@ export const restValidations = {
     Level: LevelValidation(),
     UserLogin: UserLoginValidation(),
     LevelStats: LevelStatsValidation(),
+    LevelProgress: LevelProgressValidation(),
     UserSession: UserSessionValidation(),
     UserProfile: UserProfileValidation(),
     TokenBody: TokenBodyValidation(),
@@ -1357,6 +1513,8 @@ export interface GlobalFormTypes {
 
     LevelStatsForm: ILevelStats,
 
+    LevelProgressForm: ILevelProgress,
+
     UserSessionForm: IUserSession,
 
     UserProfileForm: IUserProfile,
@@ -1393,6 +1551,8 @@ export interface GlobalFormValuesTypes {
 
     LevelStatsForm: Record<keyof ILevelStats, GlobalLabelType<ILevelStats>>,
 
+    LevelProgressForm: Record<keyof ILevelProgress, GlobalLabelType<ILevelProgress>>,
+
     UserSessionForm: Record<keyof IUserSession, GlobalLabelType<IUserSession>>,
 
     UserProfileForm: Record<keyof IUserProfile, GlobalLabelType<IUserProfile>>,
@@ -1419,6 +1579,7 @@ export const GlobalLabels = {
     LevelForm: LevelForm(),
     UserLoginForm: UserLoginForm(),
     LevelStatsForm: LevelStatsForm(),
+    LevelProgressForm: LevelProgressForm(),
     UserSessionForm: UserSessionForm(),
     UserProfileForm: UserProfileForm(),
     TokenBodyForm: TokenBodyForm(),

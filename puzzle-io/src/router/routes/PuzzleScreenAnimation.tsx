@@ -30,7 +30,6 @@ const PuzzleScreen: FC<PuzzleScreenProps> = ({ level, isContinue }) => {
   useEffect(() => {
     const T = async () => {
       const entities = await initiateGameLevel(level, true);
-      console.log(30, entities);
       setLocalEntyties(entities);
       setState('gameView', {
         moves: [],

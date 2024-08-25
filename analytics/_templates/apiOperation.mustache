@@ -9,6 +9,7 @@ import { COREFormFieldType } from '@/types/RestAPIGenerator/COREFormFieldType';
 import { COREFormInputTypeEnum, COREInputTypeEnum } from '@/types/enums';
 import { AnyTypeValidation, IAnyType } from '@/types/IAnyType';
 import dayjs from 'dayjs';
+import { wrapRestCalls } from '@/utils/wrapRestCalls';
 
 const globalPath = '';
 export interface GlobalStorageDataType {
@@ -207,4 +208,4 @@ export const GlobalLabels = { {{#schemas}}{{#type=object}}
     {{operationId}}CallQuery,{{/paths}}
 };
 
-export const restCall = wrapRestCalls(restOperations, 'http://localhost:4000');
+export const restCalls = wrapRestCalls(restOperations);

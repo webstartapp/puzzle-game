@@ -41,7 +41,7 @@ type EntityRendererProps = {
   style: ViewStyle;
   system?: GameEngineSystem;
   gridSnaps: Required<GridInit<true>>;
-  header: {
+  header?: {
     height: number;
     component: HeaderComponent;
     props?: IGameHeaderProps;
@@ -72,7 +72,7 @@ const EntityRenderer: FC<EntityRendererProps> = ({
     } else {
       return screen.current.width / contentSize.width;
     }
-  }, [contentSize, screen, header.height]);
+  }, [contentSize, screen, header?.height]);
 
   const convertedGridSnaps: Required<GridInit<true>> = {
     cell: {

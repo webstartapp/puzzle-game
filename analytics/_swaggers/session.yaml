@@ -280,6 +280,32 @@ components:
         levelId:
           type: string
         moves:
+          type: integer
+        completed:
+          type: boolean
+        stars:
+          type: integer
+        time:
+          type: integer
+        stage:
+          type: string
+        scene:
+          type: number
+      required:
+        - levelId
+        - moves
+        - completed
+        - stars
+        - time
+        - stage
+        - scene
+
+    LevelProgress:
+      type: object
+      properties:
+        levelId:
+          type: string
+        moves:
           type: array
           items:
             $ref: '#/components/schemas/Grid'
@@ -289,13 +315,25 @@ components:
           type: integer
         time:
           type: integer
+        stage:
+          type: string
+        scene:
+          type: number
+      required:
+        - levelId
+        - moves
+        - completed
+        - stars
+        - time
+        - stage
+        - scene
     UserSession:
       type: object
       properties:
         coins:
           type: integer
         current:
-          $ref: '#/components/schemas/LevelStats'
+          $ref: '#/components/schemas/LevelProgress'
         previous:
           type: array
           items:

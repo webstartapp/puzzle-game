@@ -22,12 +22,14 @@ type PathDrawingProps<T extends any> = {
   paths: PathCheckpoint<T>[];
   image: ImageSourcePropType;
   onClick: (checkpoint: Omit<PathCheckpoint<T>, 'onClick'>) => void;
+  highLightedId?: string | number;
 };
 
 const PathDrawing = <T extends any = any>({
   paths,
   image,
   onClick,
+  highLightedId,
 }: PathDrawingProps<T>) => {
   const screen = useRef(Dimensions.get('window'));
 
@@ -130,6 +132,7 @@ const PathDrawing = <T extends any = any>({
                 scale={scale}
                 id={id}
                 data={data}
+                highLighted={id === highLightedId}
               />
             );
           }

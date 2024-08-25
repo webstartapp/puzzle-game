@@ -25,7 +25,7 @@ type OneTo20 =
   | 9
   | 20;
 
-type Scene = {
+export type Scene = {
   level: LevelId;
   title: string;
   description: string;
@@ -43,11 +43,12 @@ type StageType<T extends string> = {
   x: OneTo20;
   y: OneTo20;
   image: ImageSourcePropType;
+  order: number;
 };
 
 const gameStageFN = <T extends string>(
-  stages: StageType<T>[],
-): StageType<T>[] => stages;
+  stages: Omit<StageType<T>, 'order'>[],
+): StageType<T>[] => stages.map((stage, index) => ({ ...stage, order: index }));
 
 export const gameStages = gameStageFN([
   {
@@ -750,6 +751,13 @@ export const gameStages = gameStageFN([
       },
       {
         level: 'level8x9',
+        title: 'The Pegasus Challenge',
+        x: 14,
+        y: 13,
+        description: 'The hero Chalenge the Pegasus in riddles.',
+      },
+      {
+        level: 'level8x10',
         title: 'The Pegasus trust',
         x: 18,
         y: 13,

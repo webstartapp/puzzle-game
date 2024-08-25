@@ -14,6 +14,13 @@ export const layoutStyles = StyleSheet.create({
     width: '100%',
     height: '100%',
   },
+  flexRow: {
+    width: '100%',
+    flex: 1,
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
   centeredContiner: {
     position: 'absolute',
     bottom: 100,

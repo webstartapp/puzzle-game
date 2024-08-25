@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { View } from 'react-native';
 import { useNavigation } from '@react-navigation/native';
 import HeloImage from '@/assets/images/enchanted-forest.jpeg';
@@ -41,6 +41,47 @@ const IntroScreen = () => {
     };
   }, [playSong]);
 
+  const sessions = useMemo(() => {
+    // only unique values
+    return (
+      state.viewer?.session?.previous
+        ?.filter(
+          (previousData, index, arr) => arr.indexOf(previousData) === index,
+        )
+        .filter((previous) => previous.completed) || []
+    );
+  }, [state.viewer?.session?.previous]);
+
+  const openedStages = useMemo(() => {
+    const completedScenes: Record<string, number[]> = {};
+    sessions.forEach((session) => {
+      if (!completedScenes[session.stage]) {
+        completedScenes[session.stage] = [];
+      }
+      completedScenes[session.stage].push(session.scene);
+    });
+    const out: Record<string, boolean> = {};
+    for (let i = 0; i < gameStages?.length; i++) {
+      const stageData = gameStages[i];
+      if (completedScenes[stageData.id]?.length === stageData.scenes.length) {
+        out[stageData.id] = true;
+        const nextStage = gameStages[i + 1];
+        if (nextStage) {
+          out[nextStage.id] = true;
+        }
+      }
+    }
+    out[gameStages[0].id] = true;
+
+    return out;
+  }, [sessions]);
+
+  const highLightedId = useMemo(() => {
+    return gameStages.findLast((stage) => openedStages[stage.id])?.id;
+  }, [openedStages]);
+
+  console.log(72, openedStages);
+
   return (
     <View style={layoutStyles.container}>
       <MapStatusBar />
@@ -51,13 +92,16 @@ const IntroScreen = () => {
         }}
       />
       <PathDrawing
-        paths={gameStages.map((stage) => ({
-          title: stage.title,
-          x: stage.x,
-          y: stage.y,
-          id: stage.id,
-          data: stage,
-        }))}
+        paths={gameStages
+          .filter((stage) => openedStages[stage.id])
+          .map((stage) => ({
+            title: stage.title,
+            x: stage.x,
+            y: stage.y,
+            id: stage.id,
+            data: stage,
+          }))}
+        highLightedId={highLightedId}
         image={HeloImage}
         onClick={({ data }) => {
           setStageData(data);
