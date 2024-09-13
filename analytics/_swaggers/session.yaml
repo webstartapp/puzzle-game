@@ -299,7 +299,21 @@ components:
         - time
         - stage
         - scene
-
+    GameResult:
+      type: object
+      properties:
+        levelId:
+          type: string
+        moves:
+          type: array
+          items:
+            $ref: '#/components/schemas/Grid'
+        time:
+          type: integer
+      required:
+        - levelId
+        - moves
+        - time
     LevelProgress:
       type: object
       properties:

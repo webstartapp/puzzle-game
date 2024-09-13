@@ -16,12 +16,21 @@ import { Text } from 'react-native';
 import { layoutStyles } from '@/styles/layoutStyles';
 import { buttonStyles } from '@/styles/buttonStyles';
 import { headerStyles } from '@/styles/headerStyles';
-import { ILevelStats, IUserProfile } from '@/_generated/sessionOperations';
+import {
+  IGameResult,
+  ILevelStats,
+  IUserProfile,
+} from '@/_generated/sessionOperations';
 import AnimatedNumber from '@/components/animations/AnimatedNumber';
 import Button from '@/components/basic/Button';
 import AssetIcon from '@/components/icons/AssetIcon';
 import CoinIcon from '@/assets/images/wooden_icons/coin.png';
 import KeyIcon from '@/assets/images/wooden_icons/key.png';
+import {
+  coinCalculation,
+  gameEndingCalculation,
+  keyCalculation,
+} from '@/utils/resultCalculation';
 
 type PuzzleScreenSuccessProps = {
   level: LevelId;
@@ -56,8 +65,6 @@ const PuzzleScreenSuccess: FC<PuzzleScreenSuccessProps> = ({
     setLocalEntyties(newEntities);
   }, [localEntyties]);
 
-  console.log(59, state);
-
   useEffect(() => {
     const T = async () => {
       const entities = await initiateGameLevel(level, true);
@@ -68,6 +75,18 @@ const PuzzleScreenSuccess: FC<PuzzleScreenSuccessProps> = ({
           hidden: index === 0,
         };
       });
+      const gameResult: IGameResult = {
+        levelId: level,
+        time,
+        moves,
+      };
+      const updatedViewer = await gameEndingCalculation(
+        data,
+        gameResult,
+        initCoins,
+      );
+
+      setState('viewer', updatedViewer);
       setLocalEntyties(out);
       setAnimationStage(1);
     };
@@ -77,58 +96,6 @@ const PuzzleScreenSuccess: FC<PuzzleScreenSuccessProps> = ({
 
   useEffect(() => {
     if (animationStage === 1) {
-      const existingPrevious: Partial<ILevelStats> =
-        data?.session?.previous?.find((prev) => prev.levelId === level) || {};
-      existingPrevious.completed =
-        existingPrevious.completed ||
-        (moves.length < levelData.requirements.maxMoves.end &&
-          time < levelData.requirements.maxTime.end);
-      existingPrevious.time =
-        (existingPrevious?.time || 99999999) > time
-          ? time
-          : existingPrevious.time;
-      existingPrevious.moves =
-        (existingPrevious?.moves || 99999999) > moves.length
-          ? moves.length
-          : existingPrevious.moves;
-      existingPrevious.stars =
-        (existingPrevious?.stars || 99999999) > keys
-          ? keys
-          : existingPrevious.stars;
-      existingPrevious.scene = levelData.sceneId;
-      existingPrevious.stage = levelData.stageId;
-      existingPrevious.levelId = levelData.id;
-      const extractedViewerPrevious = [
-        ...(data?.session?.previous || []),
-      ].filter((previous) => previous.levelId !== level);
-      extractedViewerPrevious.push(existingPrevious as ILevelStats);
-
-      const nextLevel = levelData.nextLevel;
-
-      const nextCurrent =
-        data?.session?.current?.levelId !== level
-          ? {
-              completed: false,
-              levelId: nextLevel.level,
-              time: 0,
-              moves: [],
-              stars: 0,
-              scene: nextLevel.sceneId,
-              stage: nextLevel.stageId,
-            }
-          : undefined;
-
-      const updatedViewer = {
-        ...data,
-        session: {
-          ...data.session,
-          previous: extractedViewerPrevious,
-          coins: initCoins + coints,
-          current: nextCurrent?.levelId ? nextCurrent : undefined,
-        },
-      } as IUserProfile;
-
-      setState('viewer', updatedViewer);
       setTimeout(() => {
         showAllEntities();
         setAnimationStage(2);
@@ -141,37 +108,14 @@ const PuzzleScreenSuccess: FC<PuzzleScreenSuccessProps> = ({
     }
   }, [animationStage]);
 
-  const keys = useMemo(() => {
-    const levelItem = levels[level];
-    if (!levelItem) return 0;
-
-    if (
-      moves.length < levelItem.requirements.maxMoves['3keys'] &&
-      time < levelItem.requirements.maxTime['3keys']
-    ) {
-      return 3;
-    }
-    if (
-      moves.length < levelItem.requirements.maxMoves['2keys'] &&
-      time < levelItem.requirements.maxTime['2keys']
-    ) {
-      return 2;
-    }
-    if (
-      moves.length < levelItem.requirements.maxMoves['1key'] &&
-      time < levelItem.requirements.maxTime['1key']
-    ) {
-      return 1;
-    }
-    return 0;
-  }, [time, moves.length, level]);
-
-  const coints = useMemo(() => {
-    const factor =
-      levelData.requirements.maxMoves.end * 5 +
-      levelData.requirements.maxTime.end;
-    return keys * factor + factor;
-  }, [keys]);
+  const keys = useMemo(
+    () => keyCalculation(level, moves, time),
+    [time, moves, level],
+  );
+  const coins = useMemo(
+    () => coinCalculation(level, moves, time),
+    [time, moves, level],
+  );
 
   return (
     <GameEngine
@@ -224,7 +168,7 @@ const PuzzleScreenSuccess: FC<PuzzleScreenSuccessProps> = ({
           />
           <AnimatedNumber
             startValue={0}
-            targetValue={coints}
+            targetValue={coins}
             duration={3000}
           />
         </View>

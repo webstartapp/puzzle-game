@@ -37,6 +37,7 @@ export interface GlobalStorageDataType {
         Level?: ILevel
         UserLogin?: IUserLogin
         LevelStats?: ILevelStats
+        GameResult?: IGameResult
         LevelProgress?: ILevelProgress
         UserSession?: IUserSession
         UserProfile?: IUserProfile
@@ -688,6 +689,65 @@ const LevelStatsForm = ()=>({
             label: ``,
             formId: 'LevelStatsForm',
             maxLength: parseInt(``) || undefined,
+        }, 
+
+});
+
+
+const GameResultValidation = ()=>({
+   levelId: yup
+            
+        .string()
+        
+        
+        .nullable()
+        .trim()
+        ,
+
+   moves: yup
+    .array()
+        .of(yup
+            
+            .object(GridValidation())
+            ),
+   time: yup
+            
+        .number()
+        .integer((message)=>`${message.path} should be integer`)
+        ,
+
+});
+export interface IGameResult {
+levelId: string
+moves: Array<IGrid>
+time: number
+}
+
+
+const GameResultForm = ()=>({
+        levelId: {
+            id: 'levelId',
+            label: ``,
+            formId: 'GameResultForm',
+            maxLength: parseInt(``) || undefined,
+        }, 
+
+        moves: {
+            id: 'moves',
+            label: ``,
+            formId: 'GameResultForm',
+            maxLength: parseInt(``) || undefined,
+            multi: true,
+            item: {"type":"object","properties":{"x":{"type":"integer","required":false},"y":{"type":"integer","required":false}},"typeOf":"schemas","fileName":"session.yaml","key":"Grid","reference":"Grid","$ref":"#/components/schemas/Grid","required":[]},
+
+        }, 
+
+        time: {
+            id: 'time',
+            label: ``,
+            formId: 'GameResultForm',
+            maxLength: parseInt(``) || undefined,            type: COREInputTypeEnum.number,
+
         }, 
 
 });
@@ -1469,6 +1529,7 @@ export const restValidations = {
     Level: LevelValidation(),
     UserLogin: UserLoginValidation(),
     LevelStats: LevelStatsValidation(),
+    GameResult: GameResultValidation(),
     LevelProgress: LevelProgressValidation(),
     UserSession: UserSessionValidation(),
     UserProfile: UserProfileValidation(),
@@ -1513,6 +1574,8 @@ export interface GlobalFormTypes {
 
     LevelStatsForm: ILevelStats,
 
+    GameResultForm: IGameResult,
+
     LevelProgressForm: ILevelProgress,
 
     UserSessionForm: IUserSession,
@@ -1551,6 +1614,8 @@ export interface GlobalFormValuesTypes {
 
     LevelStatsForm: Record<keyof ILevelStats, GlobalLabelType<ILevelStats>>,
 
+    GameResultForm: Record<keyof IGameResult, GlobalLabelType<IGameResult>>,
+
     LevelProgressForm: Record<keyof ILevelProgress, GlobalLabelType<ILevelProgress>>,
 
     UserSessionForm: Record<keyof IUserSession, GlobalLabelType<IUserSession>>,
@@ -1579,6 +1644,7 @@ export const GlobalLabels = {
     LevelForm: LevelForm(),
     UserLoginForm: UserLoginForm(),
     LevelStatsForm: LevelStatsForm(),
+    GameResultForm: GameResultForm(),
     LevelProgressForm: LevelProgressForm(),
     UserSessionForm: UserSessionForm(),
     UserProfileForm: UserProfileForm(),

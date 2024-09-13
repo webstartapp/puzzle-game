@@ -18,6 +18,7 @@ const StageTileModal: FC<StageTileModalProps> = ({
   stageData,
   setStageData,
 }) => {
+  console.log(21, stageData);
   const { setRoute } = useGameRouter();
   if (!stageData) return null;
   return (
@@ -27,6 +28,7 @@ const StageTileModal: FC<StageTileModalProps> = ({
         {
           backgroundColor: 'rgba(0,0,0,0.7)',
           zIndex: 100,
+          position: 'absolute',
         },
       ]}
     >

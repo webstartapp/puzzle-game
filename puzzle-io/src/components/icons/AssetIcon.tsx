@@ -35,6 +35,7 @@ const AssetIcon: FC<AssetIconProps> = ({
     };
     loader();
   });
+
   return (
     <View
       style={{
@@ -53,7 +54,7 @@ const AssetIcon: FC<AssetIconProps> = ({
             }}
             style={[
               {
-                transform: [{ rotate: `${rotateDeg}deg` }],
+                transform: [{ rotate: `${rotateDeg || 0}deg` }],
                 position: 'absolute',
               },
               { tintColor: tint.color },
@@ -68,7 +69,7 @@ const AssetIcon: FC<AssetIconProps> = ({
           }}
           style={[
             {
-              transform: [{ rotate: `${rotateDeg}deg` }],
+              transform: [{ rotate: `${rotateDeg || 0}deg` }],
               zIndex: 2,
               opacity: tint?.alpha,
             },

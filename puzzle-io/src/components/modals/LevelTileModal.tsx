@@ -31,7 +31,6 @@ const LevelTileModal: FC<LevelTileModalProps> = ({
   }, [state.viewer?.session?.previous, levelData?.id]);
   if (!levelData) return null;
 
-  console.log(33, state);
   return (
     <View
       style={[

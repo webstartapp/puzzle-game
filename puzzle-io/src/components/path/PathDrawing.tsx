@@ -67,8 +67,6 @@ const PathDrawing = <T extends any = any>({
       y: (size.ratio.y * size.size) / gridSize.y,
     };
 
-    console.log('itemSize', itemSize);
-
     (paths || []).forEach(({ x, y, title, id, data }, index) => {
       const next = paths[index + 1];
       const scale = itemSize.scale / 50;

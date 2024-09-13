@@ -12,6 +12,9 @@ import { useRestAPI } from '@/components/provider/useRestQueries';
 import { MuteButton } from '@/components/icons/MuteButton';
 import { layoutStyles } from '@/styles/layoutStyles';
 import { useGameRouter } from '../Router';
+import { LevelId, levels } from '@/config/levels';
+import { coinCalculation } from '@/utils/resultCalculation';
+import { Grid } from '@/config/grid/indexedGrid';
 
 declare module '@/hooks/store/useStore' {
   export interface IStore {
@@ -48,14 +51,6 @@ const IntroScreen = () => {
         }}
       />
       <View style={layoutStyles.centeredContiner}>
-        {state?.viewer?.session?.current?.moves?.length ? (
-          <Button
-            title="Continue"
-            onPress={() => {
-              // Handle Continue Progress
-            }}
-          />
-        ) : null}
         <Button
           title="New Game"
           onPress={() => {
@@ -66,55 +61,5 @@ const IntroScreen = () => {
     </View>
   );
 };
-
-// const styles = StyleSheet.create({
-//   backgroundImage: {
-//     position: 'absolute',
-//     width: '100%',
-//     height: '100%',
-//   },
-//   header: {
-//     position: 'absolute',
-//     top: 50,
-//     left: 20,
-//     right: 20,
-//     flexDirection: 'row',
-//     justifyContent: 'space-between',
-//     alignItems: 'center',
-//   },
-//   username: {
-//     fontSize: 18,
-//     color: 'white',
-//   },
-//   keysContainer: {
-//     flexDirection: 'row',
-//     alignItems: 'center',
-//   },
-//   keyIcon: {
-//     width: 20,
-//     height: 20,
-//     marginRight: 5,
-//   },
-//   keysCount: {
-//     fontSize: 18,
-//     color: 'white',
-//   },
-//   buttonsContainer: {
-//     position: 'absolute',
-//     bottom: 100,
-//     alignItems: 'center',
-//   },
-//   button: {
-//     backgroundColor: 'rgba(0, 0, 0, 0.5)',
-//     paddingVertical: 10,
-//     paddingHorizontal: 20,
-//     marginVertical: 10,
-//     borderRadius: 10,
-//   },
-//   buttonText: {
-//     fontSize: 18,
-//     color: 'white',
-//   },
-// });
 
 export default IntroScreen;

@@ -8,8 +8,7 @@ import key from '@/assets/images/wooden_icons/key.png';
 import coin from '@/assets/images/wooden_icons/coin.png';
 import settings from '@/assets/images/wooden_icons/settings.png';
 import { headerStyles } from '@/styles/headerStyles';
-import AssetIcon from '../icons/AssetIcon';
-import MenuModal from '../modals/MenuModal';
+import AssetIcon from '@/components/icons/AssetIcon';
 
 type MapSatusBarProps = {
   backTo?: RouterPath;
@@ -21,10 +20,14 @@ const MapStatusBar: FC<MapSatusBarProps> = ({ backTo }) => {
 
   const keyCount = useMemo(() => {
     const keys = data?.session?.previous
-      .map((p) => p.stars)
+      ?.map((p) => p.stars)
       .reduce((a, b) => (a || 0) + (b || 0), 0);
-    return keys;
+    return keys || 0;
   }, [data?.session?.previous]);
+
+  const coinCount = useMemo(() => {
+    return data?.session?.coins || 0;
+  }, [data?.session?.coins]);
 
   return (
     <View style={headerStyles.wrapper}>
@@ -47,7 +50,7 @@ const MapStatusBar: FC<MapSatusBarProps> = ({ backTo }) => {
       <AssetIcon
         asset={coin}
         size={30}
-        textRight={`${data?.session?.coins || 0}`}
+        textRight={`${coinCount} `}
       />
       <Button
         variant="asset"

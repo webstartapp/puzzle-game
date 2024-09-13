@@ -75,19 +75,19 @@ export const PathSign: FC<PathSignProps> = ({
     ).start();
   }, [animatedValue]);
   return (
-    <TouchableOpacity
-      onPress={() => {
-        onClick({ x, y, title, id, data });
-      }}
+    <Animated.View
+      style={[
+        style.container,
+        {
+          opacity: animatedValue,
+        },
+      ]}
     >
-      <Animated.View
-        style={[
-          style.container,
-          {
-            borderColor: 'red',
-            opacity: animatedValue,
-          },
-        ]}
+      <TouchableOpacity
+        onPress={() => {
+          console.log('Clicked', { x, y, title, id, data });
+          onClick({ x, y, title, id, data });
+        }}
       >
         <Image
           source={data?.image}
@@ -107,7 +107,7 @@ export const PathSign: FC<PathSignProps> = ({
           }}
         />
         <Text style={style.text}>{title || 'Missing'}</Text>
-      </Animated.View>
-    </TouchableOpacity>
+      </TouchableOpacity>
+    </Animated.View>
   );
 };

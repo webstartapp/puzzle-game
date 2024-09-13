@@ -1,21 +1,21 @@
-import { GameStage } from '@/config/stages';
 import { layoutStyles } from '@/styles/layoutStyles';
 import { FC } from 'react';
-import { Image, Modal, Text, View } from 'react-native';
+import { Image, Text, View } from 'react-native';
 import WoodenBackground from '../basic/WoodenBackground';
-import { headerStyles } from '@/styles/headerStyles';
 import { buttonStyles } from '@/styles/buttonStyles';
 import Button from '../basic/Button';
 import cross from '@/assets/images/wooden_icons/cross.png';
 import { useGameRouter } from '@/router/Router';
 import { Level } from '@/utils/levelConstructor';
-import { KeyGainChain } from '../header/visuals/KeyGainChain';
-import home from '@/assets/images/wooden_icons/sign.png';
 import { timeToMinutes } from '@/utils/timeTominutes';
+import { gameEndingCalculation } from '@/utils/resultCalculation';
+import { useStore } from '@/hooks/store/useStore';
+import { IGameResult } from '@/_generated/sessionOperations';
+import { Grid } from '@/config/grid/indexedGrid';
 
 type PuzzleFailModalProps = {
   levelData?: Level;
-  moves: number;
+  moves: Grid[];
   time: number;
 };
 
@@ -25,6 +25,7 @@ const PuzzleFailModal: FC<PuzzleFailModalProps> = ({
   time,
 }) => {
   const { setRoute } = useGameRouter();
+  const { data, setState } = useStore('viewer');
   if (!levelData) return null;
   return (
     <View
@@ -105,7 +106,7 @@ const PuzzleFailModal: FC<PuzzleFailModalProps> = ({
                   },
                 ]}
               >
-                Moves: {moves}
+                Moves: {moves.length}
               </Text>
               <Text
                 style={[
@@ -130,6 +131,17 @@ const PuzzleFailModal: FC<PuzzleFailModalProps> = ({
           >
             <Button
               onPress={() => {
+                const gameResult: IGameResult = {
+                  levelId: levelData.id,
+                  moves,
+                  time,
+                };
+                const updatedSession = gameEndingCalculation(
+                  data,
+                  gameResult,
+                  data?.session?.coins || 0,
+                );
+                setState('viewer', updatedSession);
                 setRoute('WorldMapScreen');
               }}
               title="Exit"

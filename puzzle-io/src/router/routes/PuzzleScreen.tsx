@@ -2,15 +2,14 @@ import { IEntity } from '@/src/system/gameEngine/GameEngine';
 import GameEngine from '@/src/system/gameEngine/GameEngine';
 import { MoveFinger } from '@/src/system/touch/touches';
 import { ImageResult } from 'expo-image-manipulator';
-import { StatusBar } from 'expo-status-bar';
-import { FC, useCallback, useEffect, useMemo, useState } from 'react';
+import { FC, useEffect, useMemo, useState } from 'react';
 import { useStore } from '@/hooks/store/useStore';
 import GameStatusBar from '@/components/header/GameStatusBar';
 import { LevelId, levels } from '@/config/levels';
 import { Grid } from '@/config/grid/indexedGrid';
 import { initiateGameLevel } from '@/utils/initiateGameLevel';
 import dayjs from 'dayjs';
-import { View } from 'react-native';
+import { Text, View } from 'react-native';
 import { layoutStyles } from '@/styles/layoutStyles';
 import PuzzleTileModal from '@/components/modals/PuzzleTileModal';
 import { Level } from '@/utils/levelConstructor';
@@ -58,9 +57,9 @@ const PuzzleScreen: FC<PuzzleScreenProps> = ({ level, isContinue }) => {
     {},
   );
   const [timestampNow, setTimestampNow] = useState(dayjs().unix());
-  const [timestampStart, setTimestampStart] = useState(dayjs().unix());
+  const [timestampStart] = useState(dayjs().unix());
   const [levelData, setLevelData] = useState<Level>();
-  const [levelFailData, setLevelFailData] = useState<[Level, number, number]>();
+  const [levelFailData, setLevelFailData] = useState<[Level, number, Grid[]]>();
 
   const {
     setState,
@@ -71,8 +70,8 @@ const PuzzleScreen: FC<PuzzleScreenProps> = ({ level, isContinue }) => {
   const { setRoute } = useGameRouter();
 
   const moves = useMemo(() => {
-    return data?.moves?.length || 0;
-  }, [data?.moves?.length]);
+    return data?.moves || [];
+  }, [data?.moves]);
 
   useEffect(() => {
     const interval = setInterval(() => {
@@ -106,7 +105,7 @@ const PuzzleScreen: FC<PuzzleScreenProps> = ({ level, isContinue }) => {
       return;
     }
     if (
-      moves > levelItem.requirements.maxMoves.end ||
+      moves.length > levelItem.requirements.maxMoves.end ||
       timestampNow - timestampStart > levelItem.requirements.maxTime.end
     ) {
       setLevelFailData([levelItem, timestampNow - timestampStart, moves]);

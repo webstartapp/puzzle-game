@@ -62,4 +62,12 @@ export const layoutStyles = StyleSheet.create({
     right: 0,
     left: 'auto',
   },
+  gameStarterText: {
+    fontSize: 40,
+    color: '#FFFFFF',
+    fontWeight: 'bold',
+    textShadowColor: 'rgba(255, 255, 255, 0.75)',
+    textShadowOffset: { width: 1, height: 1 },
+    textShadowRadius: 5,
+  },
 });

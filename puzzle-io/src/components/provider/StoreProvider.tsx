@@ -59,7 +59,7 @@ const reducer = <T extends keyof IStore | 'INIT'>(
 let globalState: IStore = initialState;
 let globalDispatch: React.Dispatch<Action<keyof IStore | 'INIT'>> = () => null;
 
-const PERSISTED_STATE_KEY = 'my-app-store';
+const PERSISTED_STATE_KEY = 'orion-puzzle-store';
 
 const StoreProvider: FC<PropsWithChildren> = ({ children }) => {
   const [state, dispatch] = useReducer(reducer, initialState);

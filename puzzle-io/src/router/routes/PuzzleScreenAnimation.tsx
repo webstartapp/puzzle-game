@@ -11,6 +11,8 @@ import { Grid } from '@/config/grid/indexedGrid';
 import { initiateGameLevel } from '@/utils/initiateGameLevel';
 import dayjs from 'dayjs';
 import { useGameRouter } from '../Router';
+import { Text } from 'react-native';
+import { layoutStyles } from '@/styles/layoutStyles';
 
 type PuzzleScreenProps = {
   level: LevelId;
@@ -103,7 +105,11 @@ const PuzzleScreen: FC<PuzzleScreenProps> = ({ level, isContinue }) => {
         height: 100,
       }}
     >
-      <StatusBar hidden={true} />
+      <Text style={layoutStyles.gameStarterText}>
+        {animationStage === 1 && 'Ready'}
+        {animationStage === 2 && 'Set'}
+        {animationStage === 3 && 'Go!'}
+      </Text>
     </GameEngine>
   );
 };

@@ -2,7 +2,7 @@ import { useStore } from '@/hooks/store/useStore';
 import { HeaderComponent } from '@/system/gameEngine/GameEngine';
 import { Text, View } from 'react-native';
 import CongratsModal from '../modals/CongratsModal';
-import { levels } from '@/config/levels';
+import { LevelId, levels } from '@/config/levels';
 import { useEffect, useMemo, useState } from 'react';
 import home from '@/assets/images/wooden_icons/sign.png';
 import leftArrow from '@/assets/images/wooden_icons/left-arrow.png';
@@ -14,7 +14,7 @@ import { Level } from '@/utils/levelConstructor';
 import { HederTextView } from '../basic/TextView';
 import { KeyGainChain } from './visuals/KeyGainChain';
 import { headerStyles } from '@/styles/headerStyles';
-import PuzzleTileModal from '../modals/PuzzleTileModal';
+import { keyCalculation } from '@/utils/resultCalculation';
 
 const GameStatusBar: HeaderComponent = ({
   dispatchSystem,
@@ -47,26 +47,7 @@ const GameStatusBar: HeaderComponent = ({
     }
 
     const time = (timestampNow || 0) - (timestampStart || 0);
-    console.log(51, time);
-    if (
-      (data?.moves?.length || 0) < levelLimits.maxMoves['3keys'] &&
-      time < levelLimits.maxTime['3keys']
-    ) {
-      return 3;
-    }
-    if (
-      (data?.moves?.length || 0) < levelLimits.maxMoves['2keys'] &&
-      time < levelLimits.maxTime['2keys']
-    ) {
-      return 2;
-    }
-    if (
-      (data?.moves?.length || 0) < levelLimits.maxMoves['1key'] &&
-      time < levelLimits.maxTime['1key']
-    ) {
-      return 1;
-    }
-    return 0;
+    return keyCalculation(level.id as LevelId, data?.moves || [], time);
   }, [data?.moves?.length, level?.requirements, timestampNow, timestampStart]);
 
   const timeLeft = useMemo(() => {
