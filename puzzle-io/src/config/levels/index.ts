@@ -1,7 +1,7 @@
 import { Level } from '@/utils/levelConstructor';
 import levelMapping from '@/config/levels/levelInfo.json';
 import { indexedGrid, IndexedGridKeys } from '../grid/indexedGrid';
-import levelImages from '@/assets/static/levelImages.json';
+import levelImages from '@/config/levels/levelImages.json';
 import { GameStage, gameStages } from '../stages';
 
 export type LevelRecord = typeof levelMapping;
