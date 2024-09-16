@@ -1,7 +1,7 @@
 import { ITokenBody } from "@/_generated/sessionOperations";
 import JWT from "jsonwebtoken";
 
-export const tokenData = (token: string): ITokenBody => {
+export const tokenContext = (token: string): ITokenBody => {
   const validToken = verifyToken(token);
   if (!validToken) {
     throw new Error("Invalid token");

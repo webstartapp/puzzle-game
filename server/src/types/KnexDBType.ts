@@ -6,7 +6,20 @@ export interface IDBType {
     username: string;
     email: string;
     password: string;
-    token: string;
+  };
+  games: {
+    id: string;
+    created: Date;
+    userId: string;
+    levelId: string;
+    time: number;
+  };
+  moves: {
+    id: string;
+    created: Date;
+    gameId: string;
+    x: number;
+    y: number;
   };
 }
 

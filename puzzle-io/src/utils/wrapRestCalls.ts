@@ -45,9 +45,21 @@ type UseCallFNType<
   ...params: Parameters<OPERATIONS[PATH]>
 ) => UseQueryResult<ReturnType<OPERATIONS[PATH]>['responseType'], ErrorObject>;
 
-export const wrapRestCalls = <
+type UseMutationFNType<
   OPERATIONS extends Record<string, APIRequestCallType>,
   PATH extends keyof OPERATIONS,
+> = (
+  path: PATH,
+  options: UseMutationOptions<any, ErrorObject>,
+) => UseMutationResult<
+  ReturnType<OPERATIONS[PATH]>['responseType'],
+  ErrorObject,
+  Parameters<OPERATIONS[PATH]>
+>;
+
+export const wrapRestCalls = <
+  OPERATIONS extends Record<string, APIRequestCallType>,
+  PATH extends string extends keyof OPERATIONS ? never : keyof OPERATIONS,
 >(
   operations: OPERATIONS,
 ) => {
@@ -69,10 +81,7 @@ export const wrapRestCalls = <
         },
       },
     });
-    return (
-      token: string,
-      useCallOptions?: UseQueryOptions<any, ErrorObject>,
-    ) => {
+    return (useCallOptions?: UseQueryOptions<any, ErrorObject>) => {
       const useCallInner: UseCallFNType<OPERATIONS, PATH> = (
         path,
         ...params
@@ -89,7 +98,6 @@ export const wrapRestCalls = <
             const response = await restInnerCall(
               operations[path](...(params as unknown as [any])),
               axiosAPI,
-              token,
             );
             return response.data;
           },
@@ -100,8 +108,30 @@ export const wrapRestCalls = <
           },
         );
       };
+      const mutateCall: UseMutationFNType<OPERATIONS, PATH> = (
+        path: PATH,
+        options: UseMutationOptions<any, ErrorObject>,
+      ) => {
+        return useMutation(path as string, async (props) => {
+          const response = await restInnerCall(
+            operations[path](...(props as unknown as [any])),
+            axiosAPI,
+          );
+          return response.data;
+        });
+      };
       return {
         useCall: useCallInner,
+        useMutation<T extends PATH>(
+          path: T,
+          options?: UseMutationOptions<any, ErrorObject>,
+        ) {
+          return mutateCall(path, options || {}) as UseMutationResult<
+            ReturnType<OPERATIONS[T]>['responseType'],
+            ErrorObject,
+            Parameters<OPERATIONS[T]>
+          >;
+        },
       };
     };
   };

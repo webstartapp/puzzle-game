@@ -37,7 +37,24 @@ paths:
           description: User account deleted successfully
         '401':
           description: Unauthorized
-
+  /game-status:
+    put:
+      operationId: updateGameStatus
+      summary: Update game status
+      description: Updates the game status of the user.
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/GameResult'
+      responses:
+        '201':
+          description: Successfully updated game status
+        '401':
+          description: Unauthorized
   /session:
     put:
       operationId: updateSession

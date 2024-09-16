@@ -3,6 +3,8 @@ import jwt from "jsonwebtoken";
 import { ContextType, LocalResolverType, Viewer } from "./expressTypeResolver";
 import { UserDB } from "../entities/user/user";
 import { apiResolvers, ITokenBody } from "@/_generated/sessionOperations";
+import { tokenContext } from "@/utils/JWT";
+import knex from "@/knex";
 
 const router = Router();
 
@@ -13,19 +15,28 @@ export type ExpressRouteType<ARGS extends Record<string, any> = any, RET extends
   security?: string[];
 };
 
-const getuser = async (req: Request) => {
+const getViewer = async (req: Request) => {
   const session = req.headers?.authorization || (req.headers?.Authorization as string);
   if (!session) {
     throw new Error("No session");
   }
   const token = session.split(" ")[1];
-  const sessionData = jwt.decode(token) as ITokenBody;
+  const sessionData = tokenContext(token);
   if (!sessionData?.userId) {
     throw new Error("Invalid session");
   }
-  const user = await UserDB.resolvers.getUser({ userId: sessionData.userId });
+  let viewer = await knex("users").where("id", sessionData.userId).first();
+  if (!viewer) {
+    viewer = await knex("users")
+      .insert({
+        id: sessionData.userId,
+        created: new Date()
+      })
+      .returning("*");
+    console.log(77, viewer);
+  }
 
-  if (!user) {
+  if (!viewer) {
     throw new Error("User not found");
   }
 
@@ -41,8 +52,9 @@ const resolvers = (routes: ExpressRouteType[]) => {
       let viewer: Viewer | undefined = undefined;
       console.log(route);
       try {
-        viewer = await getuser(req);
+        viewer = await getViewer(req);
       } catch (e) {
+        console.log(46, e);
         if (route.security?.includes("bearerAuth")) {
           const errorData = await apiResolvers._401(
             {},
@@ -93,6 +105,7 @@ const resolvers = (routes: ExpressRouteType[]) => {
         });
         return;
       } catch (e: any) {
+        console.trace(e);
         const errorData = await apiResolvers._500({ message: e?.message }, {}, context);
         res.json(errorData);
       }

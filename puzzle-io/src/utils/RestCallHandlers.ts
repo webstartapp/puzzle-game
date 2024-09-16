@@ -2,11 +2,15 @@ import { RESTRequestType } from '@/types/RestAPIGenerator/RESTRequestType';
 import { AxiosInstance, AxiosRequestConfig } from 'axios';
 import { encodeRestCall } from './RestCallEncoding';
 import { errorObject } from './wrapRestCalls';
+import JWT from 'expo-jwt';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { PERSISTED_STATE_KEY } from '@/components/provider/StoreProvider';
+import { IStore } from '@/hooks/store/useStore';
+import { ITokenBody } from '@/_generated/sessionOperations';
 
 export const restInnerCall = async (
   requestContext: Partial<RESTRequestType>,
   axiosAPI: AxiosInstance,
-  token?: string,
 ) => {
   const request = {
     ...requestContext,
@@ -16,8 +20,20 @@ export const restInnerCall = async (
     },
   } as Required<AxiosRequestConfig>;
 
-  if (token) {
-    request.headers['Authorization'] = `Bearer ${token}`;
+  const storage = await AsyncStorage.getItem(PERSISTED_STATE_KEY);
+  const { viewer } = JSON.parse(storage || '{}') as IStore;
+
+  if (process.env.EXPO_PUBLIC_JWT_SECRET && viewer?.id) {
+    const tokenBody: ITokenBody = {
+      userId: viewer.id,
+      exp: Math.floor(Date.now() / 1000) + 60 * 60,
+      iat: Math.floor(Date.now() / 1000),
+    };
+    console.log(tokenBody, process.env.EXPO_PUBLIC_JWT_SECRET);
+    const token = JWT.encode(tokenBody, process.env.EXPO_PUBLIC_JWT_SECRET);
+    if (token) {
+      request.headers['Authorization'] = `Bearer ${token}`;
+    }
   }
 
   try {

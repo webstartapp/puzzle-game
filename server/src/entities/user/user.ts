@@ -24,20 +24,13 @@ export const UserDB = ExpressTypeResolver({
     created: "created",
     username: "username",
     email: "email",
-    token: "token",
     password: "password"
   },
   resolvers: {
-    getViewer: async (props: { userId: string }, req: Request): Promise<IUserProfile> => {
-      const token = getToken(req);
-      const user = await knex("users").where("token", token).first();
-      return user;
-    },
     getUser: async (props: { userId: string }): Promise<IUserProfile> => {
       const user: IUserProfile = await knex("users")
         .where("id", props.userId)
-        .select(UserDB.properties.username, UserDB.properties.id)
-        .first();
+        .select(UserDB.properties.username, UserDB.properties.id);
       user.session = {
         coins: 0,
         previous: []
@@ -52,7 +45,6 @@ export const UserDB = ExpressTypeResolver({
       }
       await knex("users")
         .insert({
-          token: token,
           email: body.email,
           username: body.username,
           password: body.password,

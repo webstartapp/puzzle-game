@@ -702,7 +702,8 @@ const GameResultValidation = ()=>({
         
         .nullable()
         .trim()
-        ,
+        .required((message)=>`${message.path} is required`)
+,
 
    moves: yup
     .array()
@@ -714,7 +715,8 @@ const GameResultValidation = ()=>({
             
         .number()
         .integer((message)=>`${message.path} should be integer`)
-        ,
+        .required((message)=>`${message.path} is required`)
+,
 
 });
 export interface IGameResult {
@@ -1234,6 +1236,50 @@ const deleteUserCall = (
         security: ['bearerAuth',],
     };
 }
+const updateGameStatusCallQueryValidation = () => ({
+})
+
+const updateGameStatusCallQuery = {
+}
+
+export interface IupdateGameStatusCallQuery {
+}
+type updateGameStatusCallResponse = '';
+
+/**
+ * 
+ * @summary Update game status
+ * @param {IupdateGameStatusCallQuery} [queryParams] qury parameters required for successfull call
+ * @param {*} [options] Override http request option.
+ * @throws {RequiredError}
+ */
+const updateGameStatusCall = (
+        queryParams?: IupdateGameStatusCallQuery,
+        body?: IGameResult,
+        options: Partial<RESTRequestType> = {}): RESTRequestType<updateGameStatusCallResponse> => {
+    
+    const localVarPath = getPath(`updateGameStatus`, `${globalPath}/game-status`, queryParams || {} , [], {  });
+
+    const localVarRequestOptions = { method: 'put', ...options};
+
+    const requestContentType = 'application/json'
+
+    let innerResponse: updateGameStatusCallResponse|undefined 
+    
+    return {
+        name: `updateGameStatus`,
+        responseType: innerResponse,
+        ...localVarRequestOptions,
+        ...localVarPath,
+        headers: {
+            ...(localVarRequestOptions.headers || {}),
+            ...(localVarPath.headers || {}),
+        },
+        data: body,
+        requestContentType,
+        security: ['bearerAuth',],
+    };
+}
 const updateSessionCallQueryValidation = () => ({
 })
 
@@ -1522,6 +1568,7 @@ export const restValidations = {
     ProviderSetupBase: ProviderSetupBaseValidation(),
     getUserCallQuery: getUserCallQueryValidation(),
     deleteUserCallQuery: deleteUserCallQueryValidation(),
+    updateGameStatusCallQuery: updateGameStatusCallQueryValidation(),
     updateSessionCallQuery: updateSessionCallQueryValidation(),
     registerUserCallQuery: registerUserCallQueryValidation(),
     loginUserCallQuery: loginUserCallQueryValidation(),
@@ -1532,6 +1579,7 @@ export const restValidations = {
 export const restOperations = {
     'getUser': getUserCall,
     'deleteUser': deleteUserCall,
+    'updateGameStatus': updateGameStatusCall,
     'updateSession': updateSessionCall,
     'registerUser': registerUserCall,
     'loginUser': loginUserCall,
@@ -1572,6 +1620,7 @@ export interface GlobalFormTypes {
     ProviderSetupBaseForm: IProviderSetupBase,
    getUserCallQuery: IgetUserCallQuery,
    deleteUserCallQuery: IdeleteUserCallQuery,
+   updateGameStatusCallQuery: IupdateGameStatusCallQuery,
    updateSessionCallQuery: IupdateSessionCallQuery,
    registerUserCallQuery: IregisterUserCallQuery,
    loginUserCallQuery: IloginUserCallQuery,
@@ -1612,6 +1661,7 @@ export interface GlobalFormValuesTypes {
     ProviderSetupBaseForm: Record<keyof IProviderSetupBase, GlobalLabelType<IProviderSetupBase>>,
    getUserCallQuery: Record<keyof IgetUserCallQuery, GlobalLabelType<IgetUserCallQuery>>,
    deleteUserCallQuery: Record<keyof IdeleteUserCallQuery, GlobalLabelType<IdeleteUserCallQuery>>,
+   updateGameStatusCallQuery: Record<keyof IupdateGameStatusCallQuery, GlobalLabelType<IupdateGameStatusCallQuery>>,
    updateSessionCallQuery: Record<keyof IupdateSessionCallQuery, GlobalLabelType<IupdateSessionCallQuery>>,
    registerUserCallQuery: Record<keyof IregisterUserCallQuery, GlobalLabelType<IregisterUserCallQuery>>,
    loginUserCallQuery: Record<keyof IloginUserCallQuery, GlobalLabelType<IloginUserCallQuery>>,
@@ -1637,6 +1687,7 @@ export const GlobalLabels = {
     ProviderSetupBaseForm: ProviderSetupBaseForm(),
     getUserCallQuery,
     deleteUserCallQuery,
+    updateGameStatusCallQuery,
     updateSessionCallQuery,
     registerUserCallQuery,
     loginUserCallQuery,

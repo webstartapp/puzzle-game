@@ -16,11 +16,7 @@ import { Text } from 'react-native';
 import { layoutStyles } from '@/styles/layoutStyles';
 import { buttonStyles } from '@/styles/buttonStyles';
 import { headerStyles } from '@/styles/headerStyles';
-import {
-  IGameResult,
-  ILevelStats,
-  IUserProfile,
-} from '@/_generated/sessionOperations';
+import { IGameResult } from '@/_generated/sessionOperations';
 import AnimatedNumber from '@/components/animations/AnimatedNumber';
 import Button from '@/components/basic/Button';
 import AssetIcon from '@/components/icons/AssetIcon';
@@ -31,6 +27,7 @@ import {
   gameEndingCalculation,
   keyCalculation,
 } from '@/utils/resultCalculation';
+import { useRestAPI } from '@/components/provider/useRestQueries';
 
 type PuzzleScreenSuccessProps = {
   level: LevelId;
@@ -49,9 +46,12 @@ const PuzzleScreenSuccess: FC<PuzzleScreenSuccessProps> = ({
 
   const { data, setState, state } = useStore('viewer');
   const [initCoins] = useState(data?.session?.coins || 0);
+  const { useMutation, useCall } = useRestAPI('sessionCalls');
 
   const { setRoute } = useGameRouter();
   const levelData = levels[level];
+
+  const submitResult = useMutation('updateGameStatus');
   const [animationStage, setAnimationStage] = useState(0);
   const showAllEntities = useCallback(() => {
     const newEntities: Record<string, IEntity> = {};
@@ -80,11 +80,8 @@ const PuzzleScreenSuccess: FC<PuzzleScreenSuccessProps> = ({
         time,
         moves,
       };
-      const updatedViewer = await gameEndingCalculation(
-        data,
-        gameResult,
-        initCoins,
-      );
+      const updatedViewer = gameEndingCalculation(data, gameResult, initCoins);
+      submitResult.mutate([undefined, gameResult]);
 
       setState('viewer', updatedViewer);
       setLocalEntyties(out);

@@ -15,3 +15,4 @@ web-build/
 
 server/.env
 puzzle-io/assets/static/levelImages.json
+puzzle-io/.env

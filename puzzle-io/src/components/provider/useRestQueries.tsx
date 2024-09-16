@@ -21,8 +21,8 @@ export const useRestAPI = <T extends keyof RestCalls>(
   service: T,
   config: UserRestQueriesConfig<T> = {},
 ): ReturnType<RestCalls[T]> => {
-  const serviceCalls = restCalls[service] as RestCalls['sessionCalls'];
-  const context = serviceCalls('', config.useCallOptions);
+  const serviceCalls = restCalls[service];
+  const context = serviceCalls(config.useCallOptions);
   return {
     ...context,
   } as ReturnType<RestCalls[T]>;
