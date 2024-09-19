@@ -13,6 +13,9 @@ export interface IDBType {
     userId: string;
     levelId: string;
     time: number;
+    movesCount: number;
+    sessionId: string;
+    completed: boolean;
   };
   moves: {
     id: string;
@@ -20,6 +23,12 @@ export interface IDBType {
     gameId: string;
     x: number;
     y: number;
+  };
+  gameSessions: {
+    id: string;
+    created: Date;
+    userId: string;
+    coins: number;
   };
 }
 

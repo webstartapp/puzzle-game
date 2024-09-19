@@ -99,10 +99,12 @@ const resolvers = (routes: ExpressRouteType[]) => {
         );
         console.log(68, context.statusSet);
         context.setResponseStatus(200);
-        res.json(result);
         Object.keys(context.responseHeaders).forEach((key) => {
-          res.setHeader(key, context.responseHeaders[key]);
+          if (context.responseHeaders[key]) {
+            res.setHeader(key, context.responseHeaders[key]);
+          }
         });
+        res.json(result);
         return;
       } catch (e: any) {
         console.trace(e);

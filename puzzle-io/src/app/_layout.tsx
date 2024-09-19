@@ -19,11 +19,11 @@ export default function RootLayout() {
       />
       <View style={layoutStyles.fullScreen}>
         <AnimatedBackgroundProvider>
-          <StoreProvider>
-            <QueryClientProvider client={queryClient}>
+          <QueryClientProvider client={queryClient}>
+            <StoreProvider>
               <RouterProvider />
-            </QueryClientProvider>
-          </StoreProvider>
+            </StoreProvider>
+          </QueryClientProvider>
         </AnimatedBackgroundProvider>
       </View>
     </View>

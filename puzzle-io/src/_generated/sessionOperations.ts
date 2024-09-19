@@ -25,6 +25,8 @@ export interface GlobalStorageDataType {
         GameResult?: IGameResult
         LevelProgress?: ILevelProgress
         UserSession?: IUserSession
+        UserSessionDB?: IUserSessionDB
+        LevelStatsDB?: ILevelStatsDB
         UserProfile?: IUserProfile
         TokenBody?: ITokenBody
         ProviderSetupBase?: IProviderSetupBase
@@ -938,6 +940,261 @@ const UserSessionForm = ()=>({
 });
 
 
+const UserSessionDBValidation = ()=>({
+   id: yup
+            
+        .string()
+        
+        
+        .nullable()
+        .trim()
+        ,
+
+   created: yup
+            
+        .date()
+        .nullable()
+        ,
+
+   userId: yup
+            
+        .string()
+        
+        
+        .nullable()
+        .trim()
+        .required((message)=>`${message.path} is required`)
+,
+
+   coins: yup
+            
+        .number()
+        .integer((message)=>`${message.path} should be integer`)
+        .required((message)=>`${message.path} is required`)
+,
+
+   previous: yup
+    .array()
+        .of(yup
+            
+            .object(LevelStatsDBValidation())
+            ),
+});
+export interface IUserSessionDB {
+id?: string
+created?: string
+userId: string
+coins: number
+previous: Array<ILevelStatsDB>
+}
+
+
+const UserSessionDBForm = ()=>({
+        id: {
+            id: 'id',
+            label: ``,
+            formId: 'UserSessionDBForm',
+            maxLength: parseInt(``) || undefined,
+        }, 
+
+        created: {
+            id: 'created',
+            label: ``,
+            formId: 'UserSessionDBForm',
+            maxLength: parseInt(``) || undefined,            type: COREInputTypeEnum.dateTime,
+
+        }, 
+
+        userId: {
+            id: 'userId',
+            label: ``,
+            formId: 'UserSessionDBForm',
+            maxLength: parseInt(``) || undefined,
+        }, 
+
+        coins: {
+            id: 'coins',
+            label: ``,
+            formId: 'UserSessionDBForm',
+            maxLength: parseInt(``) || undefined,            type: COREInputTypeEnum.number,
+
+        }, 
+
+        previous: {
+            id: 'previous',
+            label: ``,
+            formId: 'UserSessionDBForm',
+            maxLength: parseInt(``) || undefined,
+            multi: true,
+            item: {"type":"object","properties":{"id":{"type":"string","format":"uuid","required":false},"created":{"type":"string","format":"date-time","required":false},"levelId":{"type":"string","required":true},"movesCount":{"type":"integer","required":false},"completed":{"type":"boolean","required":true},"stars":{"type":"integer","required":true},"time":{"type":"integer","required":true},"stage":{"type":"string","required":true},"scene":{"type":"number","required":true}},"required":["levelId","moves","completed","stars","time","stage","scene"],"typeOf":"schemas","fileName":"session.yaml","key":"LevelStatsDB","reference":"LevelStatsDB","$ref":"#/components/schemas/LevelStatsDB"},
+
+        }, 
+
+});
+
+
+const LevelStatsDBValidation = ()=>({
+   id: yup
+            
+        .string()
+        
+        
+        .nullable()
+        .trim()
+        ,
+
+   created: yup
+            
+        .date()
+        .nullable()
+        ,
+
+   levelId: yup
+            
+        .string()
+        
+        
+        .nullable()
+        .trim()
+        .required((message)=>`${message.path} is required`)
+,
+
+   movesCount: yup
+            
+        .number()
+        .integer((message)=>`${message.path} should be integer`)
+        ,
+
+   completed: yup
+            
+        .boolean()
+        .required((message)=>`${message.path} is required`)
+,
+
+   stars: yup
+            
+        .number()
+        .integer((message)=>`${message.path} should be integer`)
+        .required((message)=>`${message.path} is required`)
+,
+
+   time: yup
+            
+        .number()
+        .integer((message)=>`${message.path} should be integer`)
+        .required((message)=>`${message.path} is required`)
+,
+
+   stage: yup
+            
+        .string()
+        
+        
+        .nullable()
+        .trim()
+        .required((message)=>`${message.path} is required`)
+,
+
+   scene: yup
+            
+        .number()
+        .required((message)=>`${message.path} is required`)
+,
+
+});
+export interface ILevelStatsDB {
+id?: string
+created?: string
+levelId: string
+movesCount?: number
+completed: boolean
+stars: number
+time: number
+stage: string
+scene: number
+}
+
+
+const LevelStatsDBForm = ()=>({
+        id: {
+            id: 'id',
+            label: ``,
+            formId: 'LevelStatsDBForm',
+            maxLength: parseInt(``) || undefined,
+        }, 
+
+        created: {
+            id: 'created',
+            label: ``,
+            formId: 'LevelStatsDBForm',
+            maxLength: parseInt(``) || undefined,            type: COREInputTypeEnum.dateTime,
+
+        }, 
+
+        levelId: {
+            id: 'levelId',
+            label: ``,
+            formId: 'LevelStatsDBForm',
+            maxLength: parseInt(``) || undefined,
+        }, 
+
+        movesCount: {
+            id: 'movesCount',
+            label: ``,
+            formId: 'LevelStatsDBForm',
+            maxLength: parseInt(``) || undefined,            type: COREInputTypeEnum.number,
+
+        }, 
+
+        completed: {
+            id: 'completed',
+            label: ``,
+            formId: 'LevelStatsDBForm',
+            maxLength: parseInt(``) || undefined,
+            input: COREFormInputTypeEnum.Checkboxes,
+            options: [
+                {
+                    label: 'TRUE',
+                    value: true,
+                    negative: false,
+                }
+            ],
+
+        }, 
+
+        stars: {
+            id: 'stars',
+            label: ``,
+            formId: 'LevelStatsDBForm',
+            maxLength: parseInt(``) || undefined,            type: COREInputTypeEnum.number,
+
+        }, 
+
+        time: {
+            id: 'time',
+            label: ``,
+            formId: 'LevelStatsDBForm',
+            maxLength: parseInt(``) || undefined,            type: COREInputTypeEnum.number,
+
+        }, 
+
+        stage: {
+            id: 'stage',
+            label: ``,
+            formId: 'LevelStatsDBForm',
+            maxLength: parseInt(``) || undefined,
+        }, 
+
+        scene: {
+            id: 'scene',
+            label: ``,
+            formId: 'LevelStatsDBForm',
+            maxLength: parseInt(``) || undefined,
+        }, 
+
+});
+
+
 const UserProfileValidation = ()=>({
    id: yup
             
@@ -1288,7 +1545,8 @@ const updateSessionCallQuery = {
 
 export interface IupdateSessionCallQuery {
 }
-type updateSessionCallResponse = '';
+type updateSessionCallResponse = IUserSessionDB
+    ;
 
 /**
  * 
@@ -1563,6 +1821,8 @@ export const restValidations = {
     GameResult: GameResultValidation(),
     LevelProgress: LevelProgressValidation(),
     UserSession: UserSessionValidation(),
+    UserSessionDB: UserSessionDBValidation(),
+    LevelStatsDB: LevelStatsDBValidation(),
     UserProfile: UserProfileValidation(),
     TokenBody: TokenBodyValidation(),
     ProviderSetupBase: ProviderSetupBaseValidation(),
@@ -1613,6 +1873,10 @@ export interface GlobalFormTypes {
 
     UserSessionForm: IUserSession,
 
+    UserSessionDBForm: IUserSessionDB,
+
+    LevelStatsDBForm: ILevelStatsDB,
+
     UserProfileForm: IUserProfile,
 
     TokenBodyForm: ITokenBody,
@@ -1654,6 +1918,10 @@ export interface GlobalFormValuesTypes {
 
     UserSessionForm: Record<keyof IUserSession, GlobalLabelType<IUserSession>>,
 
+    UserSessionDBForm: Record<keyof IUserSessionDB, GlobalLabelType<IUserSessionDB>>,
+
+    LevelStatsDBForm: Record<keyof ILevelStatsDB, GlobalLabelType<ILevelStatsDB>>,
+
     UserProfileForm: Record<keyof IUserProfile, GlobalLabelType<IUserProfile>>,
 
     TokenBodyForm: Record<keyof ITokenBody, GlobalLabelType<ITokenBody>>,
@@ -1682,6 +1950,8 @@ export const GlobalLabels = {
     GameResultForm: GameResultForm(),
     LevelProgressForm: LevelProgressForm(),
     UserSessionForm: UserSessionForm(),
+    UserSessionDBForm: UserSessionDBForm(),
+    LevelStatsDBForm: LevelStatsDBForm(),
     UserProfileForm: UserProfileForm(),
     TokenBodyForm: TokenBodyForm(),
     ProviderSetupBaseForm: ProviderSetupBaseForm(),

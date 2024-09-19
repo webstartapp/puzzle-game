@@ -69,7 +69,11 @@ paths:
             schema:
               $ref: '#/components/schemas/UserSession'
       responses:
-        '201':
+        '200':
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/UserSessionDB'
           description: Successfully updated user session
 
         '401':
@@ -372,6 +376,58 @@ components:
       required:
         - coins
         - previous
+    UserSessionDB:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        created:
+          type: string
+          format: date-time
+        userId:
+          type: string
+        coins:
+          type: integer
+        previous:
+          type: array
+          items:
+            $ref: '#/components/schemas/LevelStatsDB'
+      required:
+        - userId
+        - coins
+        - previous
+    LevelStatsDB:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        created:
+          type: string
+          format: date-time
+        levelId:
+          type: string
+        movesCount:
+          type: integer
+        completed:
+          type: boolean
+        stars:
+          type: integer
+        time:
+          type: integer
+        stage:
+          type: string
+        scene:
+          type: number
+      required:
+        - levelId
+        - moves
+        - completed
+        - stars
+        - time
+        - stage
+        - scene
     UserProfile:
       type: object
       properties:

@@ -19,6 +19,7 @@ import introScreen from '@/assets/music/intro_screen_bg.mp3';
 import { layoutStyles } from '@/styles/layoutStyles';
 import { preloadAssets } from '@/utils/preloadAssets';
 import { secondaryAssets } from '@/config/preload/secondaryAssets';
+import { useRestAPI } from './useRestQueries';
 SplashScreen.preventAutoHideAsync();
 
 const initialState: IStore = {
@@ -66,6 +67,9 @@ const StoreProvider: FC<PropsWithChildren> = ({ children }) => {
   useSound(introScreen, true);
   const [progress] = useState(new Animated.Value(0));
   useAnimatedBackground(introImage);
+  const { useMutation } = useRestAPI('sessionCalls');
+
+  const cacheUser = useMutation('updateSession');
 
   useEffect(() => {
     if (!state.initiated) {
@@ -89,17 +93,18 @@ const StoreProvider: FC<PropsWithChildren> = ({ children }) => {
       } catch (e) {
         console.error(e);
       }
-      await SplashScreen.hideAsync();
       if (localState.initiated) {
+        await SplashScreen.hideAsync();
         return;
       }
       const savedState = await AsyncStorage.getItem(PERSISTED_STATE_KEY);
-      console.log(97, savedState, globalState);
+
       try {
         localState = {
           ...globalState,
           ...JSON.parse(savedState || '{}'),
         };
+        cacheUser.mutate([undefined, localState?.viewer?.session]);
       } catch (e) {
         console.error('Error loading state from storage', e);
       }
