@@ -129,7 +129,7 @@ const StoreProvider: FC<PropsWithChildren> = ({ children }) => {
     };
 
     loadState();
-  }, []);
+  }, [globalState?.initiated]);
 
   useEffect(() => {
     const saveState = async () => {

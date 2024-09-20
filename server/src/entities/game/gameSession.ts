@@ -25,7 +25,7 @@ export const GameSessionDB = ExpressTypeResolver({
         await knex("gameSessions")
           .insert({
             userId: context.viewer.id,
-            coins: 0
+            coins: body.coins
           })
           .returning(GameSessionDB.properties.id);
         previousSession = (await GameSessionDB.resolvers.getGameSession({
@@ -36,6 +36,9 @@ export const GameSessionDB = ExpressTypeResolver({
       if (!previousSession?.id) {
         throw new Error("unable to create session");
       }
+      await knex("gameSessions").where({ id: previousSession.id }).update({ coins: body.coins });
+      previousSession.coins = body.coins;
+
       if (!body.previous) {
         throw new Error("No previous games");
       }
