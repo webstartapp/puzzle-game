@@ -21,8 +21,7 @@
         "foregroundImage": "./assets/images/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "package": "solutions.webstart.puzzle_io",
-      "versionCode": 3
+      "package": "solutions.webstart.puzzle_io"
     },
     "web": {
       "bundler": "metro",
