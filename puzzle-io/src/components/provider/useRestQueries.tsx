@@ -2,9 +2,11 @@ import { restCalls as sessionCalls } from '@/_generated/sessionOperations';
 import { ErrorObject } from '@/types/RestAPIGenerator/RESTRequestType';
 import { createContext } from 'react';
 import { UseQueryOptions } from 'react-query';
-
+if (!process.env.EXPO_PUBLIC_API_URL) {
+  throw new Error('EXPO_PUBLIC_API_URL is not defined');
+}
 const restCalls = {
-  sessionCalls: sessionCalls('http://localhost:4000/'),
+  sessionCalls: sessionCalls(process.env.EXPO_PUBLIC_API_URL),
 };
 
 type RestCalls = typeof restCalls;
