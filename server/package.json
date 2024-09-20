@@ -4,7 +4,7 @@
   "author": "karel Bohac",
   "license": "MIT",
   "scripts": {
-    "start": "node --max-old-space-size=2200 --max-semi-space-size=128 dist",
+    "start": "ts-node -P tsconfig.json ./src/index.ts",
     "dev": "nodemon src/index.ts",
     "migrate:create": "knex migrate:make",
     "migrate": "knex migrate:latest",
@@ -14,7 +14,7 @@
     "test": "jest",
     "pretty": "prettier --write \"**/*.{ts,tsx}\"",
     "lint": "eslint --ext .ts,.tsx .",
-    "generator": "cd ./generator && node ./index-run.js"
+    "build": "tsc"
   },
   "jest": {
     "testEnvironment": "node",
